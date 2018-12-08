@@ -19,6 +19,7 @@ margin: 0;
 padding: 0;
 border: 0;
 font-size: 100%;
+/* user-select: none; */
 font-weight: normal;
 vertical-align: baseline;
 }
@@ -75,6 +76,12 @@ height: 100%;
 body {
 -webkit-text-size-adjust: none;
 -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+.fl {
+    float: left;
+}
+.fr {
+    float: right;
 }
 /*显示省略号*/
 .ellipsis{

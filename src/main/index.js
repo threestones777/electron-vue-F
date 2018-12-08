@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { ipcMain,app, Menu,BrowserWindow } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -7,36 +7,40 @@ import { app, BrowserWindow } from 'electron'
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
-
+// if (process.env.NODE_ENV === 'production') { // change !== to ===
+//   require('vue-devtools').uninstall()
+// }
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
 function createWindow () {
-  /**
-   * Initial window options
-   */
+  Menu.setApplicationMenu(null)             //关闭菜单选项
   mainWindow = new BrowserWindow({
-    height: 563,
+    height:700,//window.screen.availHeight,
+    width:1400,//window.screen.availWidth,               
     useContentSize: true,
-    frame: true,
-    webPreferences: {webSecurity: false},
-    width: 1000
-  })
-
+    frame: true,                     //有无边框                
+    webPreferences: {webSecurity: false},  //解决跨域 
+  });
+  
   mainWindow.loadURL(winURL)
 
-  mainWindow.on('closed', () => {
+  mainWindow.on('closed', () => {     
     mainWindow = null
-  })
+  });
+  // Open the DevTools.
+  // if (process.env.NODE_ENV === 'development') {
+  //   BrowserWindow.addDevToolsExtension("C:/Users/litid/AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/4.1.5_0");
+  // }
 }
 
 app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit();
   }
 })
 

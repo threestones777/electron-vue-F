@@ -2,61 +2,84 @@
     <div id="serverDesk">
         <div class="title">
             <span>服务</span>
-            <el-input v-model="input"></el-input>
-            <el-button type="success">搜索</el-button>
+            <el-row :gutter="20" style="width:400px;position:relative;left:-15px;top:5px;margin-top:0px;float:right;">
+                <el-col :span="6"><el-button type="text" style="color:black">删除</el-button></el-col>
+                <el-col :span="6"><el-button type="text" style="color:black">挂单</el-button></el-col>
+                <el-col :span="6"><el-button type="text" style="color:black">提单</el-button></el-col>
+                <el-col :span="6"><el-button type="text" style="color:black">清空</el-button></el-col>
+            </el-row>
         </div>
-        <el-row type="flex" class="row-bg" justify="center">
-            <el-col :span="6">
-                <div class="goodsT">
-                    <p>server</p>
-                    <span>2000元</span>
-                </div>
-            </el-col>            
-            <el-col :span="6">
-                <div class="goodsT">
-                    <p>工时费</p>
-                    <span>1000元</span>
-                </div>
-            </el-col>            
-        </el-row>
+        <div style="background:#F5F5F5">
+            <!-- <div style="padding:20px;">
+                <el-button size="medium" style="background:#FF7815;color:#fff"><img src="../assets/images/vip.png" style="vertical-align:middle;">&nbsp;&nbsp;会员</el-button>
+                <img src="../assets/images/scan.png" style="position:relative;top:5px;left:30px;z-index:7;">
+                <el-input placeholder="     输入或扫描商品二维码" style="margin-right:50px"></el-input>
+                <el-input prefix-icon="el-icon-search" placeholder="商品名称/首拼字母/条形码"></el-input>
+            </div> -->
+            <div style="margin:20px">
+                <h1 style="font-size:22px;font-weight:bold;">服务列表</h1>
+                <el-card @click.native="addServer
+                (index)" shadow="hover" style="width:19%;margin:20px 20px 0 20px;display:inline-block" v-for="(server,index) in serverForms" :key="index">
+                    <img src="../assets/images/goods.png" style="width:100%;margin-bottom:10px;" :title="server.goods_id"  class="getId"/>
+                    <span style="font-weight:bold;display:block;height:20px;overflow:hidden" :title="server.goods_name">{{server.goods_name}}</span>
+                    <span style="color:#FF7815;display:block;margin-top:10px;">￥{{server.addprice}}</span>
+                    <p style="color:#999999;margin-top:10px;">库存：{{server.goods_id}}</p>
+                    <p style="color:#999999;margin-top:10px;">位置：{{server.goods_id}}</p>
+                </el-card>
+            </div>            
+        </div>
     </div>
 </template>
 <style>
     #serverDesk{
-        height:830px;
-        margin:20px;
+        border:1px solid #f4f4f4;
     }
     #serverDesk .el-row{
         margin-top:20px;
     }
     #serverDesk>.title{        
-        border-bottom:1px dotted gray;
-        padding-bottom:30px;
+        background:  #FFF;
+        padding-bottom:15px;
+        height:50px;
     }
     #serverDesk>div>span{
         font-size:30px;
+        font-weight:bold;
         display: inline-block;
-        padding:10px 0 0 0;
-    }
-    #serverDesk .el-button{
-        float:right;
+        position: relative;
+        top:20px;
+        right:-15px;
     }
     #serverDesk .el-input{
-        float:right;
-        width:300px;
-    }   
-    .goodsT{
-        width:70%;
-        border:1px solid #CFCFCF;
-        padding:10px;
-    } 
+        width:30%;
+    }
 </style>
 <script>
+import {serverDesk} from '../api/apiW' ;
 export default {
     data(){
         return {
-            input:''
+            input:'',
+            serverForms:[]
         }
+    },
+    methods:{
+        addServer(index){
+            let id=document.getElementsByClassName('getId')[index].title;
+            console.log("服务ID"+id);
+            serverDesk().then(res=>{ //传递服务信息
+                console.log(res.data.goods_list[index]); 
+                const serverData = res.data.goods_list[index];
+                this.$emit('addServer', serverData);
+            });
+        }
+    },
+    created:function(){
+        serverDesk().then(res=>{
+            console.log(res.data);
+            this.serverForms=res.data.goods_list;
+            console.log(this.serverForms);
+        });
     }
 }
 </script>

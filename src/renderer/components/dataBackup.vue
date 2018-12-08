@@ -51,13 +51,9 @@
             </el-table>
             <!-- 分页器 -->
             <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="1"
-            :page-sizes="[5, 10, 20, 50]"
-            :page-size="5"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="200">
+                @current-change="handleCurrentChange"
+                layout="prev, pager, next,jumper"
+                :page-count="pages">
             </el-pagination>
         </div>
     </div>
@@ -66,6 +62,7 @@
 export default {
     data() {
         return {
+            pages:1,
             formServe:{
                 name:"",
                 marks:""
@@ -96,9 +93,6 @@ export default {
         },
         reset() {
 
-        },
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
         },
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
@@ -134,7 +128,7 @@ export default {
 /* 分页器 */
 .el-pagination {
   padding: 20px 0;
-  text-align: center;
+  text-align: right;
 }
 
 /* 新增账户弹出框 & 账户详情弹出框*/
