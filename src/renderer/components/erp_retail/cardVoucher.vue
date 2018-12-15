@@ -5,7 +5,7 @@
             <h3>温州美联 管理中心</h3>
             <el-breadcrumb separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
-                <el-breadcrumb-item>零售</el-breadcrumb-item>
+                <el-breadcrumb-item>核销</el-breadcrumb-item>
                 <el-breadcrumb-item>卡券核销</el-breadcrumb-item>
             </el-breadcrumb>
         </div>

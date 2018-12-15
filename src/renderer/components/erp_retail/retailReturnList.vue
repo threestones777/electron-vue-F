@@ -8,27 +8,34 @@
                 <el-breadcrumb-item>零售退货单</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <el-form :inline="true" class="demo-form-inline">
-                <el-form-item label="">
-                    <el-input	size="small" v-model="orderDate" placeholder="请点击选择客户" @focus="selectSupplier=true"></el-input>      
-                </el-form-item>
-                <!-- <el-form-item label="">
-                    <el-input	size="small" v-model="orderDate" placeholder="单据日期"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" v-model="orderId" placeholder="单据编号"></el-input>
-                </el-form-item> -->
-                <el-form-item>
-                    <!-- <el-button	size="small" type="primary">提交单据</el-button> -->
-                    <el-button	size="small" type="primary" @click="reset">刷新</el-button>
-                </el-form-item>
-            </el-form>          
+        <div style="margin:10px 0;text-align:center">
+            <el-input	size="small" v-model="orderDate" placeholder="请点击选择供应商" @focus="selectSupplier=true"></el-input>
+            <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+            <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
+            <el-button type="primary" size="small" @click="reset">刷新</el-button>
+        </div>   
+        <!-- 按需选择列弹窗 -->
+        <el-dialog
+        title="按需选择列" style="text-align:left"
+        :visible.sync="dialogShow"
+        :before-close="handleClose"
+        width="300px">
+            <el-checkbox v-model="retailReturnshow.show1">退款单id</el-checkbox><br>
+            <el-checkbox v-model="retailReturnshow.show2">退款单编号</el-checkbox><br>
+            <el-checkbox v-model="retailReturnshow.show3">添加日期</el-checkbox><br>
+            <el-checkbox v-model="retailReturnshow.show4">应退金额</el-checkbox><br>
+            <el-checkbox v-model="retailReturnshow.show5">实退金额</el-checkbox><br>
+            <el-checkbox v-model="retailReturnshow.show6">制单人</el-checkbox><br>
+            <el-checkbox v-model="retailReturnshow.show7">客户名</el-checkbox><br>
+            <el-checkbox v-model="retailReturnshow.show8">退换状态</el-checkbox><br>
+            <el-checkbox v-model="retailReturnshow.show9">状态名</el-checkbox><br>
+            <el-checkbox v-model="retailReturnshow.show10">备注信息</el-checkbox><br><br>
+        </el-dialog>    
         <!--弹出窗口-->
         <el-dialog
         title="选择供应商"
         :visible.sync="selectSupplier"
-        width="95%"
-        :before-close="handleClose">
+        width="95%">
             名称 :<el-input	size="small" v-model="orderDate" placeholder="供应商名称"></el-input>          
             编号 :<el-input	size="small" v-model="supplier_id" placeholder="供应商编号"></el-input>          
             联系人 :<el-input	size="small" v-model="orderDate" placeholder="联系人"></el-input>          
@@ -123,40 +130,74 @@
         </el-dialog> 
         <!---->
         <el-table
-        :data="retailReturnData"
+        :data="retailReturnData.filter(data =>  {
+        return Object.keys(data).some(key => {
+        return String(data[key]).toLowerCase().indexOf(search) > -1})})"
         border
         :row-style="{height:0}"  
         :cell-style="{padding:0}"
         :header-row-style="{height:0}"  
         :header-cell-style="{padding:0}"
+        :default-sort = "{prop: 'date', order: 'descending'}"
         style="width: 100%">
             <el-table-column
                 prop="back_id"
+                v-if="retailReturnshow.show1"
                 align="center"
                 label="退款单id">
             </el-table-column>
             <el-table-column
                 prop="order_id"
+                v-if="retailReturnshow.show2"
                 align="center"
                 label="退款单编号">
             </el-table-column>
             <el-table-column
                 prop="add_time"
+                v-if="retailReturnshow.show3"
                 align="center"
+                sortable
                 label="添加日期">
             </el-table-column>        
             <el-table-column
+                prop="refund_money_1"
+                v-if="retailReturnshow.show4"
+                align="center"
+                label="应退金额">
+            </el-table-column>        
+            <el-table-column
+                prop="refund_money_2"
+                v-if="retailReturnshow.show5"
+                align="center"
+                label="实退金额">
+            </el-table-column>        
+            <el-table-column
+                prop="action_user"
+                v-if="retailReturnshow.show6"
+                align="center"
+                label="制单人">
+            </el-table-column>        
+            <el-table-column
+                prop="user_name"
+                v-if="retailReturnshow.show7"
+                align="center"
+                label="客户名">
+            </el-table-column>        
+            <el-table-column
                 prop="status_back_val"
+                v-if="retailReturnshow.show8"
                 align="center"
                 label="退换状态">
             </el-table-column>
             <el-table-column
                 prop="status_name"
+                v-if="retailReturnshow.show9"
                 align="center"
                 label="状态名">
             </el-table-column>
             <el-table-column
                 prop="postscript"
+                v-if="retailReturnshow.show10"
                 align="center"
                 label="备注信息">
             </el-table-column>   
@@ -165,53 +206,12 @@
             align="center"
             label="相关操作">
                 <template slot-scope="scope">
-                    <el-button type="text" size="small" @click="showDetails(scope.row),dialogDetail = true">详情</el-button>
+                    <el-button type="text" size="small" @click="showDetails(scope.row),dialogDetail = true">商品详情</el-button>
                 </template>
             </el-table-column>  
         </el-table>
         <!-------------------------------------------------------- 详情弹窗 ---------------------------------------------------------------->
-        <el-dialog width="800px" title="零售退货单详情" :visible.sync="dialogDetail">
-            <el-form :model="formDetail" class="detail" style="text-align:center">
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        退款单id<el-input v-model="formDetail.back_id"></el-input>    
-                    </el-col>
-                    <el-col :span="7">
-                        退款单编号<el-input v-model="formDetail.order_sn"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        日期<el-input v-model="formDetail.add_time"></el-input>
-                    </el-col>
-                </el-row>                
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        应退金额<el-input v-model="formDetail.refund_money_1"></el-input>    
-                    </el-col>
-                    <el-col :span="7">
-                        实退金额<el-input v-model="formDetail.refund_money_2"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        制单人<br><el-input v-model="formDetail.action_user"></el-input>
-                    </el-col>
-                </el-row>                
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        客户名<el-input v-model="formDetail.user_name"></el-input>    
-                    </el-col>
-                    <el-col :span="7">
-                        退换状态<el-input v-model="formDetail.status_back_val"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        状态名<el-input v-model="formDetail.status_name"></el-input>
-                    </el-col>
-                </el-row>                
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        备注<el-input v-model="formDetail.postscript"></el-input>    
-                    </el-col>
-                </el-row>                
-            </el-form><br>
-            <h1>单据商品</h1><br>
+        <el-dialog width="800px" title="零售退货单商品详情" :visible.sync="dialogDetail">
             <el-table
             :data="goodsData"
             border
@@ -276,8 +276,8 @@
         <!--分页-->
         <el-pagination
             @current-change="handleCurrentChange"
-            layout="prev, pager, next,jumper"
-            :page-count="pages">
+            layout="total,prev, pager, next,jumper"
+            :total="record_count">
         </el-pagination>   
     </div>
 </template>
@@ -339,19 +339,9 @@ import {reretailReturnDe} from '../../api/apiW' ;
       return {
         selectSupplier:false,
         dialogDetail:false,
-        options: [{
-          value: '选项1',
-          label: '10条记录'
-        }, {
-          value: '选项2',
-          label: '25条记录'
-        }, {
-          value: '选项3',
-          label: '50条记录'
-        }, {
-          value: '选项4',
-          label: '100条记录'
-        }],
+        dialogShow:false,
+        search:'',
+        record_count:0,
         value: '',
         input:'',
         orderDate:'',
@@ -362,25 +352,43 @@ import {reretailReturnDe} from '../../api/apiW' ;
         SupplierData: [],
         multipleSelection: [],
         goodsData:[],
-        formDetail:{}
+        formDetail:{},
+        retailReturnshow:{
+            show1:true,
+            show2:true,
+            show3:true,
+            show4:true,
+            show5:true,
+            show6:true,
+            show7:true,
+            show8:true,
+            show9:true,
+            show10:true,
+        },
       }
     },
     methods:{
+        init(page){//-----------------初始化数据
+            retailReturnList({params:{page:page,page_size:10}}).then(res=>{
+                this.record_count=Number(res.data.filter.record_count);
+                console.log(res.data);
+                this.retailReturnData=res.data.back;
+            })
+        }, 
         reset(){
             this.reload();
         },
         handleClose(done) {
             done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.retailReturnList=this.retailReturnshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
         },
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
         handleCurrentChange(val) {
-            console.log(val);
-            retailReturnList({params:{page:val,page_size:10}}).then(res=>{
-                console.log(res.data);
-                this.retailReturnData=res.data.back;
-            })      
+            this.init(val);   
         },
         supplier(){
             this.SupplierData=[];
@@ -397,11 +405,16 @@ import {reretailReturnDe} from '../../api/apiW' ;
         },
     },
     created: function () {
-        retailReturnList({params:{page:1,page_size:10}}).then(res=>{
-            this.pages=Math.ceil(res.data.filter.record_count/10);
-            console.log(res.data);
-            this.retailReturnData=res.data.back;
-        })
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.retailReturnList!==undefined){
+                this.retailReturnshow=erpTableSetting.retailReturnList;
+            }
+        }else{
+            console.log("no");
+        };
+        this.init(1);
     }
   }
 </script>

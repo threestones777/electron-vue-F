@@ -9,7 +9,28 @@
             </el-breadcrumb>
         </div>
         <!--弹出窗口-->
-        <el-input	size="small" v-model="orderDate" placeholder="请点击选择供应商" @focus="selectSupplier=true"></el-input>        
+        <div style="margin:10px 0;text-align:center">
+            <el-input	size="small" v-model="orderDate" placeholder="请点击选择供应商" @focus="selectSupplier=true"></el-input> 
+            <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+            <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
+            <el-button type="primary" size="small" @click="open" icon="el-icon-plus"></el-button>
+            <el-button type="primary" size="small" @click="reset">刷新</el-button>
+        </div>
+        <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" style="text-align:left" class="chose"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="300px">
+                <el-checkbox v-model="shopReturnshow.show1">单据id</el-checkbox><br>
+                <el-checkbox v-model="shopReturnshow.show2">单据sn</el-checkbox><br>
+                <el-checkbox v-model="shopReturnshow.show3">采购单编号</el-checkbox><br>
+                <el-checkbox v-model="shopReturnshow.show4">状态</el-checkbox><br>
+                <el-checkbox v-model="shopReturnshow.show5">状态名</el-checkbox><br>
+                <el-checkbox v-model="shopReturnshow.show6">单据金额</el-checkbox><br>
+                <el-checkbox v-model="shopReturnshow.show7">退货时间</el-checkbox><br>
+                <el-checkbox v-model="shopReturnshow.show8">备注</el-checkbox><br>
+            </el-dialog>
         <el-dialog
         title="选择供应商"
         :visible.sync="selectSupplier"
@@ -107,12 +128,6 @@
                 <el-button	size="small" type="primary" @click="selectSupplier=false">确 定</el-button>
             </span>
         </el-dialog> 
-        <!---->
-       <!--  <el-input	size="small" v-model="orderDate" placeholder="单据日期"></el-input>
-        <el-input	size="small" v-model="orderId" placeholder="单据编号"></el-input>
-        <el-button	size="small" type="primary">提交单据</el-button> -->
-        <el-button	size="small" type="primary" @click="open">新增</el-button>
-        <el-button	size="small" type="primary" @click="reset">刷新</el-button>
         <!-- 新增购货退货单弹窗 -->
         <el-dialog
         title="新增购货退货单"
@@ -121,7 +136,7 @@
             <el-form :model="formAdd" class="detail">
                 <el-row type="flex" justify="space-around">
                     <el-col :span="7">
-                        购货单sn<input class="spe" v-model="formAdd.purchase_sn" ref="input" @blur="exam" @input="()=>{this.status=0}"/>
+                        采购订单sn<input class="spe" v-model="formAdd.purchase_sn" ref="input" @blur="exam" @input="()=>{this.status=0}"/>
                     </el-col>
                     <el-col :span="7">
                         备注<el-input v-model="formAdd.remark" ></el-input>
@@ -134,7 +149,9 @@
         </span>
         </el-dialog>
         <el-table
-        :data="shopReturnData"
+        :data="shopReturnData.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
         border
         :row-style="{height:0}"  
         :cell-style="{padding:0}"
@@ -143,27 +160,53 @@
         style="width: 100%">
             <el-table-column
                 prop="id"
+                align="center"
+                v-if="shopReturnshow.show1"
                 label="单据id">
             </el-table-column>
             <el-table-column
                 prop="back_sn"
+                align="center"
+                v-if="shopReturnshow.show2"
                 label="单据sn">
             </el-table-column>
             <el-table-column
                 prop="purchase_sn"
+                align="center"
+                v-if="shopReturnshow.show3"
                 label="采购单编号">
             </el-table-column>
             <el-table-column
                 prop="status"
-                label="状态	">
+                align="center"
+                v-if="shopReturnshow.show4"
+                label="状态">
+            </el-table-column>
+            <el-table-column
+                prop="status_name"
+                align="center"
+                v-if="shopReturnshow.show5"
+                :filters="[{text: '未审核', value: '未审核'},{text: '已退货', value: '已退货'}]"
+                :filter-method="filterHandler"
+                label="状态名">
             </el-table-column>
             <el-table-column
                 prop="money"
+                align="center"
+                v-if="shopReturnshow.show6"
                 label="单据金额">
             </el-table-column>
             <el-table-column
                 prop="back_time"
+                align="center"
+                v-if="shopReturnshow.show7"
                 label="退货时间">
+            </el-table-column> 
+            <el-table-column
+                prop="remark"
+                align="center"
+                v-if="shopReturnshow.show8"
+                label="备注">
             </el-table-column> 
             <el-table-column
                 fixed="right"
@@ -178,39 +221,6 @@
         </el-table>
     <!-------------------------------------------------------- 详情弹窗 ---------------------------------------------------------------->
     <el-dialog width="800px" title="购货退货单详情" :visible.sync="dialogDetail">
-        <el-form :model="formDetail" class="detail">
-            <el-row type="flex" justify="space-around">
-                <el-col :span="7">
-                    单据sn<el-input v-model="formDetail.back_sn"></el-input>    
-                </el-col>
-                <el-col :span="7">
-                    采购单编号<el-input v-model="formDetail.purchase_sn"></el-input>
-                </el-col>
-                <el-col :span="7">
-                    状态<el-input v-model="formDetail.status"></el-input>
-                </el-col>
-            </el-row>                
-            <el-row type="flex" justify="space-around">
-                <el-col :span="7">
-                    供货商名称<el-input v-model="formDetail.supplier_name"></el-input>    
-                </el-col>
-                <el-col :span="7">
-                    单据金额<el-input v-model="formDetail.money"></el-input>
-                </el-col>
-                <el-col :span="7">
-                    备注<br><el-input v-model="formDetail.remark"></el-input>
-                </el-col>
-            </el-row>                
-            <el-row type="flex" justify="space-around">
-                <el-col :span="7">
-                    退货时间<el-input v-model="formDetail.back_time"></el-input>    
-                </el-col>
-                <el-col :span="7">
-                    状态名<el-input v-model="formDetail.status_name"></el-input>
-                </el-col>
-            </el-row>                
-        </el-form><br>
-        <h1>单据商品</h1>
         <el-button size="small" type="primary" class="addGoods" @click="getGoods(),dialogAddGoods=true">添加商品</el-button>
         <el-table
         :data="goodsData"
@@ -246,27 +256,6 @@
             </el-table-column>
             <el-table-column
                 align="center"
-                label="价格">
-                <template slot-scope="scope">
-                    <el-input size="mini" style="width:80%" v-model="scope.row.per_price"></el-input>
-                </template>
-            </el-table-column>
-            <el-table-column
-                align="center"
-                label="属性">
-                <template slot-scope="scope">
-                    <el-input size="mini" style="width:80%" v-model="scope.row.attr_value"></el-input>
-                </template>
-            </el-table-column>
-            <el-table-column
-                align="center"
-                label="仓库">
-                <template slot-scope="scope">
-                    <el-input size="mini" style="width:80%" v-model="scope.row.store_id"></el-input>
-                </template>
-            </el-table-column>
-            <el-table-column
-                align="center"
                 label="备注">
                 <template slot-scope="scope">
                     <el-input size="mini" style="width:80%" v-model="scope.row.note"></el-input>
@@ -291,6 +280,7 @@
     <el-dialog width="30%" title="订单审核" :visible.sync="dialogCheck">
         <el-radio-group v-model="status">
             <el-radio :label="0">未审核</el-radio>
+            <!-- <el-radio :label="1" disabled>已审核</el-radio> -->
             <el-radio :label="2">已退货</el-radio>
         </el-radio-group>              
         <div slot="footer" class="dialog-footer">
@@ -357,12 +347,15 @@
         <!--分页-->
         <el-pagination
             @current-change="handleCurrentChange"
-            layout="prev, pager, next,jumper"
-            :page-count="pages">
+            layout="total,prev, pager, next,jumper"
+            :total="record_count">
         </el-pagination>
     </div>
 </template>
-<style scope>
+<style scoped>
+.chose .el-checkbox{
+    margin-bottom:10px;
+}
     #shopReturnList{
         text-align:center;
         margin: 20px;
@@ -420,7 +413,7 @@
 </style>    
 <script>
 import {shopReturnList,supplier,getGoodsList} from '../../api/api' ;
-import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,repurchaseAdd,repurchaseBa,repurchaseDel} from '../../api/apiW' ;
+import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,repurchaseAdd,repurchaseBa,repurchaseDel,shopOderListDe} from '../../api/apiW' ;
   export default {
     inject: ['reload'],
     data() {
@@ -431,17 +424,20 @@ import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,rep
         dialogCheck:false,
         dialogAdd:false,
         value: '',
+        record_count:0,
+        dialogShow:false,
+        search:"",
         input:'',
         orderDate:'',
         orderId:'',
         supplier_id:'2',
         id:0,
         shopReturnData: [],
-        status:0,
+        status:1,
         pages:1,
         pagesG:1,
-        status:0,
         back_sn:0,
+        purchase_sn:0,
         SupplierData: [],
         formDetail:{},
         formAdd:{
@@ -451,15 +447,38 @@ import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,rep
         goodsData:[],
         goodsListData:[],
         getGoodsList:[],
-        multipleSelection: []
+        multipleSelection: [],
+        shopReturnshow:{
+            show1:true,
+            show2:true,
+            show3:true,
+            show4:true,
+            show5:true,
+            show6:true,
+            show7:true,
+            show8:true,
+        },
       }
     },
     methods:{
+        init(page){//-----------------初始化数据
+            shopReturnList({params:{page:page,page_size:10}}).then(res=>{
+                this.record_count=Number(res.data.filter.record_count);
+                this.shopReturnData=res.data.list;
+            }) 
+        }, 
         reset(){
             this.reload();
         },
         handleClose(done) {
             done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.shopReturnList=this.shopReturnshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+        },
+        filterHandler(value, row, column) {
+            const property = column['property'];
+            return row[property] === value;
         },
         open(){
             this.dialogAdd=true;
@@ -467,7 +486,7 @@ import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,rep
         },
         exam(){
             if(this.formAdd.purchase_sn==""){
-                this.$alert("购货单号不能为空");
+                //this.$alert("购货单号不能为空");
                 this.status=1;
             }else{
                 this.status=0;
@@ -487,10 +506,7 @@ import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,rep
                 console.log(this.arr);
         },
         handleCurrentChange(val) {
-            console.log(val);
-            shopReturnList({params:{page:val,page_size:10}}).then(res=>{
-                this.shopReturnData=res.data.orders;
-            })          
+            this.init(val);
         },
         handleCurrentChangeG(val) {
             console.log(val);
@@ -534,6 +550,7 @@ import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,rep
         showDetails(row){//------------------------------详情
             this.id=row.id;
             this.back_sn=row.back_sn;
+            this.purchase_sn=row.purchase_sn;
             this.detailGoods();
         },
         getId(row){//-----------------------保存id
@@ -563,21 +580,20 @@ import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,rep
                 status:this.status
             });
             repurchaseCh(dataC).then(res=>{
-                this.$alert(res.errmsg)
+                this.$alert(res.data.message)
                 this.reload();
             });
         },
         getGoods(){//--------------------------------获取商品列表
-            getGoodsList({params:{page:1,page_size:10}}).then(res=>{
+            shopOderListDe({params:{purchase_sn:this.purchase_sn}}).then(res=>{
                 console.log(res.data.goods);
-                this.goodsListData=res.data.goods;
-                this.pagesG=Math.ceil(res.data.filter.record_count/10);
+                this.goodsListData=res.data.purchase_goods;
             })
         },
         addGoods(){//---------------------------------添加商品
             let dataA=this.$qs.stringify({
                 id:this.id,
-                goods_ids:JSON.stringify(this.arr)
+                goods_id:JSON.stringify(this.arr)
             });
             repurchaseAddG(dataA).then(res=>{
                 console.log(res);
@@ -658,10 +674,16 @@ import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,rep
         },
     },
     created: function () { 
-        shopReturnList({params:{page:1,page_size:10}}).then(res=>{
-            this.pages=Math.ceil(res.data.filter.record_count/10);
-            this.shopReturnData=res.data.list;
-        })
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.shopReturnList!==undefined){
+                this.shopReturnshow=erpTableSetting.shopReturnList;
+            }
+        }else{
+            console.log("no");
+        }
+        this.init(1);
     },    
   }
 </script>

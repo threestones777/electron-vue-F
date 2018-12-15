@@ -3,7 +3,7 @@
         <el-container>
             <el-header>
                 <div style="float:right;color:#FFF;font-size:16px;margin-top:10px;">
-                    <span>您好，游客1234567</span>
+                    <span>您好，游客</span>
                     <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
                     <span>当前门店： 美联商城 - 美联智慧收银台</span>
                     <el-button @click="$router.push('/')" type="text">退出</el-button>
@@ -14,7 +14,7 @@
                     <el-aside width="520px" height="100%">
                         <div class="details">
                             <div style="margin-bottom:40px;">
-                                <p><img src="../assets/images/vip.png">游客1234567</p>
+                                <p><img src="../assets/images/vip.png">游客</p>
                             </div>
                             <div style="display:inline-block">
                                 <span style="display:inline-block;margin:0 120px 40px 0">余额：0.00</span><br>

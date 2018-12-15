@@ -297,7 +297,8 @@ export default {
       isCollapse: false,
       newWidth: "200px",
       count:0,
-      asideMenuList:[]
+      asideMenuList:[],
+      erpTableSetting:{}
     };
   },
   watch: {
@@ -331,8 +332,10 @@ export default {
     }
   },
     created() {
+        if(localStorage.erpTableSetting==undefined){
+            localStorage.erpTableSetting=JSON.stringify(this.erpTableSetting);
+        }
       getSysMsgList({params:{user_id: sessionStorage.getItem("user_id")}}).then(res=>{
-          console.log(res.data.order_sn);
           this.count=Number(res.data.record_count);
       });
     let data = this.$qs.stringify({ user_id: sessionStorage.user_id });

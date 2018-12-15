@@ -9,7 +9,6 @@
             </el-breadcrumb>
         </div>
         <!--弹出窗口-->
-        <el-input	size="small" v-model="orderDate" placeholder="点击选择客户" @focus="selectSupplier=true"></el-input>        
         <el-dialog
         title="选择客户"
         :visible.sync="selectSupplier"
@@ -20,7 +19,7 @@
             联系人 :<el-input	size="small" v-model="orderDate" placeholder="联系人"></el-input>          
             手机号 :<el-input	size="small" v-model="orderDate" placeholder="手机号"></el-input>          
             备注信息 :<el-input	size="small" v-model="orderDate" placeholder="备注信息"></el-input> 
-            <el-button	size="small" type="success" @click="customer">搜索</el-button>
+            <el-button	size="small" type="primary" @click="customer">搜索</el-button>
             <el-table
             ref="multipleTable"
             :data="customerData"
@@ -109,16 +108,35 @@
             </el-table>
             <span slot="footer" class="dialog-footer">
                 <el-button	size="small" @click="selectSupplier=false">取 消</el-button>
-                <el-button	size="small" type="success" @click="selectSupplier=false">确 定</el-button>
+                <el-button	size="small" type="primary" @click="selectSupplier=false">确 定</el-button>
             </span>
         </el-dialog> 
         <!---->
-        <!-- <el-input	size="small" v-model="orderDate" placeholder="单据日期"></el-input>
-        <el-input	size="small" v-model="orderId" placeholder="单据编号"></el-input>
-        <el-button	size="small" type="success">提交单据</el-button> -->
-        <el-button	size="small" type="primary" @click="reset">刷新</el-button>
+        <div style="margin:10px 0;text-align:center">
+            <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
+            <el-input	size="small" v-model="orderDate" placeholder="点击选择客户" @focus="selectSupplier=true"></el-input>     
+            <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+            <el-button type="primary" size="small" @click="reset">刷新</el-button>
+        </div>
+        <!-- 按需选择列弹窗 -->
+        <el-dialog
+        title="按需选择列" style="text-align:left"
+        :visible.sync="dialogShow"
+        :before-close="handleClose"
+        width="200px">
+            <el-checkbox v-model="serveListshow.show1">单据id</el-checkbox><br>
+            <el-checkbox v-model="serveListshow.show2">订单编号</el-checkbox><br>
+            <el-checkbox v-model="serveListshow.show3">服务数量</el-checkbox><br>
+            <el-checkbox v-model="serveListshow.show4">服务价格</el-checkbox><br>
+            <el-checkbox v-model="serveListshow.show5">总金额</el-checkbox><br>
+            <el-checkbox v-model="serveListshow.show6">客户名</el-checkbox><br>
+            <el-checkbox v-model="serveListshow.show7">状态</el-checkbox><br>
+            <el-checkbox v-model="serveListshow.show8">备注</el-checkbox><br><br>
+        </el-dialog>
         <el-table
-        :data="serveData"
+        :data="serveData.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
         border
         :row-style="{height:0}"  
         :cell-style="{padding:0}"
@@ -126,29 +144,52 @@
         :header-cell-style="{padding:0}"
         style="width: 100%">
             <el-table-column
-                prop="user_name"
+                prop="order_id"
+                v-if="serveListshow.show1"
                 align="center"
-                label="服务项目">
+                label="单据id">
+            </el-table-column>
+            <el-table-column
+                prop="order_sn"
+                v-if="serveListshow.show2"
+                align="center"
+                label="订单编号">
             </el-table-column>
             <el-table-column
                 prop="discount"
+                v-if="serveListshow.show3"
                 align="center"
                 label="服务数量">
             </el-table-column>
             <el-table-column
                 prop="goods_amount"
+                v-if="serveListshow.show4"
                 align="center"
                 label="服务价格">
             </el-table-column>
             <el-table-column
                 prop="goods_amount"
+                v-if="serveListshow.show5"
                 align="center"
                 label="总金额">
             </el-table-column>                 
             <el-table-column
-                prop="status_name"
+                prop="user_name"
+                v-if="serveListshow.show6"
                 align="center"
-                label="备注信息">
+                label="客户名">
+            </el-table-column>                 
+            <el-table-column
+                prop="status_name"
+                v-if="serveListshow.show7"
+                align="center"
+                label="状态">
+            </el-table-column> 
+            <el-table-column
+                prop="pay_note"
+                v-if="serveListshow.show8"
+                align="center"
+                label="备注">
             </el-table-column> 
             <el-table-column
             fixed="right"
@@ -161,42 +202,6 @@
         </el-table>
         <!-------------------------------------------------------- 详情弹窗 ---------------------------------------------------------------->
         <el-dialog width="800px" title="服务订单详情" :visible.sync="dialogDetail">
-            <el-form :model="formDetail" class="detail" style="text-align:center">
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        单据id<el-input v-model="formDetail.order_id"></el-input>    
-                    </el-col>
-                    <el-col :span="7">
-                        订单编号<el-input v-model="formDetail.order_sn"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        单据日期<el-input v-model="formDetail.add_time"></el-input>
-                    </el-col>
-                </el-row>                
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        单据备注<el-input v-model="formDetail.pay_note"></el-input>    
-                    </el-col>
-                    <el-col :span="7">
-                        单据金额<el-input v-model="formDetail.goods_amount"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        优惠金额<br><el-input v-model="formDetail.discount"></el-input>
-                    </el-col>
-                </el-row>                
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        客户名<el-input v-model="formDetail.user_name"></el-input>    
-                    </el-col>
-                    <el-col :span="7">
-                        制单人<el-input v-model="formDetail.admin_name"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        状态<el-input v-model="formDetail.status_name"></el-input>
-                    </el-col>
-                </el-row>              
-            </el-form><br>
-            <h1>单据商品</h1><br><br>
             <el-table
             :data="goodsData"
             border
@@ -245,12 +250,12 @@
         <!--分页-->
         <el-pagination
             @current-change="handleCurrentChange"
-            layout="prev, pager, next,jumper"
-            :page-count="pages">
+            layout="total,prev, pager, next,jumper"
+            :total="record_count">
         </el-pagination>
     </div>
 </template>
-<style>
+<style scoped>
     #serveList{
         text-align:center;
         margin: 20px;
@@ -261,6 +266,11 @@
     #serveList .main-header{
         text-align:left;
         margin-bottom: 10px;
+        padding: 10px;
+        background: #fff;
+    }
+    #serveList .main-header .el-breadcrumb {
+        margin: 8px 0 0 10px;
     }
     #serveList .el-select{
         width:100px;
@@ -293,19 +303,9 @@ import {itemorderDe} from '../../api/apiW' ;
       return {
         selectSupplier:false,
         dialogDetail:false,
-        options: [{
-          value: '选项1',
-          label: '10条记录'
-        }, {
-          value: '选项2',
-          label: '25条记录'
-        }, {
-          value: '选项3',
-          label: '50条记录'
-        }, {
-          value: '选项4',
-          label: '100条记录'
-        }],
+        dialogShow:false,
+        record_count:0,
+        search:'',
         value: '',
         input:'',
         orderDate:'',
@@ -314,22 +314,37 @@ import {itemorderDe} from '../../api/apiW' ;
         user_id:110,
         serveData: [],
         customerData: [],
-        tableData3: [{
-          date: 'text',
-          name: 'text',
-          address: 'text'
-        }],
         multipleSelection: [],
         goodsData:[],
-        formDetail:{}
+        formDetail:{},
+        serveListshow:{
+            show1:true,
+            show2:true,
+            show3:true,
+            show4:true,
+            show5:true,
+            show6:true,
+            show7:true,
+            show8:true,
+        },
       }
     },
     methods:{
+        init(page){
+            serveList({params:{page:page,page_size:10}}).then(res=>{
+                this.record_count=Number(res.data.filter.record_count);
+                console.log(res.data);
+                this.serveData=res.data.gather_list;
+            })
+        },
         reset(){
             this.reload();
         },
         handleClose(done) {
             done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.serveList=this.serveListshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
         },
         handleSelectionChange(val) {
             this.multipleSelection = val;
@@ -342,11 +357,7 @@ import {itemorderDe} from '../../api/apiW' ;
             })
         },
         handleCurrentChange(val) {
-            console.log(val);
-            serveList({params:{page:val,page_size:10}}).then(res=>{
-                console.log(res.data);
-                this.serveData=res.data.gather_list;
-            })
+            this.init(val);
         },
         showDetails(row){
             itemorderDe({params:{order_id:row.order_id}}).then(res=>{
@@ -356,13 +367,16 @@ import {itemorderDe} from '../../api/apiW' ;
         }, 
     },
     created: function () { 
-        serveList({params:{}}).then(res=>{
-            this.pages=Math.ceil(res.data.filter.record_count/10);
-            serveList({params:{page:1,page_size:10}}).then(res=>{
-                console.log(res.data);
-                this.serveData=res.data.gather_list;
-            })
-        })
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.serveList!==undefined){
+                this.serveListshow=erpTableSetting.serveList;
+            }
+        }else{
+            console.log("no");
+        };
+        this.init(1);
     }
   }
 </script>

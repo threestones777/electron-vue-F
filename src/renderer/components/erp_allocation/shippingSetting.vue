@@ -10,187 +10,46 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <!-- 搜索 -->
-            <el-form :inline="true" :model="formServe" class="demo-form-inline">
-                <!-- <el-form-item label="">
-                    <el-input	size="small" v-model="formServe.name" placeholder="名称"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="编号"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="备注信息"></el-input>
-                </el-form-item> -->
-                <el-form-item>
-                    <el-button type="primary" size="small" @click="dialogServeAdd = true">新增</el-button>
-                    <el-button type="primary" size="small" @click="reset">刷新</el-button>
-                </el-form-item>
-            </el-form>
-            <!-- 新增弹出框 -->
-            <el-dialog width="450px" title="新增" :visible.sync="dialogServeAdd">
-                <el-form :model="formServeDetail"><!-- 
-                    <el-form-item label="配送设置id">
-                        <el-input v-model="formServeAdd.id" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item label="分站id">
-                        <el-input v-model="formServeAdd.subsite_id" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item label="店铺id">
-                        <el-input v-model="formServeAdd.subshop_id" disabled></el-input>
-                    </el-form-item> -->
-                    <el-form-item align="left">
-                        <el-checkbox label="申请审核时将申请量赋值给发货量"  v-model="formServeAdd.apply_give_fahuo" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请时必须要总部审批才有效"  v-model="formServeAdd.zongbu_check" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请，15天内未到的商品提醒"  v-model="formServeAdd.weidao_tixing" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请时允许申请量大于最高库存量"  v-model="formServeAdd.apply_gt_max" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请时允许选择所有仓库"  v-model="formServeAdd.choose_all_store" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请时允许申请数量超过库存库存量"  v-model="formServeAdd.apply_gt_kucun" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请时允许门店查看参考"  v-model="formServeAdd.view_cankao" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="收货时允许量大于发货量"  v-model="formServeAdd.sh_gt_fahuo" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="仓库发货审核时，收货门店自动收货审核"  v-model="formServeAdd.store_auto_sh_check" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="门店发货审核时收货店自动收货审核"  v-model="formServeAdd.shop_auto_sh_check" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="发货审核时将发货量赋值给收货量"  v-model="formServeAdd.fahuo_give_shouhuo" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="发货时，允许发货量大于申请量"  v-model="formServeAdd.fahuo_gt_apply" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="发货时，当配送价低于成本价提示"  v-model="formServeAdd.ship_lt_chengben_ts" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="发货时，当配送价低于成本价允许审核"  v-model="formServeAdd.ship_lt_chengben_check" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="发货时，直掉出库单价允许修改（配送价不是成本价时）"  v-model="formServeAdd.allow_edit" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="配送发货时必须先出库检验才可出库审核"  v-model="formServeAdd.chuku_test" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="配送收货时必须先收货检验才可以收货审核"  v-model="formServeAdd.shouhuo_test" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="直调出库显示收货库存数量"  v-model="formServeAdd.show_sh_kucun" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="直调出库显示发货库存数量"  v-model="formServeAdd.show_fh_kucun" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="直调出库，允许选择所有分店"  v-model="formServeAdd.choose_all_subshop" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请单有效天数，最大60天，0表示不过期"  v-model="formServeAdd.effective_days" true-label="0" false-label="1"/>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button	size="small" @click="dialogServeAdd = false">取 消</el-button>
-                    <el-button	size="small" type="primary" @click="add(),dialogServeAdd = false">确 定</el-button>
-                </div>
-            </el-dialog>
-            <!-- 详情弹出框 -->
-            <el-dialog width="450px" title="详情" :visible.sync="dialogServeDetail">
-                <el-form :model="formServeDetail">
-                    <!-- <el-form-item label="配送设置id">
-                        <el-input v-model="formServeDetail.id" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item label="分站id">
-                        <el-input v-model="formServeDetail.subsite_id" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item label="店铺id">
-                        <el-input v-model="formServeDetail.subshop_id" disabled></el-input>
-                    </el-form-item> -->
-                    <el-form-item align="left">
-                        <el-checkbox label="申请审核时将申请量赋值给发货量"  v-model="formServeDetail.apply_give_fahuo" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请时必须要总部审批才有效"  v-model="formServeDetail.zongbu_check" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请，15天内未到的商品提醒"  v-model="formServeDetail.weidao_tixing" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请时允许申请量大于最高库存量"  v-model="formServeDetail.apply_gt_max" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请时允许选择所有仓库"  v-model="formServeDetail.choose_all_store" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请时允许申请数量超过库存库存量"  v-model="formServeDetail.apply_gt_kucun" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请时允许门店查看参考"  v-model="formServeDetail.view_cankao" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="收货时允许量大于发货量"  v-model="formServeDetail.sh_gt_fahuo" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="仓库发货审核时，收货门店自动收货审核"  v-model="formServeDetail.store_auto_sh_check" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="门店发货审核时收货店自动收货审核"  v-model="formServeDetail.shop_auto_sh_check" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="发货审核时将发货量赋值给收货量"  v-model="formServeDetail.fahuo_give_shouhuo" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="发货时，允许发货量大于申请量"  v-model="formServeDetail.fahuo_gt_apply" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="发货时，当配送价低于成本价提示"  v-model="formServeDetail.ship_lt_chengben_ts" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="发货时，当配送价低于成本价允许审核"  v-model="formServeDetail.ship_lt_chengben_check" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="发货时，直掉出库单价允许修改（配送价不是成本价时）"  v-model="formServeDetail.allow_edit" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="配送发货时必须先出库检验才可出库审核"  v-model="formServeDetail.chuku_test" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="配送收货时必须先收货检验才可以收货审核"  v-model="formServeDetail.shouhuo_test" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="直调出库显示收货库存数量"  v-model="formServeDetail.show_sh_kucun" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="直调出库显示发货库存数量"  v-model="formServeDetail.show_fh_kucun" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="直调出库，允许选择所有分店"  v-model="formServeDetail.choose_all_subshop" true-label="0" false-label="1"/>
-                    </el-form-item>
-                    <el-form-item align="left">
-                        <el-checkbox label="调货申请单有效天数，最大60天，0表示不过期"  v-model="formServeDetail.effective_days" true-label="0" false-label="1"/>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button	size="small" @click="dialogServeDetail = false">取 消</el-button>
-                    <el-button	size="small" type="primary" @click="edit(),dialogServeDetail = false">保存修改</el-button>
-                </div>
+            <div style="margin:10px 0;text-align:center">
+                <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
+                <el-button type="primary" size="small" @click="add" icon="el-icon-plus"></el-button>
+                <el-button type="primary" size="small" @click="reset">刷新</el-button>
+            </div>
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" class="chose"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="400px">
+                <el-checkbox v-model="shippingSettingshow.show1">配送设置id</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show2">申请审核时将申请量赋值给发货量</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show3">调货申请时必须要总部审批才有效</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show4">调货申请，15天内未到的商品提醒</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show5">调货申请时允许申请量大于最高库存量</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show6">调货申请时允许选择所有仓库</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show7">调货申请时允许申请数量超过库存库存量</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show8">调货申请时允许门店查看参考</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show9">收货时允许量大于发货量</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show10">仓库发货审核时，收货门店自动收货审核</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show11">门店发货审核时收货店自动收货审核</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show12">发货审核时将发货量赋值给收货量</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show13">发货时，允许发货量大于申请量</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show14">发货时，当配送价低于成本价提示</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show15">发货时，当配送价低于成本价允许审核</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show16">发货时，直掉出库单价允许修改（配送价不是成本价时）</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show17">配送发货时必须先出库检验才可出库审核</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show18">配送收货时必须先收货检验才可以收货审核</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show19">直调出库显示收货库存数量</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show20">直调出库显示发货库存数量</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show21">直调出库，允许选择所有分店</el-checkbox><br>
+                <el-checkbox v-model="shippingSettingshow.show21">调货申请单有效天数，最大60天，0表示不过期</el-checkbox><br><br>
             </el-dialog>
             <!-- 表格 -->
             <el-table
-            :data="shippingSetData"
+            :data="shippingSetData.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
             border
             :row-style="{height:0}"  
             :cell-style="{padding:0}"
@@ -199,28 +58,176 @@
             style="width: 100%">
                 <el-table-column
                 prop="id"
+                v-if="shippingSettingshow.show1"
                 align="center"
                 label="配送设置id">                
                 </el-table-column>
                 <el-table-column
                 align="center"
+                v-if="shippingSettingshow.show2"
                 label="申请审核时将申请量赋值给发货量">
                     <template slot-scope="scope">
-                        <span>{{scope.row.apply_give_fahuo==0?"是":"否"}}</span>
+                        <el-checkbox v-model="scope.row.apply_give_fahuo" true-label="0" false-label="1"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                v-if="shippingSettingshow.show3"
+                label="调货申请时必须要总部审批才有效">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.zongbu_check" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show4"
+                label="调货申请，15天内未到的商品提醒">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.weidao_tixing" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show5"
+                label="调货申请时允许申请量大于最高库存量">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.apply_gt_max" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show6"
                 label="调货申请时允许选择所有仓库">
                     <template slot-scope="scope">
-                        <span>{{scope.row.choose_all_store==0?"是":"否"}}</span>
+                        <el-checkbox v-model="scope.row.choose_all_store" true-label="0" false-label="1"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                v-if="shippingSettingshow.show7"
+                label="调货申请时允许申请数量超过库存库存量">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.apply_gt_kucun" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show8"
+                label="调货申请时允许门店查看参考">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.view_cankao" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show9"
                 label="收货时允许量大于发货量">
                     <template slot-scope="scope">
-                        <span>{{scope.row.sh_gt_fahuo==0?"是":"否"}}</span>
+                        <el-checkbox v-model="scope.row.sh_gt_fahuo" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show10"
+                label="仓库发货审核时，收货门店自动收货审核">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.store_auto_sh_check" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show11"
+                label="门店发货审核时收货店自动收货审核">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.shop_auto_sh_check" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show12"
+                label="发货审核时将发货量赋值给收货量">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.fahuo_give_shouhuo" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show13"
+                label="发货时，允许发货量大于申请量">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.fahuo_gt_apply" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show14"
+                label="发货时，当配送价低于成本价提示">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.ship_lt_chengben_ts" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show15"
+                label="发货时，当配送价低于成本价允许审核">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.ship_lt_chengben_check" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show16"
+                label="发货时，直掉出库单价允许修改（配送价不是成本价时）">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.allow_edit" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show17"
+                label="配送发货时必须先出库检验才可出库审核">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.chuku_test" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show18"
+                label="配送收货时必须先收货检验才可以收货审核">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.shouhuo_test" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show19"
+                label="直调出库显示收货库存数量">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.show_sh_kucun" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show20"
+                label="直调出库显示发货库存数量">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.show_fh_kucun" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show21"
+                label="直调出库，允许选择所有分店">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.choose_all_subshop" true-label="0" false-label="1"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="shippingSettingshow.show22"
+                label="调货申请单有效天数，最大60天，0表示不过期">
+                    <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.effective_days" true-label="0" false-label="1"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -228,16 +235,16 @@
                 align="center"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
-                        <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, Data)">删除</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
+                        <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <!-- 分页器 -->
             <el-pagination
                 @current-change="handleCurrentChange"
-                layout="prev, pager, next,jumper"
-                :page-count="pages">
+                layout="total,prev, pager, next,jumper"
+                :total="record_count">
             </el-pagination>
         </div>
     </div>
@@ -251,26 +258,83 @@ export default {
             pages:1,
             dialogServeAdd:false,
             dialogServeDetail:false,
-            formServe:{
-                name:"",
-                marks:""
-            },
+            dialogShow:false,
+            search:'',
+            record_count:0,
             formServeAdd:{
-                name:""
+                apply_give_fahuo:1,
+                zongbu_check:1,
+                weidao_tixing:1,
+                apply_gt_max:1,
+                choose_all_store:1,
+                apply_gt_kucun:1,
+                view_cankao:1,
+                sh_gt_fahuo:1,
+                store_auto_sh_check:1,
+                shop_auto_sh_check:1,
+                fahuo_give_shouhuo:1,
+                fahuo_gt_apply:1,
+                ship_lt_chengben_ts:1,
+                ship_lt_chengben_check:1,
+                allow_edit:1,
+                chuku_test:1,
+                shouhuo_test:1,
+                show_sh_kucun:1,
+                show_fh_kucun:1,
+                choose_all_subshop:1,
+                effective_days:1
             },
             formServeDetail:{},
             shippingSetData:[],
+            shippingSettingshow:{
+                show1:true,
+                show2:true,
+                show3:true,
+                show4:true,
+                show5:true,
+                show6:true,
+                show7:true,
+                show8:true,
+                show9:true,
+                show10:true,
+                show11:true,
+                show12:true,
+                show13:true,
+                show14:true,
+                show15:true,
+                show16:true,
+                show17:true,
+                show18:true,
+                show19:true,
+                show20:true,
+                show21:true,
+                show22:true,
+            },
         }
     },
     methods:{
-        serveSearch() {
-            console.log("开启搜索");
-        },        
+        init(page){
+            let dataP=this.$qs.stringify({
+                page:page,
+                page_size:10,
+            }); 
+            shippingSetting(dataP).then(res=>{
+                this.record_count=Number(res.data.filter.record_count);
+                console.log(res.data);
+                this.shippingSetData=res.data.orders;
+            })
+        },
+        handleClose(done){
+            done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.shippingSetting=this.shippingSettingshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+        },  
         reset() {
             this.reload();
         },
         handleCurrentChange(val) {
-            console.log(val);          
+            this.init(val);          
         },
         showDetails(row){
             console.log(row.id);
@@ -282,35 +346,74 @@ export default {
                 this.formServeDetail=res.data;
             })
         },
-        edit(){//-------------------------------修改
-            let dataE=this.$qs.stringify(this.formServeDetail);
+        edit(row){//-------------------------------修改
+            let dataE=this.$qs.stringify(row);
             shippingSettingEd(dataE).then(res=>{
                 console.log(res.errno);
                 if(res.errno==0){
-                    alert("修改成功");
+                    this.$message({
+                        type: "success",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
                     this.reload();
-                }else if(res.errno==1){
-                    alert("修改失败");
+                }else{
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
                 }
             })
         },
         add(){
             console.log("add");
+            let data=this.$qs.stringify(this.formServeAdd);
+            shippingSettingAdd(data).then(res=>{
+                console.log(res.errno);
+                if(res.errno==0){
+                    this.$message({
+                        type: "success",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.reload();
+                }else{
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                }
+            })
         },
         deleteRow(row) {
-           console.log(row.id);
+           let Message=confirm("确定删除此行数据？");
+            if(Message){
+                let dataD=this.$qs.stringify({                    
+                    id:row.id,
+                    is_delete:1
+                }); 
+                shippingSettingEd(dataD).then(res=>{
+                    this.$alert("删除成功");
+                    this.reload();
+                });
+            }else{
+                this.$alert("删除失败");
+            }
         }
     },
-    created: function () {  
-        let dataP=this.$qs.stringify({
-            page:1,
-            page_size:10,
-        }); 
-        shippingSetting(dataP).then(res=>{
-            this.pages=Math.ceil(res.data.filter.record_count/10);
-            console.log(res.data);
-            this.shippingSetData=res.data.orders;
-        })
+    created: function () { 
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.shippingSetting!==undefined){
+                this.shippingSettingshow=erpTableSetting.shippingSetting;
+            }
+        }else{
+            console.log("no");
+        };
+        this.init(1);
     }
 }
 </script>
@@ -354,5 +457,8 @@ export default {
 }
 .el-row {
   border-top: 1px dashed #ccc;
+}
+.chose .el-checkbox{
+    margin-bottom:10px;
 }
 </style>

@@ -4,7 +4,7 @@
             <h3>温州美联 管理中心</h3>
             <el-breadcrumb separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item :to="{ path: '/' }">主页</el-breadcrumb-item>
-                <el-breadcrumb-item>零售</el-breadcrumb-item>
+                <el-breadcrumb-item>核销</el-breadcrumb-item>
                 <el-breadcrumb-item>积分兑换</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -369,6 +369,11 @@
     #integralExchange .main-header{
         text-align:left;
         margin-bottom: 10px;
+        padding: 10px;
+        background: #fff;
+    }
+    #integralExchange .main-header .el-breadcrumb {
+        margin: 8px 0 0 10px;
     }
     #integralExchange .el-select{
         width:100px;

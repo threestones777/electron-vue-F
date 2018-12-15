@@ -10,6 +10,8 @@ import qs from 'qs'
 import FileSaver from "file-saver"
 import XLSX from "xlsx"
 import QRCode from 'qrcodejs2'
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 Vue.use(ElementUI)
 Vue.use(VueAxios,axios)
 Vue.prototype.$qs = qs

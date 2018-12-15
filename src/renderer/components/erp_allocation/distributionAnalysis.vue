@@ -11,143 +11,36 @@
         </div>
         <div class="main-table">
             <!-- 搜索 -->
-            <el-form :inline="true" :model="formServe" class="demo-form-inline">
-                <!-- <el-form-item label="">
-                    <el-input	size="small" v-model="formServe.name" placeholder="名称"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="编号"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="备注信息"></el-input>
-                </el-form-item> -->
-                <el-form-item>
-                    <el-input placeholder="请输入单据编号" @input="search" v-model="keywords" style="width:50%;margin-right:10px" size="small">
-                        <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
-                    </el-input>
-                    <el-button type="primary" size="small" @click="dialogServeAdd = true">新增</el-button>
-                    <el-button type="primary" size="small" @click="reset">刷新</el-button>
-                </el-form-item>
-            </el-form>
-            <!-- 新增弹出框 -->
-            <el-dialog width="700px" title="新增" :visible.sync="dialogServeAdd">
-                <el-form :model="formServeAdd"  style="text-align:center">
-                    <!-- <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            id<el-input v-model="formServeAdd.id" disabled></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            分站id<el-input v-model="formServeAdd.subsite_id" disabled></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            状态<el-input v-model="formServeAdd.status"></el-input>
-                        </el-col>
-                    </el-row> --> 
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            下单分店id<el-input v-model="formServeAdd.xiadan_subshop_id"></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            收货分店id<el-input v-model="formServeAdd.shouhuo_subshop_id"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            分店名字<el-input v-model="formServeAdd.subshop_name"></el-input>
-                        </el-col>
-                    </el-row>
-                   <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                             单据编号<el-input v-model="formServeAdd.bill_sn"></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                           订货时间<el-input v-model="formServeAdd.dinghuo_time"></el-input>  
-                        </el-col>
-                        <el-col :span="7">
-                            订货人<el-input v-model="formServeAdd.dinghuo_user"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                             订货核对时间<el-input v-model="formServeAdd.dinghuo_check_time"></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            订货核对人<el-input v-model="formServeAdd.dinghuo_check_user"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            要求到货时间<el-input v-model="formServeAdd.require_daohuo_time"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            备注<el-input v-model="formServeAdd.remark"></el-input> 
-                        </el-col>
-                    </el-row>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button	size="small" @click="dialogServeAdd = false">取 消</el-button>
-                    <el-button	size="small" type="primary" @click="add(),dialogServeAdd = false">确 定</el-button>
-                </div>
-            </el-dialog>
-            <!-- 详情弹出框 -->
-            <el-dialog width="700px" title="详情" :visible.sync="dialogServeDetail">
-                <el-form :model="formServeDetail"  style="text-align:center">
-                    <!-- <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            id<el-input v-model="formServeDetail.id" disabled></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            分站id<el-input v-model="formServeDetail.subsite_id" disabled></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            状态<el-input v-model="formServeDetail.status"></el-input> 
-                        </el-col>
-                    </el-row>  -->
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            下单分店id<el-input v-model="formServeDetail.xiadan_subshop_id"></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            收货分店id<el-input v-model="formServeDetail.shouhuo_subshop_id"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            分店名字<el-input v-model="formServeDetail.subshop_name"></el-input>
-                        </el-col>
-                    </el-row>
-                   <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                             单据编号<el-input v-model="formServeDetail.bill_sn"></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                           订货时间<el-input v-model="formServeDetail.dinghuo_time"></el-input>  
-                        </el-col>
-                        <el-col :span="7">
-                            订货人<el-input v-model="formServeDetail.dinghuo_user"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                             订货核对时间<el-input v-model="formServeDetail.dinghuo_check_time"></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            订货核对人<el-input v-model="formServeDetail.dinghuo_check_user"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            要求到货时间<el-input v-model="formServeDetail.require_daohuo_time"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            备注<el-input v-model="formServeDetail.remark"></el-input> 
-                        </el-col>
-                    </el-row>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button	size="small" @click="dialogServeDetail = false">取 消</el-button>
-                    <el-button	size="small" type="primary" @click="edit(),dialogServeDetail = false">保存修改</el-button>
-                </div>
+            <div style="margin:10px 0;text-align:center">
+                <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
+                <el-button type="primary" size="small" @click="add" icon="el-icon-plus"></el-button>
+                <el-button type="primary" size="small" @click="reset">刷新</el-button>
+            </div>
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" class="chose" style="text-align:left"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="200px">
+                <el-checkbox v-model="distributionAnalysisshow.show1">id</el-checkbox><br>
+                <el-checkbox v-model="distributionAnalysisshow.show2">状态</el-checkbox><br>
+                <el-checkbox v-model="distributionAnalysisshow.show3">下单分店id</el-checkbox><br>
+                <el-checkbox v-model="distributionAnalysisshow.show4">收货分店id</el-checkbox><br>
+                <el-checkbox v-model="distributionAnalysisshow.show5">分店名字</el-checkbox><br>
+                <el-checkbox v-model="distributionAnalysisshow.show6">单据编号</el-checkbox><br>
+                <el-checkbox v-model="distributionAnalysisshow.show7">订货时间</el-checkbox><br>
+                <el-checkbox v-model="distributionAnalysisshow.show8">订货人</el-checkbox><br>
+                <el-checkbox v-model="distributionAnalysisshow.show9">订货核对时间</el-checkbox><br>
+                <el-checkbox v-model="distributionAnalysisshow.show10">订货核对人</el-checkbox><br>
+                <el-checkbox v-model="distributionAnalysisshow.show11">要求到货时间</el-checkbox><br>
+                <el-checkbox v-model="distributionAnalysisshow.show12">备注</el-checkbox><br><br>
             </el-dialog>
             <!-- 表格 -->
             <el-table
-            :data="distributionData"
+            :data="distributionData.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
             border
             :row-style="{height:0}"  
             :cell-style="{padding:0}"
@@ -157,41 +50,109 @@
                 <el-table-column
                 prop="id"
                 align="center"
+                v-if="distributionAnalysisshow.show1"
                 label="id">
                 </el-table-column>
                 <el-table-column
                 prop="status"
                 align="center"
+                v-if="distributionAnalysisshow.show2"
                 label="状态">
                 </el-table-column>
                 <el-table-column
-                prop="bill_sn"
+                prop="xiadan_subshop_id"
                 align="center"
+                v-if="distributionAnalysisshow.show3"
+                label="下单分店id">
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="distributionAnalysisshow.show4"
+                label="收货分店id">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.shouhuo_subshop_id"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="distributionAnalysisshow.show5"
+                label="分店名字">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.subshop_name"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="distributionAnalysisshow.show6"
                 label="单据编号">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.bill_sn"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="dinghuo_time"
+                align="center"
+                v-if="distributionAnalysisshow.show7"
+                label="订货时间">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.dinghuo_time"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="distributionAnalysisshow.show8"
+                label="订货人">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.dinghuo_user"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="dinghuo_check_time"
+                align="center"
+                v-if="distributionAnalysisshow.show9"
+                label="订货核对时间">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.dinghuo_check_time"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="distributionAnalysisshow.show10"
+                label="订货核对人">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.dinghuo_check_user"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="require_daohuo_time"
                 align="center"
+                v-if="distributionAnalysisshow.show11"
                 label="要求到货时间">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.require_daohuo_time"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="subshop_name"
                 align="center"
-                label="分店名字">
+                v-if="distributionAnalysisshow.show12"
+                label="备注">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.remark"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click="getId(scope.row),dialogCheck = true">审核</el-button>
                         <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <!------------------------------------- 审核弹窗 ---------------------------------->
-            <el-dialog width="30%" title="订单审核" :visible.sync="dialogCheck">
+            <el-dialog width="300px" title="订单审核" :visible.sync="dialogCheck">
                 <el-radio-group v-model="status">
                     <el-radio :label="0">未审核</el-radio>
                     <el-radio :label="1">已审核</el-radio>
@@ -204,8 +165,8 @@
             <!-- 分页器 -->
             <el-pagination
                 @current-change="handleCurrentChange"
-                layout="prev, pager, next,jumper"
-                :page-count="pages">
+                layout="total,prev, pager, next,jumper"
+                :total="record_count">
             </el-pagination>
         </div>
     </div>
@@ -221,38 +182,69 @@ export default {
             dialogServeAdd:false,
             dialogServeDetail:false,
             dialogCheck:false,
-            keywords:'',
+            dialogShow:false,
+            record_count:0,
+            search:'',
             formServe:{
                 name:"",
                 marks:""
             },
             formServeAdd:{
-                name:""
+                status:"未审核",
+                xiadan_subshop_id:0,
+                shouhuo_subshop_id:0,
+                dinghuo_time:new Date().getTime()/1000-86400,
+                dinghuo_user:"",
+                dinghuo_check_time:new Date().getTime()/1000-86400,
+                dinghuo_check_user:"",
+                require_daohuo_time:new Date().getTime()/1000-86400,
             },
             formServeDetail:{},
             distributionData:[],
+            distributionAnalysisshow:{
+                show1:true,
+                show2:true,
+                show3:true,
+                show4:true,
+                show5:true,
+                show6:true,
+                show7:true,
+                show8:true,
+                show9:true,
+                show10:true,
+                show11:true,
+                show12:true,
+            },
         }
     },
     methods:{
+        init(page){//-----------------初始化数据
+            let data=this.$qs.stringify({
+                page:page,
+                page_size:10,
+            }); 
+            distribution(data).then(res=>{
+                console.log(res.data.peihuo_list);
+                this.record_count=Number(res.data.filter.record_count);
+                this.distributionData=res.data.peihuo_list;
+            }); 
+        }, 
+        handleClose(done){
+            done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.distributionAnalysis=this.distributionAnalysisshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+        }, 
         dateConverter(str) { //-----------------------日期转秒数
             var arr = str.split(/[- : \/]/);
             var startDate = Date.parse(new Date(arr[0], arr[1]-1, arr[2]))/1000;
             return startDate;
-        },
-        search() {
-            let data=this.$qs.stringify({
-                bill_sn:this.keywords
-            });
-            distribution(data).then(res=>{
-                console.log(res.data.peihuo_list);
-                this.distributionData=res.data.peihuo_list;
-            }); 
-        },        
+        },  
         reset() {
             this.reload();
         },
         handleCurrentChange(val) {
-            console.log(val);         
+            this.init(val);           
         },
         showDetails(row){//------------------详情
             console.log(row.id);
@@ -279,57 +271,83 @@ export default {
                 this.reload();
             });
         },
-        edit(){
-           this.formServeDetail.dinghuo_time=this.dateConverter(this.formServeDetail.dinghuo_time);
-           this.formServeDetail.dinghuo_check_time=this.dateConverter(this.formServeDetail.dinghuo_check_time);
-           this.formServeDetail.require_daohuo_time=this.dateConverter(this.formServeDetail.require_daohuo_time);
-            let dataE=this.$qs.stringify(this.formServeDetail);
+        edit(row){
+           row.dinghuo_time=this.dateConverter(row.dinghuo_time);
+           row.dinghuo_check_time=this.dateConverter(row.dinghuo_check_time);
+           row.require_daohuo_time=this.dateConverter(row.require_daohuo_time);
+            let dataE=this.$qs.stringify(row);
             distributionEd(dataE).then(res=>{
                 console.log(res.data);
                 if(res.errno==0){
-                    this.$alert(res.errmsg)
+                    this.$message({
+                        type: "success",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
                     this.reload();
                 }else{
-                    this.$alert(res.errmsg)
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
                 }
             });            
         },
         add(){
             console.log("添加");
-            this.formServeAdd.dinghuo_time=this.dateConverter(this.formServeAdd.dinghuo_time);
-            this.formServeAdd.dinghuo_check_time=this.dateConverter(this.formServeAdd.dinghuo_check_time);
-            this.formServeAdd.require_daohuo_time=this.dateConverter(this.formServeAdd.require_daohuo_time);
             let dataA=this.$qs.stringify(this.formServeAdd);
             distributionAdd(dataA).then(res=>{
                 console.log(res.data);
                 if(res.errno==0){
-                    this.$alert(res.errmsg)
+                    this.$message({
+                        type: "success",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
                     this.reload();
                 }else{
-                    this.$alert(res.errmsg)
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
                 }
             });
         },
         deleteRow(row) {
-            let dataE=this.$qs.stringify({
-                id:row.id,
-                is_delete:1
-            });
-            distributionEd(dataE).then(res=>{
-                if(res.errno==0){
-                    this.$alert("删除成功")
-                    this.reload();
-                }else{
-                    this.$alert("删除失败")
-                }
-            }); 
+            let Message=confirm("确定删除此行数据？");
+            if(Message){
+                let dataE=this.$qs.stringify({
+                    id:row.id,
+                    is_delete:1
+                }); 
+                distributionEd(dataE).then(res=>{
+                    if(res.errno==0){
+                        this.$alert("删除成功")
+                        this.reload();
+                    }else{
+                        this.$alert("删除失败")
+                    }
+                }); 
+            }else{
+                alert("用户取消操作");
+            }
+            
+             
         }
     },
-    created: function () {  
-        distribution().then(res=>{
-            console.log(res.data.peihuo_list);
-            this.distributionData=res.data.peihuo_list;
-        });   
+    created: function () {
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.distributionAnalysis!==undefined){
+                this.distributionAnalysisshow=erpTableSetting.distributionAnalysis;
+            }
+        }else{
+            console.log("no");
+        };  
+        this.init(1);  
     }
 }
 </script>
@@ -363,7 +381,13 @@ export default {
   padding: 20px 0;
   text-align: right;
 }
-
+.el-table input{
+    width:100%;
+    height:34px;
+    border:1px solid #DCDFE6;
+    border-radius:4px;
+    padding:2px;
+}
 /* 新增弹出框 & 详情弹出框*/
 .main-table>>>.el-dialog__body {
   padding: 0 20px;

@@ -4,32 +4,32 @@
            <h3>温州美联 管理中心</h3>
         </div>        
         <el-row type="flex" class="row-bg" justify="space-around">
-            <el-col :span="4">
-                <div class="grid-content bg-purple">
+            <el-col :span="4" style="background:#F5F7FA;padding:7px">
+                <div>
                     <p><b>购货总量(本月)：</b><span>{{totalPurchase.total_purchase_goods}}</span></p>
 					<p><b>购货金额(本月)：</b><span>{{totalPurchase.total_purchase_money}}</span></p>
                 </div>
             </el-col>
-            <el-col :span="4">
-                <div class="grid-content bg-purple">
+            <el-col :span="4" style="background:#F5F7FA;padding:7px">
+                <div>
                     <p><b>销售总额(本月)：</b><span>{{totalPurchase.total_order_goods}}</span></p>
 					<p><b>销售金额(本月)：</b><span>{{totalPurchase.total_order_sales}}</span></p>
                 </div>
             </el-col>
-            <el-col :span="4">
-                <div class="grid-content bg-purple">
+            <el-col :span="4" style="background:#F5F7FA;padding:7px">
+                <div>
                     <p><b>库存总量(本月)：</b><span>{{totalPurchase.kucun_goods_number}}</span></p>
 					<p><b>库存成本(本月)：</b><span>{{totalPurchase.kucun_chengben_price}}</span></p>
                 </div>
             </el-col>
-            <el-col :span="4">
-                <div class="grid-content bg-purple">
+            <el-col :span="4" style="background:#F5F7FA;padding:7px">
+                <div>
                     <p><b>库存预警(本月)：</b><span>{{totalPurchase.warn_goods_number}}</span></p>
 					<p><b>默认阈值(本月)：</b><span>{{totalPurchase.kucun_goods_number}}</span></p>
                 </div>
             </el-col>
-            <el-col :span="4">
-                <div class="grid-content bg-purple">
+            <el-col :span="6" style="background:#F5F7FA;padding:7px">
+                <div>
                     <p><b>客户欠款(本月)：</b><span>{{totalPurchase.kehu_arrears}}</span></p>
 					<p><b>供应商欠款(本月)：</b><span>{{totalPurchase.supplier_arrears}}</span></p>
                 </div>
@@ -37,209 +37,16 @@
         </el-row>
         <!--Tab标签切换-->
         <el-tabs type="border-card" @tab-click="handleClick">
-            <el-tab-pane label="购货">
-                <div style="height:600px;">
-                    <el-table
-                        :data="shopBuyData" border
-                        style="width: 100%"
-                        :default-sort = "{prop: 'date', order: 'descending'}">
-                        <el-table-column
-                        prop="purchase_sn"
-                        label="商品信息"
-                        sortable>
-                        </el-table-column>
-                        <el-table-column
-                        prop=""
-                        label="辅助属性"
-                        sortable>
-                        </el-table-column>
-                        <el-table-column
-                        prop="store_name"
-                        label="所入仓库（批量）"
-                        sortable>
-                        </el-table-column>
-                        <el-table-column
-                        prop="purchase_sn"
-                        label="商品编号"
-                        sortable>
-                        </el-table-column>
-                        <el-table-column
-                        prop=""
-                        label="条形码"
-                        sortable>
-                        </el-table-column>
-                        <el-table-column
-                        prop=""
-                        label="库存警告"
-                        sortable>
-                        </el-table-column>
-                        <el-table-column
-                        prop=""
-                        label="赠送积分"
-                        sortable>
-                        </el-table-column>
-                        <el-table-column
-                        prop=""
-                        label="商品串码"
-                        sortable>
-                        </el-table-column>
-                        <el-table-column
-                        prop="number"
-                        label="数量"
-                        sortable>
-                        </el-table-column>
-                        <el-table-column
-                        prop="real_pay_money"
-                        label="购货单价"
-                        sortable>
-                        </el-table-column>
-                        <el-table-column
-                        prop="money"
-                        label="购货金额"
-                        sortable>
-                        </el-table-column>
-                        <el-table-column
-                        prop=""
-                        label="商品批次"
-                        sortable>
-                        </el-table-column>
-                        <el-table-column
-                        prop="note"
-                        label="备注信息"
-                        sortable>
-                        </el-table-column>
-                    </el-table>
-                    <el-pagination
-                        @current-change="handleCurrentChange1"
-                        layout="prev, pager, next,jumper" style="float:right;margin-top:10px;"
-                        :page-count="pages1">
-                    </el-pagination>
-                </div>
+            <el-tab-pane label="用户数据趋势">
+                <div id="first" style="width:800px;height:600px;margin:0 auto;"></div>
             </el-tab-pane>
-            <el-tab-pane label="采购">
-                <div style="height:600px;">
-                    <el-table
-                    :data="shopOderData" border
-                    style="width: 100%">
-                        <el-table-column
-                            prop="purchase_sn"
-                            align="center"
-                            label="商品信息">
-                        </el-table-column>
-                        <el-table-column
-                            prop="purchase_sn"
-                            align="center"
-                            label="辅助属性">
-                        </el-table-column>
-                        <el-table-column
-                            prop="purchase_id"
-                            align="center"
-                            label="商品编号	">
-                        </el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="商品分类">
-                        </el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="数量">
-                        </el-table-column>
-                        <el-table-column
-                            prop="note"
-                            align="center"
-                            label="备注信息">
-                        </el-table-column>        
-                    </el-table>
-                    <!--分页显示-->
-                    <el-pagination
-                        @current-change="handleCurrentChange2"
-                        layout="prev, pager, next,jumper" style="float:right;margin-top:10px;"
-                        :page-count="pages2">
-                    </el-pagination>
-                </div>
+            <el-tab-pane label="用户来源">
+                <div id="two" style="width:800px;height:600px;margin:0 auto;"></div>
             </el-tab-pane>
-            <el-tab-pane label="销售">
-                <div style="height:600px;">
-                    <el-table
-                    :data="sellListData" border
-                    style="width: 100%">
-                        <el-table-column
-                            prop="goods_id"
-                            align="center"
-                            label="商品信息">
-                        </el-table-column>
-                        <el-table-column
-                            prop="store_name"
-                            align="center"
-                            label="所属仓库">
-                        </el-table-column>
-                        <el-table-column
-                            prop="goods_number"
-                            align="center"
-                            label="当前库存">
-                        </el-table-column>
-                        <el-table-column
-                            prop="store_number"
-                            align="center"
-                            label="辅助属性">
-                        </el-table-column>
-                        <el-table-column
-                            prop="goods_name"
-                            align="center"
-                            label="商品编码	">
-                        </el-table-column>
-                        <el-table-column
-                            prop="pCount"
-                            align="center"
-                            label="商品单位">
-                        </el-table-column>
-                        <el-table-column
-                            prop="pRemark"
-                            align="center"
-                            label="商品批次">
-                        </el-table-column>        
-                        <el-table-column
-                            prop="goods_name"
-                            align="center"
-                            label="商品串码">
-                        </el-table-column>
-                        <el-table-column
-                            prop="pProp"
-                            align="center"
-                            label="数量	">
-                        </el-table-column>
-                        <el-table-column
-                            prop="goods_price"
-                            align="center"
-                            label="销货单价">
-                        </el-table-column>
-                        <el-table-column
-                            prop="goods_price"
-                            align="center"
-                            label="折扣（批量）">
-                        </el-table-column>
-                        <el-table-column
-                            prop="goods_price"
-                            align="center"
-                            label="货金额">
-                        </el-table-column>                  
-                        <el-table-column
-                            prop="pRemark"
-                            align="center"
-                            label="备注信息">
-                        </el-table-column>        
-                    </el-table>
-                    <!--分页-->
-                    <el-pagination
-                        @current-change="handleCurrentChange3"
-                        layout="prev, pager, next,jumper" style="float:right;margin-top:10px;"
-                        :page-count="pages3">
-                    </el-pagination>
-                </div>
+            <el-tab-pane label="月复购率">
+                <div id="three" style="width:800px;height:600px;margin:0 auto;"></div>
             </el-tab-pane>
-            <el-tab-pane label="零售">
+            <!-- <el-tab-pane label="零售">
                 <div style="height:600px;">
                     <el-table
                     :data="retailReturnData" border
@@ -280,7 +87,6 @@
                             label="备注信息">
                         </el-table-column>    
                     </el-table>
-                    <!--分页-->
                     <el-pagination
                         @current-change="handleCurrentChange4"
                         layout="prev, pager, next,jumper" style="float:right;margin-top:10px;"
@@ -319,7 +125,6 @@
                             label="备注信息">
                         </el-table-column>        
                     </el-table>
-                    <!--分页-->
                     <el-pagination
                         @current-change="handleCurrentChange5"
                         layout="prev, pager, next,jumper" style="float:right;margin-top:10px;"
@@ -362,7 +167,6 @@
                         label="备注信息">
                         </el-table-column>
                     </el-table>
-                    <!-- 分页器 -->
                     <el-pagination
                         @current-change="handleCurrentChange6"
                         layout="prev, pager, next,jumper" style="float:right;margin-top:10px;"
@@ -391,14 +195,13 @@
                             label="备注信息">
                         </el-table-column>    
                     </el-table>
-                    <!--分页-->
                     <el-pagination
                     @current-change="handleCurrentChange7"
                         layout="prev, pager, next,jumper" style="float:right;margin-top:10px;"
                         :page-count="pages7">
                     </el-pagination>
                 </div>
-            </el-tab-pane>
+            </el-tab-pane> -->
         </el-tabs>
         <!--底部输入-->
         
@@ -435,6 +238,7 @@
 </style>
 <script>
 import axios from 'axios' ;
+import {userdatatrend,userfrom,repeatpurchase} from '../api/api';
 export default {
   data() {
     return {
@@ -467,56 +271,33 @@ export default {
         pages4:1,
         pages5:1,
         pages6:1,
-        pages7:1
+        pages7:1,
+        newMembers:[],
+        wechatVisitors:[],
+        numberCustomers:[],
+        userfrom:[],
+        repeatpurchase:[],
     }
   },
     methods:{
         handleClick(tab, event) {
-            if(tab.label=="购货"){
-                axios.get('http://api.guimishuo1.com/erp/purchase/lists')
-                    .then((res) =>{
-                        console.log(res.data.data);
-                        this.pages1=Math.ceil(res.data.data.filter.record_count/7);//计算页数
-                        axios.get('http://api.guimishuo1.com/erp/purchase/lists?page=1&page_size=7')
-                            .then((res) =>{
-                                console.log(res.data.data.gather_list);
-                                this.shopBuyData=res.data.data.gather_list;
-                            }, function (error) {
-                                console.log(error);
-                        }); 
-                    }, function (error) {
-                        console.log(error);  
+            if(tab.label=="用户数据趋势"){
+                //console.log("用户数据趋势");
+            }else if(tab.label=="用户来源"){
+                userfrom().then(res=>{
+                    console.log(res.data);
+                    this.userfrom=res.data;
+                    this.drawLine2();
                 });
-            }else if(tab.label=="采购"){
-                console.log("采购");
-                axios.get('http://api.guimishuo1.com/erp/opurchase/lists')
-                    .then((res) =>{
-                        console.log(res.data.data);
-                        this.pages2=Math.ceil(res.data.data.gather_list.length/7);
-                        axios.get('http://api.guimishuo1.com/erp/opurchase/lists')
-                            .then((res) =>{
-                                console.log(res.data.data.gather_list);
-                                this.shopOderData=res.data.data.gather_list;
-                            }, function (error) {
-                                console.log(error);
-                        }); 
-                    }, function (error) {
-                        console.log(error);  
+            }else if(tab.label=="月复购率"){
+                let data=this.$qs.stringify({
+                    type:"month",
+                    limit:7
                 });
-            }else if(tab.label=="销售"){
-                axios.get('http://api.guimishuo1.com/erp/sale/lists')
-                    .then((res) =>{
-                        console.log(res.data.data);
-                        this.pages3=Math.ceil(res.data.data.record_count/7);
-                        axios.get('http://api.guimishuo1.com/erp/sale/lists?page=1&page_size=7')
-                            .then((res) =>{
-                                console.log(res.data.data.orders);
-                                this.sellListData=res.data.data.orders;
-                            }, function (error) {
-                                console.log(error);
-                        }); 
-                    }, function (error) {
-                        console.log(error);  
+                repeatpurchase(data).then(res=>{
+                    console.log(res.data.data);
+                    this.repeatpurchase=res.data.data;
+                    this.drawLine3();
                 });
             }else if(tab.label=="零售"){
                 axios.get('http://api.guimishuo1.com/erp/reretail/lists')
@@ -579,13 +360,7 @@ export default {
                         console.log(error);  
                 });
             }
-        },
-        handleCurrentChange1(val) {
-            console.log(`当前页: ${val}`);
-        },
-        handleCurrentChange2(val) {
-            console.log(`当前页: ${val}`);
-        },        
+        },    
         handleCurrentChange3(val) {
             console.log(`当前页: ${val}`);
             axios.get(`http://api.guimishuo1.com/erp/sale/lists?page=${val}&page_size=7`)
@@ -635,23 +410,129 @@ export default {
             }, function (error) {
                 console.log(error);
             });
-        }
+        },
+        drawLine(){
+            let first = this.$echarts.init(document.getElementById('first'))
+            // 绘制图表
+            first.setOption({
+                title: {
+                    text: '',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c}'
+                },
+                legend: {
+                    left: 'left',
+                    data: ['新增会员数', '微信访客数','消费顾客数']
+                },
+                xAxis: {
+                    type: 'category',
+                    splitLine: {show: false},
+                    data: ['星期一', '星期二', '星期三', '星期四','星期五', '星期六', '星期日',]
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                yAxis: {
+                    type: 'value',
+                },
+                series: [
+                    {
+                        name: '新增会员数',
+                        type: 'line',
+                        data: this.newMembers
+                    },
+                    {
+                        name: '微信访客数',
+                        type: 'line',
+                        data: this.wechatVisitors
+                    },
+                    {
+                        name: '消费顾客数',
+                        type: 'line',
+                        data: this.numberCustomers
+                    }
+                ]
+            }); 
+        },
+        drawLine2(){
+            // 基于准备好的dom，初始化echarts实例
+            let two = this.$echarts.init(document.getElementById('two'))
+            // 绘制图表
+            two.setOption({
+                title : {
+                    text: '用户来源',
+                    x:'center'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: ['应用端','手机端','电脑端']
+                },
+                series : [
+                    {
+                        name: '访问来源',
+                        type: 'pie',
+                        radius : '55%',
+                        center: ['50%', '60%'],
+                        data:this.userfrom,
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            }); 
+        },
+        drawLine3(){
+            let three = this.$echarts.init(document.getElementById('three'))
+            three.setOption({
+                tooltip: {
+                    trigger: 'item',
+                    formatter: `{a} <br/>{b} : {c}`
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['2018/6', '2018/7', '2018/8', '2018/9', '2018/10', '2018/11', '2018/12']
+                },
+                yAxis: {
+                    type: 'value',
+                    name:"%"
+                },
+                series: [{
+                    name:"月复购率",
+                    data: this.repeatpurchase,
+                    type: 'line',
+                    smooth: true
+                }]
+            }); 
+        },
+
     },
     mounted: function () { 
-        axios.get('http://api.guimishuo1.com/erp/purchase/lists')
-            .then((res) =>{
-                console.log(res.data.data);
-                this.pages=Math.ceil(res.data.data.filter.record_count/7);//计算页数
-                axios.get('http://api.guimishuo1.com/erp/purchase/lists?page=1&page_size=7')
-                    .then((res) =>{
-                        console.log(res.data.data.gather_list);
-                        this.shopBuyData=res.data.data.gather_list;
-                    }, function (error) {
-                        console.log(error);
-                }); 
-            }, function (error) {
-                console.log(error);  
+        let data=this.$qs.stringify({
+            type:"week",
+            limit:7
         });
+        userdatatrend(data).then(res=>{
+            console.log(res.data);
+            this.newMembers=res.data[0].data;
+            this.wechatVisitors=res.data[1].data;
+            this.numberCustomers=res.data[2].data;
+            this.drawLine();
+        })
         axios.post('http://api.guimishuo1.com/erp/index/index')
             .then((res) =>{
                 console.log(res.data.data);

@@ -11,310 +11,282 @@
         </div>
         <div class="main-table">
             <!-- 搜索 -->
-            <el-form :inline="true" :model="formServe" class="demo-form-inline">
-                <!-- <el-form-item label="">
-                    <el-input	size="small" v-model="formServe.name" placeholder="名称"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="编号"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="备注信息"></el-input>
-                </el-form-item> -->
-                <el-form-item>
-                    <el-input placeholder="请输入分店id" @input="search" v-model="keywords" style="width:50%;margin-right:10px" size="small">
-                        <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
-                    </el-input>
-                    <el-button type="primary" size="small" @click="dialogServeAdd = true">新增</el-button>
-                    <el-button type="primary" size="small" @click="reset">刷新</el-button>
-                </el-form-item>
-            </el-form>
-            <!-- 新增弹出框 -->
-            <el-dialog width="700px" title="新增" :visible.sync="dialogServeAdd">
-                <el-form :model="formServeAdd" style="text-align:center">
-                    <!-- <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            流水查账id<el-input v-model="formServeAdd.id" disabled></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            分站id<el-input v-model="formServeAdd.subsite_id" disabled></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            分店id<el-input v-model="formServeAdd.subshop_id" disabled></el-input>
-                        </el-col>
-                    </el-row> -->
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            分店名称<el-input v-model="formServeAdd.subshop_name"></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            机号<el-input v-model="formServeAdd.ji_sn"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            小票单号<el-input v-model="formServeAdd.ticket_sn"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            销售时间<el-input v-model="formServeAdd.xiaoshou_time"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            时间<el-input v-model="formServeAdd.add_time"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            收银员<el-input v-model="formServeAdd.shouyin_user"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            营业员id<el-input v-model="formServeAdd.yingye_user_id"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            营业员名称<el-input v-model="formServeAdd.yingye_user"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            货号<el-input v-model="formServeAdd.product_sn"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            条码<el-input v-model="formServeAdd.serial_cord"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            商品名<el-input v-model="formServeAdd.goods_name"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            辅助属性<el-input v-model="formServeAdd.attr_value"></el-input>
-                        </el-col>
-                    </el-row> 
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            数量<el-input v-model="formServeAdd.number"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            原价<el-input v-model="formServeAdd.old_price"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            售价<el-input v-model="formServeAdd.shop_price"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            金额<el-input v-model="formServeAdd.price"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            总共优惠金额<el-input v-model="formServeAdd.sum_discount_price"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            折扣率<el-input v-model="formServeAdd.discount_rate"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            会员卡号<el-input v-model="formServeAdd.user_card"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            销售方式<el-input v-model="formServeAdd.method"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            品牌id<el-input v-model="formServeAdd.brand_id"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            品牌名字<el-input v-model="formServeAdd.brand_name"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            分类id<el-input v-model="formServeAdd.cat_id"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            分类名字<el-input v-model="formServeAdd.cat_name"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            供货商id<el-input v-model="formServeAdd.supplier_id"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            供货商名称<el-input v-model="formServeAdd.supplier_name"></el-input>
-                        </el-col>
-                        <el-col :span="7"></el-col>
-                    </el-row>                     
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button	size="small" @click="dialogServeAdd = false">取 消</el-button>
-                    <el-button	size="small" type="primary" @click="add(),dialogServeAdd = false">确 定</el-button>
-                </div>
-            </el-dialog>
-            <!-- 详情弹出框 -->
-            <el-dialog width="700px" title="详情" :visible.sync="dialogServeDetail">
-                <el-form :model="formServeDetail" style="text-align:center">
-                    <!-- <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            流水查账id<el-input v-model="formServeDetail.id" disabled></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            分站id<el-input v-model="formServeDetail.subsite_id" disabled></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            分店id<el-input v-model="formServeDetail.subshop_id" disabled></el-input>
-                        </el-col>
-                    </el-row> -->
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            分店名称<el-input v-model="formServeDetail.subshop_name"></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            机号<el-input v-model="formServeDetail.ji_sn"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            小票单号<el-input v-model="formServeDetail.ticket_sn"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            销售时间<el-input v-model="formServeDetail.xiaoshou_time"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            时间<el-input v-model="formServeDetail.add_time"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            收银员<el-input v-model="formServeDetail.shouyin_user"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            营业员id<el-input v-model="formServeDetail.yingye_user_id"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            营业员名称<el-input v-model="formServeDetail.yingye_user"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            货号<el-input v-model="formServeDetail.product_sn"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            条码<el-input v-model="formServeDetail.serial_cord"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            商品名<el-input v-model="formServeDetail.goods_name"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            辅助属性<el-input v-model="formServeDetail.attr_value"></el-input>
-                        </el-col>
-                    </el-row> 
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            数量<el-input v-model="formServeDetail.number"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            原价<el-input v-model="formServeDetail.old_price"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            售价<el-input v-model="formServeDetail.shop_price"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            金额<el-input v-model="formServeDetail.price"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            总共优惠金额<el-input v-model="formServeDetail.sum_discount_price"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            折扣率<el-input v-model="formServeDetail.discount_rate"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            会员卡号<el-input v-model="formServeDetail.user_card"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            销售方式<el-input v-model="formServeDetail.method"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            品牌id<el-input v-model="formServeDetail.brand_id"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            品牌名字<el-input v-model="formServeDetail.brand_name"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            分类id<el-input v-model="formServeDetail.cat_id"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            分类名字<el-input v-model="formServeDetail.cat_name"></el-input>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            供货商id<el-input v-model="formServeDetail.supplier_id"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            供货商名称<el-input v-model="formServeDetail.supplier_name"></el-input>
-                        </el-col>
-                        <el-col :span="7"></el-col>
-                    </el-row>                   
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button	size="small" @click="dialogServeDetail = false">取 消</el-button>
-                    <el-button	size="small" type="primary" @click="edit(),dialogServeDetail = false">保存修改</el-button>
-                </div>
+            <div style="margin:10px 0;text-align:center">
+                <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
+                <el-button type="primary" size="small" @click="add" icon="el-icon-plus"></el-button>
+                <el-button type="primary" size="small" @click="reset">刷新</el-button>
+            </div>
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" class="chose"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="300px">
+                <el-checkbox v-model="tradingInquiryshow.show1">流水查账id</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show2">分店名称</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show3">机号</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show4">小票单号</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show5">销售时间</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show6">添加时间</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show7">收银员</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show8">营业员id</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show9">营业员名称</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show10">货号</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show11">条码</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show12">商品名</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show13">辅助属性</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show14">数量</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show15">原价</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show16">售价</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show17">金额</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show18">总共优惠金额</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show19">折扣率</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show20">会员卡号</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show21">销售方式</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show22">品牌id</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show23">品牌名称</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show24">分类id</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show25">分类名字</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show26">供货商id</el-checkbox><br>
+                <el-checkbox v-model="tradingInquiryshow.show27">供货商名称</el-checkbox><br><br>
             </el-dialog>
             <!-- 表格 -->
             <el-table
-            :data="tradingData"
+            :data="tradingData.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
             border
             :row-style="{height:0}"  
             :cell-style="{padding:0}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
+            :default-sort = "{prop: 'date', order: 'descending'}"
             style="width: 100%">
                 <el-table-column
                 prop="id"
+                v-if="tradingInquiryshow.show1"
                 align="center"
                 label="流水查账id">
                 </el-table-column>
                 <el-table-column
-                prop="ticket_sn"
                 align="center"
-                label="小票单号">
+                v-if="tradingInquiryshow.show2"
+                label="分店名称">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.subshop_name">
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="xiaoshou_time"
                 align="center"
-                label="销售时间"
-                width="180">
+                v-if="tradingInquiryshow.show3"
+                label="机号">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.ji_sn">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show4"
+                label="小票单号">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.ticket_sn">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                prop="xiaoshou_time"
+                v-if="tradingInquiryshow.show5"
+                sortable
+                label="销售时间">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.xiaoshou_time">
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="add_time"
                 align="center"
-                label="时间">
+                v-if="tradingInquiryshow.show6"
+                sortable
+                label="添加时间">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.add_time">
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="goods_name"
                 align="center"
+                v-if="tradingInquiryshow.show7"
+                label="收银员">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.shouyin_user">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show8"
+                label="营业员id">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.yingye_user_id">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show9"
+                label="营业员名称">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.yingye_user">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show10"
+                label="货号">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.product_sn">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show11"
+                label="条码">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.serial_cord">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show12"
                 label="商品名">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.goods_name">
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="attr_value"
                 align="center"
-                label="辅助属性"
-                width="180">
+                v-if="tradingInquiryshow.show13"
+                label="辅助属性">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.attr_value">
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="number"
                 align="center"
+                v-if="tradingInquiryshow.show14"
                 label="数量">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.number">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show15"
+                label="原价">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.old_price">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show16"
+                label="售价">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.shop_price">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show17"
+                label="金额">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.price">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show18"
+                label="总共优惠金额">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.sum_discount_price">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show19"
+                label="折扣率">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.discount_rate">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show20"
+                label="会员卡号">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.user_card">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show21"
+                label="销售方式">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.method">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show22"
+                label="品牌id">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.brand_id">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show23"
+                label="品牌名称">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.brand_name">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show24"
+                label="分类id">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.cat_id">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show25"
+                label="分类名字">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.cat_name">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show26"
+                label="供货商id">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.supplier_id">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="tradingInquiryshow.show27"
+                label="供货商名称">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.supplier_name">
+                    </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -322,8 +294,8 @@
             <!-- 分页器 -->
             <el-pagination
                 @current-change="handleCurrentChange"
-                layout="prev, pager, next,jumper"
-                :page-count="pages">
+                layout="total,prev, pager, next,jumper"
+                :total="record_count">
             </el-pagination>
         </div>
     </div>
@@ -337,36 +309,86 @@ export default {
             pages:1,
             dialogServeAdd:false,
             dialogServeDetail:false,
+            dialogShow:false,
+            search:'',
             keywords:'',
-            formServe:{
-                name:"",
-                marks:""
+            record_count:0,
+            formServeAdd:{
+                xiaoshou_time:new Date().getTime()/1000-86400,
+                add_time:new Date().getTime()/1000-86400,
+                shouyin_user:"",
+                yingye_user_id:"",
+                number:0,
+                old_price:0,
+                shop_price:0,
+                price:0,
+                sum_discount_price:0,
+                discount_rate:0,
+                brand_id:0,
+                cat_id:0,
+                supplier_id:0,
             },
-            formServeAdd:{},
             formServeDetail:{},
             tradingData:[],
+            tradingInquiryshow:{
+                show1:true,
+                show2:true,
+                show3:true,
+                show4:true,
+                show5:true,
+                show6:true,
+                show7:true,
+                show8:true,
+                show9:true,
+                show10:true,
+                show11:true,
+                show12:true,
+                show13:true,
+                show14:true,
+                show15:true,
+                show16:true,
+                show17:true,
+                show18:true,
+                show19:true,
+                show20:true,
+                show21:true,
+                show22:true,
+                show23:true,
+                show24:true,
+                show25:true,
+                show26:true,
+                show27:true,
+            },
         }
     },
     methods:{
+        init(page){//-----------------初始化数据
+            let data=this.$qs.stringify({
+                page:page,
+                page_size:10,
+            }); 
+            tradingInquiry(data).then(res=>{
+                console.log(res.data);
+                this.record_count=Number(res.data.filter.record_count);
+                this.tradingData=res.data.inquiry_list;
+            });
+        },
+        handleClose(done){
+            done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.tradingInquiry=this.tradingInquiryshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+        },  
         dateConverter(str) { //-----------------------日期转秒数
             var arr = str.split(/[-:\/]/);
             var startDate = Date.parse(new Date(arr[0], arr[1]-1, arr[2]))/1000;
             return startDate;
-        }, 
-        search() {
-            let data=this.$qs.stringify({
-                subshop_id:this.keywords
-            });
-            tradingInquiry(data).then(res=>{
-                console.log(res.data)
-                this.tradingData=res.data.inquiry_list;
-            }); 
-        },        
+        },       
         reset() {
             this.reload();
         },
         handleCurrentChange(val) {
-            console.log(val);          
+            this.init(val);          
         },
         showDetails(row){//-------详情
             console.log(row.id);
@@ -378,26 +400,33 @@ export default {
                 this.formServeDetail=res.data[0];
             });
         },
-        edit(){//-------修改
-            this.formServeDetail.xiaoshou_time=this.dateConverter(this.formServeDetail.xiaoshou_time);
-            this.formServeDetail.add_time=this.dateConverter(this.formServeDetail.add_time);
-            this.formServeDetail.old_price=this.formServeDetail.old_price.slice(1);
-            this.formServeDetail.shop_price=this.formServeDetail.shop_price.slice(1);
-            this.formServeDetail.price=this.formServeDetail.price.slice(1);
-            this.formServeDetail.sum_discount_price=this.formServeDetail.sum_discount_price.slice(1);
-            let dataE=this.$qs.stringify(this.formServeDetail);
+        edit(row){//-------修改
+            row.xiaoshou_time=this.dateConverter(row.xiaoshou_time);
+            row.add_time=this.dateConverter(row.add_time);
+            row.old_price=row.old_price.slice(1);
+            row.shop_price=row.shop_price.slice(1);
+            row.price=row.price.slice(1);
+            row.sum_discount_price=row.sum_discount_price.slice(1);
+            let dataE=this.$qs.stringify(row);
             tradingInquiryEd(dataE).then(res=>{
                 if(res.errno==0){
-                    this.$alert(res.errmsg)
+                    this.$message({
+                        type: "success",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
                     this.reload();
                 }else{
-                    this.$alert(res.errmsg)
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.reload();
                 }
             })
         },
         add(){//-------添加
-            this.formServeAdd.xiaoshou_time=this.dateConverter(this.formServeAdd.xiaoshou_time);
-            this.formServeAdd.add_time=this.dateConverter(this.formServeAdd.add_time);
             let dataA=this.$qs.stringify(this.formServeAdd);
             tradingInquiryAdd(dataA).then(res=>{
                 if(res.errno==0){
@@ -428,11 +457,17 @@ export default {
             }
         }
     },
-    created: function () {  
-        tradingInquiry().then(res=>{
-            console.log(res.data)
-            this.tradingData=res.data.inquiry_list;
-        });  
+    created: function () { 
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.tradingInquiry!==undefined){
+                this.tradingInquiryshow=erpTableSetting.tradingInquiry;
+            }
+        }else{
+            console.log("no");
+        }; 
+        this.init(1);  
     }
 }
 </script>
@@ -460,7 +495,13 @@ export default {
 .el-form .el-form-item .el-input {
   width: 80%;
 }
-
+.el-table input{
+    width:100%;
+    height:34px;
+    border:1px solid #DCDFE6;
+    border-radius:4px;
+    padding:2px;
+}
 /* 分页器 */
 .el-pagination {
   padding: 20px 0;

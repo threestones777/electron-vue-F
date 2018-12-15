@@ -50,6 +50,19 @@ export const getStoreList = params => {
 export const test = params => {
     return axios.post("/clerk/lists",params).then(res => res.data)
 }
+// ------------------主页
+    //用户数据趋势
+    export const userdatatrend = params => {
+        return axios.post("/datastatistics/userdatatrend",params).then(res => res.data)
+    }
+    //用户来源
+    export const userfrom = params => {
+        return axios.post("/datastatistics/userfrom",params).then(res => res.data)
+    }
+    //月复购率
+    export const repeatpurchase= params => {
+        return axios.post("/datastatistics/repeatpurchase",params).then(res => res.data)
+    }
 
 // 头部=>系统消息
     // 获取系统消息列表

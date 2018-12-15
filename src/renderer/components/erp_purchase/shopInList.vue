@@ -8,66 +8,99 @@
                 <el-breadcrumb-item>采购入库单</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <!-- <el-input	size="small" v-model="input" placeholder="商品名称/首拼"></el-input>
-        <el-input	size="small" v-model="input" placeholder="单据编号"></el-input>
-        <el-select	size="small" v-model="value" placeholder="全部制单人">
-            <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-            </el-option>
-        </el-select>
-        <el-input	size="small" v-model="input" placeholder="开始时间"></el-input>
-        <el-input	size="small" v-model="input" placeholder="结束时间"></el-input>
-        <el-select	size="small" v-model="value" placeholder="入库状态">
-            <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-            </el-option>
-        </el-select> -->
-        <el-input placeholder="请输入提交货人" @input="search" v-model="keywords" style="width:20%;margin-right:10px" size="small">
-            <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
-        </el-input>
-        <!-- <el-button	size="small" type="primary">导出</el-button> -->
-        <el-button	size="small" type="primary" @click="dialogAdd=true">新增</el-button>
-        <el-button	size="small" type="primary" @click="reset">刷新</el-button>
+        <div style="margin:10px 0;text-align:center">
+            <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+            <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
+            <el-button type="primary" size="small" @click="dialogAdd=true" icon="el-icon-plus"></el-button>
+            <el-button type="primary" size="small" @click="reset">刷新</el-button>
+        </div>
+        <!-- 按需选择列弹窗 -->
+        <el-dialog
+        title="按需选择列" class="chose" style="text-align:left"
+        :visible.sync="dialogShow"
+        :before-close="handleClose"
+        width="300px">
+            <el-checkbox v-model="shopInshow.show1">单据id</el-checkbox><br>
+            <el-checkbox v-model="shopInshow.show2">单据编号</el-checkbox><br>
+            <el-checkbox v-model="shopInshow.show3">提交货人</el-checkbox><br>
+            <el-checkbox v-model="shopInshow.show4">入库状态</el-checkbox><br>
+            <el-checkbox v-model="shopInshow.show5">仓库名</el-checkbox><br>
+            <el-checkbox v-model="shopInshow.show6">管理员</el-checkbox><br>
+            <el-checkbox v-model="shopInshow.show7">入库类型</el-checkbox><br>
+            <el-checkbox v-model="shopInshow.show8">日期详情</el-checkbox><br>
+        </el-dialog>
         <!--表单-->
         <el-table
-        :data="shopInData"
+        :data="shopInData.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
         border
         :row-style="{height:0}"  
         :cell-style="{padding:0}"
         :header-row-style="{height:0}"  
-        :header-cell-style="{padding:0}"
+        :header-cell-style="{padding:0}" 
+        :default-sort = "{prop: 'date', order: 'descending'}">
         style="width: 100%">
             <el-table-column
                 prop="rec_id"
+                align="center"
+                v-if="shopInshow.show1"
                 label="单据id">
             </el-table-column>
             <el-table-column
                 prop="inout_sn"
+                align="center"
+                v-if="shopInshow.show2"
                 label="单据编号">
             </el-table-column>
             <el-table-column
-                prop="takegoods_man"
+                v-if="shopInshow.show3"
+                align="center"
                 label="提交货人">
+                <template slot-scope="scope">
+                    <input v-model="scope.row.takegoods_man">
+                </template>
             </el-table-column>
             <el-table-column
                 prop="inout_status_name"
+                align="center"
+                v-if="shopInshow.show4"
+                :filters="[{text: '入库单录入中', value: '入库单录入中'},{text: '等待主管审核', value: '等待主管审核'},{text: '审核通过', value: '审核通过'},{text: '审核不通过', value: '审核不通过'}]"
+                :filter-method="filterHandler"
                 label="入库状态">
             </el-table-column>
             <el-table-column
-                prop="pCount"
-                label="单据备注">
+                prop="store_name"
+                align="center"
+                v-if="shopInshow.show5"
+                label="仓库名">
             </el-table-column>
             <el-table-column
+                prop="admin_name"
+                align="center"
+                v-if="shopInshow.show6"
+                label="管理员">
+            </el-table-column>
+            <el-table-column
+                prop="inout_type_name"
+                align="center"
+                v-if="shopInshow.show7"
+                label="入库类型">
+            </el-table-column>
+            <el-table-column
+                prop="add_time"
+                align="center"
+                v-if="shopInshow.show8"
+                sortable
+                label="日期详情">
+            </el-table-column>
+            <el-table-column
+                align="center"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="print=true">打印</el-button>
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogDetail = true">详情</el-button>
+                        <!-- <el-button type="text" size="small" @click="print=true">打印</el-button> -->
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
+                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogDetail = true">商品详情</el-button>
                         <el-button type="text" size="small" @click="getId(scope.row),dialogCheck = true">审核</el-button>
                         <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
                     </template>
@@ -80,18 +113,21 @@
     width="700px">
         <el-form :model="formAdd">
             <el-row type="flex" justify="space-around">
-                <el-col :span="7">
+                 <!-- <el-col :span="7">
                     仓库id<el-input v-model="formAdd.store_id" ></el-input>    
-                </el-col>
-                <el-col :span="7">
+                </el-col>  -->
+                <!-- <el-col :span="10">
                     关联采购订单id<el-input v-model="formAdd.purchase_id" ></el-input>
                 </el-col>
-                <el-col :span="7">
+                <el-col :span="10">
                     关联采购订单编号<el-input v-model="formAdd.purchase_sn" ></el-input>    
-                </el-col>
+                </el-col> -->
             </el-row> 
             <el-row type="flex" justify="space-around">
-                <el-col :span="7">
+                <el-col :span="10">
+                    关联采购订单编号<el-input v-model="formAdd.purchase_sn" ></el-input>    
+                </el-col>
+                <el-col :span="10">
                     提交货人<el-input v-model="formAdd.takegoods_man" ></el-input>
                 </el-col>
             </el-row> 
@@ -102,7 +138,7 @@
     </span>
     </el-dialog>
         <!--打印弹窗-->        
-        <el-dialog width="50%" title="采购入库单-打印" :visible.sync="print" :before-close="handleClose">
+        <!-- <el-dialog width="50%" title="采购入库单-打印" :visible.sync="print" :before-close="handleClose">
             <div class="print">
                 <h3>如果您需要打印样式，请参考以下说明操作</h3>
                 <p>1.在线打印及设计需安装扩展程序，您可点击下方按钮，然后按照提示安装即可</p>
@@ -118,7 +154,7 @@
                 <el-button	size="small">设计报表</el-button>
                 <el-button	size="small" type="info">恢复默认</el-button>
             </div>
-        </el-dialog>
+        </el-dialog> -->
         <!------------------------------------------------------- 审核弹窗 ------------------------------------------------>
         <el-dialog width="600px" title="订单审核" :visible.sync="dialogCheck">
             <el-radio-group v-model="status">
@@ -134,185 +170,6 @@
         </el-dialog>
         <!--详情弹窗-->        
         <el-dialog width="770px" title="采购入库单详情" :visible.sync="dialogDetail">
-            <!--供应商弹窗-->            
-            供应商 :<el-input	size="small" v-model="orderDate" placeholder="请点击选择" @focus="selectSupplier=true"></el-input>        
-            <el-dialog title="选择供应商" :visible.sync="selectSupplier" width="75%" :before-close="handleClose" :append-to-body="true" align="center">
-                名称 :<el-input	size="small" v-model="orderDate" placeholder="供应商名称" style="width:10%"></el-input>          
-                编号 :<el-input	size="small" v-model="supplier_id" placeholder="供应商编号" style="width:10%"></el-input>          
-                联系人 :<el-input	size="small" v-model="orderDate" placeholder="联系人" style="width:10%"></el-input>          
-                联系电话 :<el-input	size="small" v-model="orderDate" placeholder="联系电话" style="width:10%"></el-input>          
-                备注信息 :<el-input	size="small" v-model="orderDate" placeholder="备注信息" style="width:10%"></el-input> 
-                <el-button	size="small" type="primary" @click="supplier">搜索</el-button><br><br>
-                <el-table
-                ref="multipleTable"
-                :data="SupplierData"
-                border
-                :row-style="{height:0}"  
-                :cell-style="{padding:0}"
-                :header-row-style="{height:0}"  
-                :header-cell-style="{padding:0}"
-                tooltip-effect="dark"
-                style="width: 100%"
-                @selection-change="handleSelectionChange">
-                    <el-table-column
-                    type="selection"
-                    width="55">
-                    </el-table-column>
-                    <el-table-column
-                    prop="supplier_name"
-                    label="供应商名称"
-                    width="100">
-                    </el-table-column>
-                    <el-table-column
-                    prop="supplier_id"
-                    label="供应商编号"
-                    width="100">
-                    </el-table-column>
-                    <el-table-column
-                    prop="contacts_name"
-                    label="联系人"
-                    width="90">
-                    </el-table-column>
-                    <el-table-column
-                    prop="contacts_phone"
-                    label="联系电话"
-                    width="100">
-                    </el-table-column>
-                    <el-table-column
-                    prop="address"
-                    label="供应商地址"
-                    width="100">
-                    </el-table-column>
-                    <el-table-column
-                    prop="name"
-                    label="社交账户"
-                    width="100">
-                    </el-table-column>
-                    <el-table-column
-                    prop="email"
-                    label="邮箱地址"
-                    width="100">
-                    </el-table-column>
-                    <el-table-column
-                    prop="bank_name"
-                    label="开户名"
-                    width="100">
-                    </el-table-column>
-                    <el-table-column
-                    prop="bank_account_name"
-                    label="开户行"
-                    width="100">
-                    </el-table-column>
-                    <el-table-column
-                    prop="bank_account_number"
-                    label="银行账户"
-                    width="100">
-                    </el-table-column>
-                    <el-table-column
-                    prop="tax_registration_certificate"
-                    label="税号"
-                    width="100">
-                    </el-table-column>
-                    <el-table-column
-                    prop="contacts_name"
-                    label="姓名"
-                    width="90">
-                    </el-table-column>
-                    <el-table-column
-                    prop="supplier_desc"
-                    label="备注信息"
-                    show-overflow-tooltip>
-                    </el-table-column>
-                </el-table>
-                <span slot="footer" class="dialog-footer">
-                    <el-button	size="small" @click="selectSupplier=false">取 消</el-button>
-                    <el-button	size="small" type="primary" @click="selectSupplier=false">确 定</el-button>
-                </span>
-            </el-dialog> 
-            单据日期 :<el-input	size="small" v-model="orderDate"></el-input>
-            单据编号 :<el-input	size="small" v-model="orderId"></el-input>
-            <!-- <el-button	size="small" type="primary">提交单据</el-button>
-            <el-button	size="small" type="primary">重新载入</el-button> -->
-            <el-form :model="formDetail">
-                <el-row type="flex" justify="space-around">
-                    <!-- <el-col :span="7">
-                        单据id<el-input v-model="formDetail.rec_id" disabled></el-input>    
-                    </el-col> -->
-                    <el-col :span="7">
-                        仓库名<el-input v-model="formDetail.store_name"></el-input>    
-                    </el-col>
-                    <el-col :span="7">
-                        编码<el-input v-model="formDetail.inout_sn"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        状态<el-input v-model="formDetail.inout_status"></el-input>
-                    </el-col>
-                </el-row>                
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        仓库id<el-input v-model="formDetail.store_id"></el-input>    
-                    </el-col>
-                    <el-col :span="7">
-                        管理员id<el-input v-model="formDetail.adminer_id"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        类型<el-input v-model="formDetail.inout_type"></el-input>
-                    </el-col>
-                </el-row>                
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        入库模式<el-input v-model="formDetail.inout_mode"></el-input>    
-                    </el-col>
-                    <el-col :span="7">
-                        订单id<el-input v-model="formDetail.order_id"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        订单编码<el-input v-model="formDetail.order_sn"></el-input>
-                    </el-col>
-                </el-row>                
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        提交货人<el-input v-model="formDetail.takegoods_man"></el-input>    
-                    </el-col>
-                    <el-col :span="7">
-                        今日<el-input v-model="formDetail.today_sn"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        添加日期<el-input v-model="formDetail.add_date"></el-input>
-                    </el-col>
-                </el-row>                
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        添加时间<el-input v-model="formDetail.add_time"></el-input>    
-                    </el-col>
-                    <el-col :span="7">
-                        move_id<el-input v-model="formDetail.move_id"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        分店id<el-input v-model="formDetail.subshop_id"></el-input>
-                    </el-col>
-                </el-row>                
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        仓库<el-input v-model="formDetail.store_type_id"></el-input>    
-                    </el-col>
-                    <el-col :span="7">
-                        分站id<el-input v-model="formDetail.subsite_id"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        管理员<el-input v-model="formDetail.admin_name"></el-input>
-                    </el-col>
-                </el-row>                
-                <el-row type="flex" justify="space-around">
-                    <el-col :span="7">
-                        类型名<el-input v-model="formDetail.inout_type_name"></el-input>
-                    </el-col>
-                    <el-col :span="7">
-                        添加时间详情<el-input v-model="formDetail.add_time_date"></el-input>
-                    </el-col>
-                </el-row>               
-            </el-form><br>
-            <h1>单据商品</h1>
             <el-button size="small" type="primary" class="addGoods" @click="getGoods(),dialogAddGoods=true">添加商品</el-button>
             <el-table
             :data="shopDeData"
@@ -380,7 +237,7 @@
             </el-table>    
              <span slot="footer" class="dialog-footer">
                     <el-button	size="small" @click="dialogDetail=false">取 消</el-button>
-                    <el-button	size="small" type="primary" @click="edit(),dialogDetail=false">保存修改</el-button>
+                    <el-button	size="small" type="primary" @click="dialogDetail=false">确定</el-button>
                 </span>       
             <!-------------------------------------------------------- 添加商品弹窗 ---------------------------------------------------------------->
             <el-dialog
@@ -442,12 +299,12 @@
         <!--分页显示-->        
         <el-pagination
             @current-change="handleCurrentChange"
-            layout="prev, pager, next,jumper"
-            :page-count="pages">
+            layout="total,prev, pager, next,jumper"
+            :total="record_count">
         </el-pagination>        
     </div>
 </template>
-<style>
+<style scoped>
     #shopInList{
         text-align:center;
         margin: 20px;
@@ -503,6 +360,13 @@
         position:relative;
         bottom:15px;
     }
+    .el-table input{
+        width:100%;
+        height:34px;
+        border:1px solid #DCDFE6;
+        border-radius:4px;
+        padding:2px;
+    }
 </style>
 <script>
 import {shopInList,supplier,getGoodsList} from '../../api/api';
@@ -518,42 +382,60 @@ export default {
             dialogCheck:false,
             dialogAdd:false,
             selectSupplier:false,
+            dialogShow:false,
+            record_count:0,
             print:false,
             keywords:'',
             orderDate:'',
             orderId:'',
             supplier_id:'2',
-            options: [{
-                value: '选项1',
-                label: '默认设置'
-            }],
+            search:"",
             shopDeData: [],
             pages:1,
             pagesG:1,
             rec_id:0,
-            status:0,
+            status:1,
             shopInData: [],
             formDetail:{},
-            formAdd:{},
+            formAdd:{
+                store_id:38,
+            },
             SupplierData: [],
             goodsListData:[],
             multipleSelection:[],
-            arr:[]
+            arr:[],
+            shopInshow:{
+                show1:true,
+                show2:true,
+                show3:true,
+                show4:true,
+                show5:true,
+                show6:true,
+                show7:true,
+                show8:true,
+            },
         }
     },
     methods:{
+        init(page){//-----------------初始化数据
+            shopInList({params:{page:page,page_size:10}}).then(res=>{
+                this.record_count=Number(res.data.filter.record_count);
+                console.log(res.data);
+                this.shopInData=res.data.arr;
+            })  
+        }, 
         reset(){
             this.reload();
         },
-         search() {
-            shopInList({params:{takegoods_man:this.keywords}}).then(res=>{
-                console.log(res.data);
-                //this.total=Number(res.data.filter.record_count);
-                this.shopInData=res.data.arr;
-            });
-        },    
+        filterHandler(value, row, column) {
+            const property = column['property'];
+            return row[property] === value;
+        },
         handleClose(done) {
             done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.shopInList=this.shopInshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
         },
         handleSelectionChange(val) {
             this.multipleSelection = val;
@@ -576,11 +458,7 @@ export default {
                 console.log(this.arr);
         },
         handleCurrentChange(val) {
-            console.log(val);
-            shopInList({params:{page:val,page_size:10}}).then(res=>{
-                console.log(res.data);
-                this.shopInData=res.data.arr;
-            })              
+            this.init(val);
         },
         add(){//------------------------------添加订单
             console.log("add");
@@ -597,17 +475,22 @@ export default {
                 }
             });
         },
-        edit(){//------------------------------修改订单
-            let data=this.$qs.stringify(this.formDetail);
+        edit(row){//------------------------------修改订单
+            let data=this.$qs.stringify(row);
             shopInListEd(data).then(res=>{
                 if(res.errno==0){
-                    this.$alert(res.data.message,{
-                        callback:action=>{
-                            this.reload();    
-                        }
-                    })
+                    this.$message({
+                        type: "success",
+                        message: res.data.message,
+                        duration: 1000
+                    });
+                    this.reload();    
                 }else{
-                    this.$alert(res.errmsg)
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
                 }
             });
         },
@@ -653,13 +536,18 @@ export default {
             shopInListEdG(data).then(res=>{
                 console.log(res);
                 if(res.errno==0){
-                    this.$alert(res.data.message,{
-                        callback:action=>{
-                            this.detailGoods();    
-                        }
-                    })
+                    this.$message({
+                        type: "success",
+                        message: res.data.message,
+                        duration: 1000
+                    });
+                    this.detailGoods();    
                 }else{
-                    this.$alert(res.errmsg)
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
                 }
             });
         },
@@ -698,7 +586,7 @@ export default {
                 shopInListRmv(dataD).then(res=>{
                     console.log(res);
                     if(res.errno==0){
-                        this.$alert(res.data.message,{
+                        this.$alert(res.errmsg,{
                             callback:action=>{
                                 this.reload();    
                             }
@@ -729,13 +617,18 @@ export default {
             shopInListCh(dataC).then(res=>{
                 console.log(res);
                 if(res.errno==0){
-                    this.$alert(res.data.message,{
-                        callback:action=>{
-                            this.reload();  
-                        }
-                    })
+                    this.$message({
+                        type: "success",
+                        message: res.data.message,
+                        duration: 1000
+                    });
+                    this.reload();  
                 }else{
-                    this.$alert(res.errmsg)
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
                 }
                 
             });
@@ -750,11 +643,16 @@ export default {
         }
     },
     created: function () { 
-        shopInList({params:{page:1,page_size:10}}).then(res=>{
-            this.pages=Math.ceil(res.data.filter.record_count/10);
-            console.log(res.data);
-            this.shopInData=res.data.arr;
-        })
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.shopInList!==undefined){
+                this.shopInshow=erpTableSetting.shopInList;
+            }
+        }else{
+            console.log("no");
+        };
+        this.init(1);
     }
 }
 </script>

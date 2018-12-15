@@ -2,12 +2,12 @@
     <div id="serverDesk">
         <div class="title">
             <span>服务</span>
-            <el-row :gutter="20" style="width:400px;position:relative;left:-15px;top:5px;margin-top:0px;float:right;">
+            <!-- <el-row :gutter="20" style="width:400px;position:relative;left:-15px;top:5px;margin-top:0px;float:right;">
                 <el-col :span="6"><el-button type="text" style="color:black">删除</el-button></el-col>
                 <el-col :span="6"><el-button type="text" style="color:black">挂单</el-button></el-col>
                 <el-col :span="6"><el-button type="text" style="color:black">提单</el-button></el-col>
                 <el-col :span="6"><el-button type="text" style="color:black">清空</el-button></el-col>
-            </el-row>
+            </el-row> -->
         </div>
         <div style="background:#F5F5F5">
             <!-- <div style="padding:20px;">
