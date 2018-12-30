@@ -9,18 +9,68 @@
                 <el-breadcrumb-item>供应商账期分析</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
+
+        <!-- 搜索条件区域 -->
+        <div class="search-area">
+        <fieldset>
+            <legend>查询条件</legend>
+            <div class="out-box">
+            <fieldset class="date-radio">
+                <legend>日期类型</legend>
+                <el-radio-group v-model="radio">
+                    <el-radio :label="0">单据审核日期</el-radio>
+                    <el-radio :label="1">应结日期</el-radio>
+                    <el-radio :label="2">不按日期</el-radio>
+                </el-radio-group>
+            </fieldset>
+            <div class="content-r">
+                <div class="date-area">
+                <el-date-picker
+                    v-model="timeValue"
+                    type="daterange"
+                    range-separator="~"
+                    size="small"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                ></el-date-picker>
+                </div>
+                <el-form :inline="true" :model="formServe">
+                <div>
+                    <el-form-item label="供应商">
+                    <el-input size="mini" v-model="formServe.user">
+                        <i class="el-icon-more" slot="append"></i>
+                    </el-input>
+                    </el-form-item>
+                    <el-form-item label="类型">
+                    <el-select size="mini" v-model="formServe.staus">
+                        <el-option label="类型一" value="shanghai"></el-option>
+                        <el-option label="类型二" value="beijing"></el-option>
+                    </el-select>
+                    </el-form-item>
+                </div>
+                <div>
+                    <el-form-item label="分公司">
+                    <el-select size="mini" v-model="formServe.region">
+                        <el-option label="公司一" value="0"></el-option>
+                        <el-option label="公司二" value="2"></el-option>
+                    </el-select>
+                    </el-form-item>
+                    <el-form-item label="分店">
+                    <el-select size="mini" v-model="formServe.region">
+                        <el-option label="分店一" value="0"></el-option>
+                        <el-option label="分店二" value="2"></el-option>
+                    </el-select>
+                    </el-form-item>
+                </div>
+                </el-form>
+            </div>
+            </div>
+        </fieldset>
+        </div>
+
         <div class="main-table">
             <!-- 搜索 -->
-            <el-form :inline="true" :model="formServe" class="demo-form-inline">
-                <!-- <el-form-item label="">
-                    <el-input	size="small" v-model="formServe.name" placeholder="名称"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="编号"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="备注信息"></el-input>
-                </el-form-item> -->
+            <!-- <el-form :inline="true" :model="formServe" class="demo-form-inline">
                 <el-form-item>
                     <el-input placeholder="请输入供应商id" @input="search" v-model="keywords" style="width:50%;margin-right:10px" size="small">
                         <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
@@ -28,7 +78,7 @@
                     <el-button type="primary" size="small" @click="add">新增</el-button>
                     <el-button type="primary" size="small" @click="reset">刷新</el-button>
                 </el-form-item>
-            </el-form>
+            </el-form> -->
             <!-- 新增弹出框 -->
             <el-dialog width="450px" title="新增" :visible.sync="dialogServeAdd">
                 <el-form :model="formServeAdd">
@@ -45,7 +95,7 @@
                 </div>
             </el-dialog>
             <!-- 详情弹出框 -->
-            <el-dialog width="900px" title="客户信息" :visible.sync="dialogServeDetail">
+            <!-- <el-dialog width="900px" title="客户信息" :visible.sync="dialogServeDetail">
                 <el-form label-position="left" ref="form" :model="formServeDetail" :inline="true" class="demo-form-inline">
                     <el-row>
                         <el-col :span="8">
@@ -68,19 +118,16 @@
                         <el-col :span="8">
                             <el-form-item label="应付金额" prop="yingfu_price" :rules="rule">
                                 <el-input-number v-model="formServeDetail.yingfu_price" :precision="2" :min="0"></el-input-number>
-                                <!-- <el-input v-model="formServeDetail.yingfu_price" autocomplete="off"></el-input> -->
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
                             <el-form-item label="已付金额" prop="yifu_price" :rules="rule">
                                 <el-input-number v-model="formServeDetail.yifu_price" :precision="2" :min="0"></el-input-number>
-                                <!-- <el-input v-model="formServeDetail.yifu_price" autocomplete="off"></el-input> -->
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
                             <el-form-item label="已优惠金额" prop="discount_price" :rules="rule">
                                 <el-input-number v-model="formServeDetail.discount_price" :precision="2" :min="0"></el-input-number>
-                                <!-- <el-input v-model="formServeDetail.discount_price" autocomplete="off"></el-input> -->
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -88,7 +135,6 @@
                         <el-col :span="8">
                             <el-form-item label="未付金额" prop="weifu_price" :rules="rule">
                                 <el-input-number v-model="formServeDetail.weifu_price" :precision="2" :min="0"></el-input-number>
-                                <!-- <el-input v-model="formServeDetail.weifu_price" autocomplete="off"></el-input> -->
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
@@ -119,7 +165,72 @@
                     <el-button	size="small" @click="dialogServeDetail = false">取 消</el-button>
                     <el-button	size="small" type="primary" @click="editDone('form')">保存</el-button>
                 </div>
+            </el-dialog> -->
+
+
+            <!-- 显示列和排序模块 -->
+            <div style="text-align:right">
+                <el-button @click="dialogColumnDiy=true" size="small" icon="el-icon-tickets">显示列</el-button>
+                <el-dropdown :hide-on-click="false" @command="handleCommand">
+                <el-button size="small" icon="el-icon-sort">排序
+                    <i class="el-icon-caret-bottom el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                    <div class="ddd">
+                    <div class="ccc">
+                        <el-dropdown-item command="0">
+                        <i v-show="sortSelected==0" class="el-icon-check el-icon--left"></i>更新时间
+                        </el-dropdown-item>
+                        <el-dropdown-item command="1">
+                        <i v-show="sortSelected==1" class="el-icon-check el-icon--left"></i>录入时间
+                        </el-dropdown-item>
+                        <el-dropdown-item command="2">
+                        <i v-show="sortSelected==2" class="el-icon-check el-icon--left"></i>利润
+                        </el-dropdown-item>
+                        <el-dropdown-item command="3">
+                        <i v-show="sortSelected==3" class="el-icon-check el-icon--left"></i>总数量
+                        </el-dropdown-item>
+                        <el-dropdown-item command="4">
+                        <i v-show="sortSelected==4" class="el-icon-check el-icon--left"></i>状态
+                        </el-dropdown-item>
+                        <el-dropdown-item command="5">
+                        <i v-show="sortSelected==5" class="el-icon-check el-icon--left"></i>付款方式
+                        </el-dropdown-item>
+                        <el-dropdown-item command="6">
+                        <i v-show="sortSelected==6" class="el-icon-check el-icon--left"></i>其他
+                        </el-dropdown-item>
+                        <div class="aaa">
+                        <el-dropdown-item divided command="0">
+                            <i v-show="defaultSort==0" class="el-icon-check el-icon--left"></i>顺序
+                        </el-dropdown-item>
+                        <el-dropdown-item command="1">
+                            <i v-show="defaultSort==1" class="el-icon-check el-icon--left"></i>倒叙
+                        </el-dropdown-item>
+                        </div>
+                    </div>
+                    </div>
+                </el-dropdown-menu>
+                </el-dropdown>
+            </div>
+
+            <!-- 显示列弹窗 -->
+            <el-dialog
+                class="columnDialog"
+                width="300px"
+                title="自定义显示列"
+                v-dialogDrag
+                :visible.sync="dialogColumnDiy"
+            >
+                <el-table :data="columnData" style="width: 100%">
+                <el-table-column width="60" align="center" label="显示">
+                    <template slot-scope="scope">
+                    <el-checkbox v-model="scope.row.isChecked"></el-checkbox>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="name" label="列名"></el-table-column>
+                </el-table>
             </el-dialog>
+
             <!-- 表格 -->
             <el-table
             :data="Data"
@@ -180,7 +291,7 @@
                 align="center"
                 label="供应商id">
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                 fixed="right"
                 align="center"
                 label="相关操作"
@@ -189,7 +300,7 @@
                         <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
                         <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <!-- 分页器 -->
             <el-pagination
@@ -216,6 +327,34 @@ export default {
             total:0,
             loading:true,
             isEdit:false,
+            sortSelected: 0, // 排序hover框上部份 默认按第一个排序
+            defaultSort: 0, // 排序hover框下部份 默认顺序排序
+            radio: 0, // 筛选日期默认选项
+            timeValue: "", // 起止时间
+            dialogColumnDiy: false, // 自定义显示列弹窗
+            columnData: [
+                // 自定义列的数据
+                {
+                name: "单号",
+                prop: "bill_sn",
+                isChecked: true
+                },
+                {
+                name: "费用代码",
+                prop: "fee_code",
+                isChecked: true
+                },
+                {
+                name: "费用名称",
+                prop: "fee_name",
+                isChecked: true
+                },
+                {
+                name: "机构名称",
+                prop: "jigou_name",
+                isChecked: false
+                }
+            ],
             dialogServeAdd:false,
             dialogServeDetail:false,
             keywords:'',
@@ -234,6 +373,14 @@ export default {
         }
     },
     methods:{
+        changeColumn() {
+            this.columnData = this.columnData;
+            console.log(this.columnData);
+        },
+        handleCommand(e) {
+            console.log(e);
+            this.sortSelected = e;
+        },
         initData() { // 获取列表
             let data = this.$qs.stringify({
                 subsite_id:3,
@@ -374,7 +521,7 @@ export default {
 </script>
 <style scoped>
 .supplierPayAnalysis{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -391,6 +538,105 @@ export default {
 }
 .el-form .el-form-item {
   margin-bottom: 10px;
+}
+
+/* 搜索操作 */
+fieldset {
+  border-color: #fff;
+  padding: 0 0 6px 6px;
+}
+.out-box {
+  display: flex;
+  align-items: center;
+}
+.search-area {
+  margin: 10px 0;
+}
+.date-radio {
+  width: 120px;
+}
+.date-area {
+  width: 220px;
+}
+.content-r,
+.el-form {
+  display: flex;
+  align-items: center;
+}
+.content-r .el-form {
+  flex-wrap: wrap;
+  flex: 1;
+}
+.content-r .el-form > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.content-r >>> .el-input {
+  width: 120px;
+}
+.content-r >>> .el-input-group__append {
+  width: 30px;
+  padding: 0;
+}
+.out-box .content-r .el-form-item {
+  margin: 0;
+  margin-left: 20px;
+  text-align: center;
+}
+.el-date-editor {
+  width: 100% !important;
+}
+.el-radio-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.date-radio .el-radio {
+  margin-left: 0;
+  line-height: 24px;
+}
+.main-table .el-form {
+  padding-top: 10px;
+  text-align: center;
+}
+.el-form .el-form-item {
+  margin-bottom: 10px;
+}
+
+/* 显示列和排序 */
+.ddd {
+  position: relative;
+  height: 200px;
+}
+.ccc {
+  height: 200px;
+  overflow: auto;
+  text-align: left;
+}
+
+.aaa {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  transform: translateY(100%);
+  background: #fff;
+}
+.el-dropdown-menu__item {
+  padding: 0;
+  position: relative;
+  padding: 0 20px;
+}
+.ccc i,
+.aaa .el-dropdown-menu__item i {
+  position: absolute;
+  left: 4%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.agencyTransaction >>> .columnDialog .el-dialog__body {
+  padding: 0;
 }
 
 /* 分页器 */

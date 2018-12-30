@@ -10,17 +10,111 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <!-- 搜索 -->
-            <el-form :inline="true" :model="formServe" class="demo-form-inline">
-                <!-- <el-form-item label="">
-                    <el-input	size="small" v-model="formServe.name" placeholder="名称"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="编号"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="备注信息"></el-input>
-                </el-form-item> -->
+            <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="2">
+                        <el-radio-group v-model="radio" style="margin-top:5px;">
+                            <el-radio :label="1">开始日期</el-radio><br>
+                            <el-radio :label="2">审核日期</el-radio><br>
+                            <el-radio :label="3">修改日期</el-radio>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group v-model="radio" style="margin-top:5px;">
+                            <el-radio :label="4">最后销售日期</el-radio><br>
+                            <el-radio :label="5">不按日期</el-radio>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col :span="5">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-top:0px"
+                        type="daterange"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                        <el-row type="flex" style="margin:5px 0px 0px;padding:0;" justify="space-around" :gutter="10">
+                            <el-col :span="12">
+                                <el-input  prefix-icon="el-icon-search" style="width:100%;padding:0px;" v-model="value"  size="mini"  placeholder="会员卡号"/>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-input  prefix-icon="el-icon-search" style="width:100%;padding:0px;" v-model="search"  size="mini"  placeholder="姓名"/>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                    <el-col :span="4">
+                    <el-select v-model="value2" size="small" placeholder="卡类型">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value2"
+                            :label="item.label"
+                            :value="item.value2">
+                            </el-option>
+                        </el-select> 
+                        <el-select v-model="value3" size="small" placeholder="发卡店" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options3"
+                            :key="item.value4"
+                            :label="item.label"
+                            :value="item.value3">
+                            </el-option>
+                        </el-select> 
+                        <el-select v-model="value4" size="small" placeholder="分公司" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options4"
+                            :key="item.value4"
+                            :label="item.label"
+                            :value="item.value4">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="4">
+                    <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search1"  size="mini"  placeholder="修改人"/>
+                    <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search2"  size="mini"  placeholder="审核人"/>
+                        <el-select v-model="value1" size="small" placeholder="卡状态">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
+                        <el-button type="primary"  style="margin-top:5px" size="small" @click="add">新增</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                </el-row>				
+			</fieldset>
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" class="chose" style="text-align:left"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="200px">
+                <el-checkbox v-model="vipProfileshow.show1">姓名</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show2">状态</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show3">会员卡号</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show4">会员等级</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show5">有效期截至</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show6">发卡日期</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show7">发卡店名</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show8">属性</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show9">生日</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show10">修改日期</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show11">累计消费额</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show12">累计消费次数</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show13">可用积分</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show14">已兑换积分</el-checkbox><br>
+                <el-checkbox v-model="vipProfileshow.show15">最后销售日期</el-checkbox><br><br>
+            </el-dialog>
+            <!-- <el-form :inline="true" :model="formServe" class="demo-form-inline">
                 <el-form-item>
                     <el-input placeholder="请输入姓名" @input="search" v-model="keywords" style="width:50%;margin-right:10px" size="small">
                         <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
@@ -28,22 +122,7 @@
                     <el-button type="primary" size="small" @click="add">新增</el-button>
                     <el-button type="primary" size="small" @click="reset">刷新</el-button>
                 </el-form-item>
-            </el-form>
-            <!-- 新增弹出框 -->
-            <el-dialog width="450px" title="新增" :visible.sync="dialogServeAdd">
-                <el-form :model="formServeAdd">
-                    <el-form-item label="编号">
-                        <el-input v-model="formServeAdd.price"></el-input>
-                    </el-form-item>
-                    <el-form-item label="备注信息">
-                        <el-input v-model="formServeAdd.servePrice"></el-input>
-                    </el-form-item>                    
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="dialogServeAdd = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogServeAdd = false">确 定</el-button>
-                </div>
-            </el-dialog>
+            </el-form> -->
             <!-- 详情弹出框 -->
             <el-dialog width="1000px" title="会员档案" :visible.sync="dialogServeDetail">
                 <el-form label-position="left" ref="form" :model="formServeDetail" :inline="true" class="demo-form-inline">
@@ -156,78 +235,137 @@
             </el-dialog>
             <!-- 表格 -->
             <el-table
-            :data="Data"
+            :data="Data.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
             border
+            show-summary
             :row-style="{height:0}"  
-            :cell-style="{padding:0}"
+            :cell-style="{padding:7}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             v-loading="loading"
             style="width: 100%">
                 <el-table-column
-                prop="user_name"
+                v-if="vipProfileshow.show1"
                 align="center"
                 label="姓名">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.user_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="user_card"
                 align="center"
+                v-if="vipProfileshow.show2"
+                label="状态">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.status"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="vipProfileshow.show3"
                 label="会员卡号">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.user_card"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="end_valid"
                 align="center"
+                v-if="vipProfileshow.show4"
+                label="会员等级">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.user_rank"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="vipProfileshow.show5"
                 label="有效期截至">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.end_valid"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="add_time"
                 align="center"
+                v-if="vipProfileshow.show6"
                 label="发卡日期">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.add_time"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="subshop_name"
                 align="center"
+                v-if="vipProfileshow.show7"
                 label="发卡店名">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.subshop_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="attr_value"
                 align="center"
+                v-if="vipProfileshow.show8"
                 label="属性">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.attr_value"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="birthday"
                 align="center"
+                v-if="vipProfileshow.show9"
                 label="生日">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.birthday"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="edit_time"
                 align="center"
+                v-if="vipProfileshow.show10"
                 label="修改日期">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.edit_time"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="sum_xiaofei_price"
                 align="center"
+                v-if="vipProfileshow.show11"
                 label="累计消费额">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.sum_xiaofei_price"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="xiaofei_num"
                 align="center"
+                v-if="vipProfileshow.show12"
                 label="累计消费次数">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.xiaofei_num"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="available_integral"
                 align="center"
+                v-if="vipProfileshow.show13"
                 label="可用积分">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.available_integral"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="used_integral"
                 align="center"
+                v-if="vipProfileshow.show14"
                 label="已兑换积分">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.used_integral"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="last_xiaoshou_time"
                 align="center"
+                v-if="vipProfileshow.show15"
                 label="最后销售日期">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.last_xiaoshou_time"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
@@ -235,7 +373,7 @@
                 width="90"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, Data)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -255,19 +393,48 @@ import {
   getVipprofileList,
   getVipprofileDetail,
   addVipprofile,
-  editVipprofile
+  editVipprofile,
+delLogs
 } from "../../api/api";
 export default {
   data() {
     return {
-      page: 1,
-      page_size: 10,
-      loading: true,
-      total: 0,
-      isEdit:false,
-      dialogServeAdd: false,
-      dialogServeDetail: false,
+        page: 1,
+        page_size: 10,
+        loading: true,
+        total: 0,
+        isEdit:false,
+        dialogServeAdd: false,
+        dialogServeDetail: false,
+        dialogShow:false,
+        vipProfileshow:{
+            show1:false,
+            show2:true,
+            show3:true,
+            show4:true,
+            show5:true,
+            show6:true,
+            show7:true,
+            show8:true,
+            show9:true,
+            show10:true,
+            show11:true,
+            show12:true,
+            show13:true,
+            show14:true,
+            show15:true,
+        },
       keywords:'',
+      search:'',
+      search1:'',
+      search2:'',
+      search3:['2017-7-7','2019-9-9'],
+      radio:3,
+      value: '' ,
+      value1: '' ,
+      value2: '' ,
+      value3: '' ,
+      value4: '' ,
       formServe: {
         name: "",
         marks: ""
@@ -277,8 +444,28 @@ export default {
             return time.getTime() < Date.now() - 3600*24*1000;
           }
       },
-      formServeAdd: {
-        name: ""
+      formAdd: {
+        //user_name:"leilei",
+        user_card:764676345,
+        /* 
+        user_rank:4,
+        status:0,
+        end_valid:1546185600,
+        add_time:1541606400,
+        subshop_id:0,
+        subshop_name:"",
+        adminid:0,
+        attr_value:"",
+        sex:0,
+        birthday:910454400,
+        edit_time:1546012800,
+        edit_user:0,
+        sum_xiaofei_price:100070.0,
+        xiaofei_num:0,
+        available_integral:455,
+        used_integral:6200,
+        last_xiaoshou_time:1541606400 
+        */
       },
       formServeDetail: {
         name: ""
@@ -289,12 +476,52 @@ export default {
         }
       ],
       rule: [{ required: true, message: "不能为空" }],
-      rule2: [{ required: true, message: "不能为空" },{type:'number',message:'必须为数字'}]
+      rule2: [{ required: true, message: "不能为空" },{type:'number',message:'必须为数字'}],
+      options: [{
+      value: '选项1',
+      label: '审核'
+      }, {
+      value: '选项2',
+      label: '未审核'
+      },],  
+      options1: [{
+      value1: '选项1',
+      label: '未激活'
+      }, {
+      value1: '选项2',
+      label: '已激活'
+      },],
+      options2: [{
+      value2: '选项1',
+      label: '类型1'
+      }, {
+      value2: '选项2',
+      label: '类型2'
+      },],
+      options3: [{
+      value3: '选项1',
+      label: '发卡店1'
+      }, {
+      value3: '选项2',
+      label: '发卡店2'
+      },],
+      options4: [{
+      value4: '选项1',
+      label: '分1'
+      }, {
+      value4: '选项2',
+      label: '分2'
+      },],
     };
   },
   methods: {
-    initData() {
-      // 获取列表
+        handleClose(done){
+            done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.vipProfile=this.vipProfileshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+        },
+    initData() {//--------------- 获取列表
       let data = this.$qs.stringify({
         subsite_id: 3,
         user_id: sessionStorage.user_id,
@@ -304,19 +531,81 @@ export default {
       getVipprofileList(data).then(res => {
         console.log(res.data);
         if (res.errno == 0) {
-          this.Data = res.data.orders;
-          this.total = Number(res.data.record_count);
-          this.loading = false;
+            this.total = Number(res.data.record_count);
+            for(let i=0;i<res.data.orders.length;i++){
+                res.data.orders[i].sum_xiaofei_price=res.data.orders[i].sum_xiaofei_price.replace(/^￥/,"");
+            }
+            this.Data = res.data.orders;
+            this.loading = false;
         }
       });
     },
+    dateConverter(str) { //-----------------------日期转秒数
+        var arr = str.split(/[- : \/]/);
+        var startDate = Date.parse(new Date(arr[0], arr[1]-1, arr[2]))/1000;
+        return startDate;
+    },
     add() {
+        /* let data=this.$qs.stringify(this.formAdd);
+        addVipprofile().then(res=>{
+            console.log(res);
+        }); */
       this.isEdit = false;
       this.formServeDetail = {}
       if(this.$refs.form) {
         this.$refs.form.resetFields()
       }
       this.dialogServeDetail = true;
+    },
+    edit(row){//--------------修改
+        /* let reg = new RegExp( /^￥/ , "g" );
+        row.sum_xiaofei_price=row.sum_xiaofei_price.replace(reg,""); */
+        row.status=row.status=="未审核"?0:1;
+        if(row.end_valid!==""){
+            row.end_valid=this.dateConverter(row.end_valid);
+        }else{
+            row.end_valid=new Date().getTime()/1000-86400;
+        }
+        if(row.add_time!==""){
+            row.add_time=this.dateConverter(row.add_time);
+        }else{
+            row.add_time=new Date().getTime()/1000-86400;
+        }
+        if(row.birthday!==""){
+            row.birthday=this.dateConverter(row.birthday);
+        }else{
+            row.birthday=new Date().getTime()/1000-86400;
+        }
+        if(row.edit_time!==""){
+            row.edit_time=this.dateConverter(row.edit_time);
+        }else{
+            row.edit_time=new Date().getTime()/1000-86400;
+        }
+        if(row.last_xiaoshou_time!==""){
+            row.last_xiaoshou_time=this.dateConverter(row.last_xiaoshou_time);
+        }else{
+            row.last_xiaoshou_time=new Date().getTime()/1000-86400;
+        }
+        let dataE=this.$qs.stringify(row);
+        console.log(row);
+        editVipprofile(dataE).then(res=>{
+            console.log(res.errno);
+            if(res.errno==0){
+                this.$message({
+                    type: "success",
+                    message: res.errmsg,
+                    duration: 1000
+                });
+                this.initData()
+            }else{
+                this.$message({
+                    type: "error",
+                    message: res.errmsg,
+                    duration: 1000
+                });
+                this.initData()
+            }
+        })
     },
     editDone(formName) {
       this.$refs[formName].validate(valid => {
@@ -349,6 +638,7 @@ export default {
             this.formServeDetail.adminid = 2;
             this.formServeDetail.edit_user = 2;
             this.formServeDetail.status = 0;
+            this.formServeDetail.user_rank = 0;
             this.formServeDetail.sex = 1;
             this.formServeDetail.add_time = parseInt(+new Date() / 1000);
             this.formServeDetail.edit_time = parseInt(+new Date() / 1000);
@@ -376,7 +666,7 @@ export default {
         }
       });
     },
-    search() {
+    /* search() {
         let data=this.$qs.stringify({
             user_name:this.keywords
         });
@@ -388,7 +678,7 @@ export default {
             this.loading = false;
             }
         });
-    }, 
+    },  */
     reset() {
       this.initData()
     },
@@ -443,6 +733,15 @@ export default {
     }
   },
   created() {
+      if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.vipProfile!==undefined){
+                this.vipProfileshow=erpTableSetting.vipProfile;
+            }
+        }else{
+            console.log("no");
+        }; 
     this.initData();
   }
 };
@@ -473,7 +772,13 @@ export default {
   padding: 20px 0;
   text-align: right;
 }
-
+.el-table input{
+    width:100%;
+    height:34px;
+    border:1px solid #DCDFE6;
+    border-radius:4px;
+    padding:2px;
+}
 /* 新增弹出框 & 详情弹出框*/
 .main-table >>> .el-dialog__body {
   padding: 0 20px;
@@ -498,7 +803,8 @@ export default {
 .main-table>>>.el-dialog__body .el-input-number {
     width: 100%;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 </style>

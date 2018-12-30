@@ -85,6 +85,7 @@ export default {
                   setTimeout(() => {
                       this.isLogining = false
                       this.$router.replace("/")
+                      
                   }, 1500);
               }else {
                   this.$message({

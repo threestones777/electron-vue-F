@@ -43,4 +43,7 @@ export default {
 .el-badge__content {
   top: 30% !important;
 }
+.el-menu--collapse {
+  width: 100px!important;
+}
 </style>

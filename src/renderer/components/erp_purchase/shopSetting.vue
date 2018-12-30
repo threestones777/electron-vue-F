@@ -10,200 +10,31 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <div style="margin:10px 0;text-align:center">
-                <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
-                <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
-                <el-button type="primary" size="small" @click="add" icon="el-icon-plus"></el-button>
-                <el-button type="primary" size="small" @click="reset">刷新</el-button>
-            </div>
-            <!-- 按需选择列弹窗 -->
-            <el-dialog
-            title="按需选择列" class="chose"
-            :visible.sync="dialogShow"
-            :before-close="handleClose"
-            width="300px">
-                <el-checkbox v-model="shopSettingshow.show1">编号</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show2">有效天数</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show3">必须按照订单采购</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show4">进货价格异常时不显示</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show5">日结时是否自动删除未审核采购订单</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show6">日结时是否自动删除未审核采购退货单</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show7">必须按供货商订货</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show8">进货价大于成本价时提示</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show9">进货价大于档案进价时提示</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show10">进货价大于成本时不能审核</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show11">进货价大于档案进价不能审核</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show12">退货数量大于库存时提示</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show13">退货价格小于成本价时提示</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show14">采购订单时订货数量不赋值给收货数量</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show15">进货价格以商品资料进价为准</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show16">进货时默认进价为0，手工输入进价</el-checkbox><br>
-                <el-checkbox v-model="shopSettingshow.show17">进货时手工输入进价</el-checkbox><br><br>
-            </el-dialog>
-            <!-- 表格 -->
-            <el-table
-            :data="shopSetData.filter(data =>  {
-            return Object.keys(data).some(key => {
-            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
-            border
-            :row-style="{height:0}"  
-            :cell-style="{padding:0}"
-            :header-row-style="{height:0}"  
-            :header-cell-style="{padding:0}"
-            style="width: 100%"
-            :default-sort = "{prop: 'date', order: 'descending'}">
-                <el-table-column
-                prop="id"
-                align="center"
-                v-if="shopSettingshow.show1"
-                label="编号">
-                </el-table-column>
-                <el-table-column
-                prop="valid_days"
-                align="center"
-                sortable
-                v-if="shopSettingshow.show2"
-                label="有效天数">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.valid_days">
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show3"
-                label="必须按照订单采购">
-                    <template slot-scope="scope">
-                        <el-checkbox v-model="scope.row.is_accord_order" true-label="0" false-label="1"/>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show4"
-                label="进货价格异常时不显示">
-                    <template slot-scope="scope">
-                        <el-checkbox v-model="scope.row.not_show_abnormal" true-label="0" false-label="1"/>
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show5"
-                label="日结时是否自动删除未审核采购订单">
-                    <template slot-scope="scope">
-                        <el-checkbox v-model="scope.row.auto_remove_order" true-label="0" false-label="1"/>
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show6"
-                label="日结时是否自动删除未审核采购退货单">
-                    <template slot-scope="scope">
-                        <el-checkbox v-model="scope.row.auto_remove_backorder" true-label="0" false-label="1"/>
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show7"
-                label="必须按供货商订货">
-                    <template slot-scope="scope">
-                        <el-checkbox v-model="scope.row.is_accord_supplier" true-label="0" false-label="1"/>
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show8"
-                label="进货价大于成本价时提示">
-                    <template slot-scope="scope">
-                        <el-checkbox  v-model="scope.row.buy_gt_chengben" true-label="0" false-label="1"/>
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show9"
-                label="进货价大于档案进价时提示">
-                    <template slot-scope="scope">
-                        <el-checkbox v-model="scope.row.buy_gt_dangan" true-label="0" false-label="1"/>
-                    </template>                    
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show10"
-                label="进货价大于成本时不能审核">
-                    <template slot-scope="scope">
-                        <el-checkbox  v-model="scope.row.buy_gt_chengben_check" true-label="0" false-label="1"/>
-                    </template>                    
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show11"
-                label="进货价大于档案进价不能审核">
-                    <template slot-scope="scope">
-                        <el-checkbox v-model="scope.row.buy_gt_dangan_check" true-label="0" false-label="1"/>
-                    </template>                    
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show12"
-                label="退货数量大于库存时提示">
-                    <template slot-scope="scope">
-                       <el-checkbox v-model="scope.row.tuihuo_gt_kucun" true-label="0" false-label="1"/>               
-                    </template>
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show13"
-                label="退货价格小于成本价时提示">
-                    <template slot-scope="scope">
-                       <el-checkbox v-model="scope.row.tuihuo_lt_chengben" true-label="0" false-label="1"/>               
-                    </template>
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show14"
-                label="采购订单时订货数量不赋值给收货数量">
-                    <template slot-scope="scope">
-                        <el-checkbox  v-model="scope.row.dinghuo_give_shouhuo" true-label="0" false-label="1"/>  
-                    </template>          
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show15"
-                label="进货价格以商品资料进价为准">
-                    <template slot-scope="scope">
-                        <el-checkbox  v-model="scope.row.by_goods_price" true-label="0" false-label="1"/>  
-                    </template>          
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show16"
-                label="进货时默认进价为0，手工输入进价">
-                    <template slot-scope="scope">
-                        <el-checkbox  v-model="scope.row.default_ling" true-label="0" false-label="1"/>  
-                    </template>          
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="shopSettingshow.show17"
-                label="进货时手工输入进价">
-                    <template slot-scope="scope">
-                        <el-checkbox  v-model="scope.row.by_hand" true-label="0" false-label="1"/>  
-                    </template>          
-                </el-table-column>
-                <el-table-column
-                fixed="right"
-                align="center"
-                label="相关操作">
-                    <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="savEdit(scope.row)">保存修改</el-button>
-                        <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <!-- 分页器 -->
-            <el-pagination
-                @current-change="handleCurrentChange"
-                layout="total,prev, pager, next,jumper"
-                :total="record_count">
-            </el-pagination>
+            <el-form ref="form" :model="shopSetData">
+               <el-form-item style="text-align:left">
+                   <p style="margin-left:10%">
+                       采购订单有效天数:
+                       <el-input-number size="small" v-model="shopSetData.valid_days" controls-position="right" :min="1" :max="60"></el-input-number>天（注:最大60天）
+                   </p>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.is_accord_order" true-label="0" false-label="1">必须按照订单采购</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.not_show_abnormal" true-label="0" false-label="1">进货价格异常时不显示</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.auto_remove_order" true-label="0" false-label="1">日结时是否自动删除未审核采购订单</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.auto_remove_backorder" true-label="0" false-label="1">日结时是否自动删除未审核采购退货单</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.is_accord_supplier" true-label="0" false-label="1">必须按供货商订货</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.buy_gt_chengben" true-label="0" false-label="1">进货价大于成本价时提示</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.buy_gt_dangan" true-label="0" false-label="1">进货价大于档案进价时提示</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.buy_gt_chengben_check" true-label="0" false-label="1">进货价大于成本时不能审核</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.buy_gt_dangan_check" true-label="0" false-label="1">进货价大于档案进价不能审核</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.tuihuo_gt_kucun" true-label="0" false-label="1">退货数量大于库存时提示</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.tuihuo_lt_chengben" true-label="0" false-label="1">退货价格小于成本价时提示</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.dinghuo_give_shouhuo" true-label="0" false-label="1">采购订单时订货数量不赋值给收货数量</el-checkbox><br>
+                    <!-- <h1  style="float:left;margin-left:40%">进货价格确定</h1><br>  -->
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.by_goods_price" true-label="0" false-label="1">进货价格以商品资料进价为准</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.default_ling" true-label="0" false-label="1">进货时默认进价为0，手工输入进价</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.by_hand" true-label="0" false-label="1">进货时手工输入进价</el-checkbox><br>
+                </el-form-item> 
+            </el-form>
+            <el-button type="primary" style="float:right;margin-right:50%" @click="savEdit">保存修改</el-button>
         </div>
     </div>
 </template>
@@ -220,30 +51,31 @@ export default {
             dialogAdd:false,
             record_count:0,
             shopSettingshow:{
-                show1:true,
+                show1:false,
                 show2:true,
-                show3:true,
-                show4:true,
-                show5:true,
-                show6:true,
-                show7:true,
+                show3:false,
+                show4:false,
+                show5:false,
+                show6:false,
+                show7:false,
                 show8:true,
                 show9:true,
-                show10:true,
-                show11:true,
+                show10:false,
+                show11:false,
                 show12:true,
                 show13:true,
-                show14:true,
-                show15:true,
-                show16:true,
-                show17:true,
+                show14:false,
+                show15:false,
+                show16:false,
+                show17:false,
             },
             formServeAdd:{
                 name:""
             },
             formAdd:{},
             formDetail:{},
-            shopSetData:[],
+            shopSetData:{},
+            shopSetData1:[],
             search:''
         }
     },
@@ -255,8 +87,8 @@ export default {
             }); 
             shopSetting(data).then(res=>{
                 console.log(res.data);
-                this.record_count=Number(res.data.filter.record_count);
-                this.shopSetData=res.data.orders;
+                //this.record_count=Number(res.data.filter.record_count);
+                this.shopSetData=res.data.orders[0];
             })
         }, 
         handleClose(done){
@@ -304,9 +136,9 @@ export default {
                 }
             });
         },
-        savEdit(row){
-            console.log(row);
-            let data =this.$qs.stringify(row)
+        savEdit(){
+            //console.log(row);
+            let data =this.$qs.stringify(this.shopSetData)
             shopSettingEdit(data).then(res=>{
                 console.log(res.errno);
                 if(res.errno==0){

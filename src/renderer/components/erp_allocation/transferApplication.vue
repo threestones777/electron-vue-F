@@ -10,12 +10,73 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <div style="margin:10px 0;text-align:center">
-                <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
-                <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
-                <el-button type="primary" size="small" @click="add" icon="el-icon-plus"></el-button>
-                <el-button type="primary" size="small" @click="reset">刷新</el-button>
-            </div>
+            <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                            <el-radio label="apply_time">申请日期</el-radio><br>
+                            <el-radio label="fahuo_time">发货日期</el-radio><br>
+                            <el-radio label="shouhuo_time">收货日期</el-radio>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                        <el-radio label="require_arrival_time">要求到货日期</el-radio><br>
+                        <el-radio label="5">不按日期</el-radio>
+                    </el-radio-group>    
+                    </el-col>
+                    <el-col :span="4">
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="订单号"/>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select @change="chose" v-model="value" size="small" placeholder="申请状态" style="margin-bottom:5px;">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select @change="chose" v-model="value1" size="small" placeholder="发货状态">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select> 
+                        <el-select @change="chose" v-model="value4" size="small" placeholder="收货状态" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options4"
+                            :key="item.value4"
+                            :label="item.label"
+                            :value="item.value4">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="5">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-top:0px"
+                        type="daterange" @change="chose"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                </el-row>				
+			</fieldset>
+
             <!-- 按需选择列弹窗 -->
             <el-dialog
             title="按需选择列" class="chose" style="text-align:left"
@@ -106,34 +167,43 @@
             return Object.keys(data).some(key => {
             return String(data[key]).toLowerCase().indexOf(search) > -1})})"
             border
+            show-summary
             :row-style="{height:0}"  
             :cell-style="{padding:0}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             style="width: 100%">
                 <el-table-column
-                prop="id"
                 align="center"
                 v-if="transferApplicationshow.show1"
                 label="id">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.id}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="status"
                 align="center"
                 v-if="transferApplicationshow.show2"
                 label="状态">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.status}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="from_subshop_id"
                 align="center"
                 v-if="transferApplicationshow.show3"
                 label="发货店号">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.from_subshop_id}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="from_subshop_name"
                 align="center"
                 v-if="transferApplicationshow.show4"
                 label="发货店名">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.from_subshop_name}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
@@ -176,6 +246,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column
+                prop="money"
                 align="center"
                 v-if="transferApplicationshow.show10"
                 label="金额">
@@ -334,6 +405,7 @@
 <script>
 import {getGoodsList} from '../../api/api';
 import {transfer,transferDe,transferEd,transferAdd,transferGoods,transferAddG,transferEdG,transferRmv,transferChe} from '../../api/apiW' ;
+import { setInterval } from 'timers';
 export default {
     inject: ['reload'], 
     data() {
@@ -350,7 +422,17 @@ export default {
             dialogShow:false,
             record_count:0,
             search:'',
+            search3:['2017-7-7','2019-9-9'],
+            radio:"5",
+            value: '' ,
+            value1: '' ,
+            value3: '' ,
+            value4: '' ,
+            value5: '' ,
+            value6: '' ,
+            value7: '' ,
             formServeAdd:{
+                type:0,
                 status:"未审核",
                 from_subshop_id:0,
                 from_subshop_name:"",
@@ -388,6 +470,30 @@ export default {
                 show16:true,
                 show17:true,
             },
+            options: [{
+            value: '0',
+            label: '未审核'
+            }, {
+            value: '1',
+            label: '已审核'
+            },{
+            value: '2',
+            label: '审核驳回'
+            }],  
+            options1: [{
+            value1: '0',
+            label: '未发货'
+            }, {
+            value1: '1',
+            label: '已发货'
+            },],
+            options4: [{
+            value4: '0',
+            label: '未收货'
+            }, {
+            value4: '1',
+            label: '已收货'
+            },],
         }
     },
     methods:{
@@ -396,12 +502,28 @@ export default {
                 page:page,
                 page_size:10,
             }); 
+            this.data(data);  
+        }, 
+        data(data){
             transfer(data).then(res=>{
-                console.log(res.data);
+                console.log(res.data.transfer_list);
                 this.record_count=Number(res.data.filter.record_count);
                 this.transferAppData=res.data.transfer_list;
-            })  
-        }, 
+            }) 
+        },
+        chose(){//-----------------选择查询
+            let data=this.$qs.stringify({
+                page:1,
+                page_size:10,
+                time_by:this.radio,
+                status:this.value,
+                fahuo_status:this.value1,
+                shouhuo_status:this.value4,
+                add_time1:this.search3[0],
+                add_time2:this.search3[1],
+            }); 
+            this.data(data);  
+        },
         handleClose(done){
             done();
             let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
@@ -554,13 +676,14 @@ export default {
                         message: res.errmsg,
                         duration: 1000
                     });
-                    this.reload();
+                    this.init(1);
                 }else{
                     this.$message({
                         type: "error",
                         message: res.errmsg,
                         duration: 1000
                     });
+                    this.init(1);
                 }
             })
         },
@@ -694,8 +817,9 @@ export default {
 .el-dialog__body .el-form {
   text-align: right;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 .chose .el-checkbox{
     margin-bottom:10px;

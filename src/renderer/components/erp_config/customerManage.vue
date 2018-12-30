@@ -10,26 +10,13 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <!-- 客户搜索 -->
             <el-form :inline="true" :model="formCustomer" class="demo-form-inline">
-                <!-- <el-form-item label="客户名称">
-                    <el-input	size="small" v-model="formCustomer.name" placeholder="客户名称"></el-input>
-                </el-form-item>
-                <el-form-item label="客户编号">
-                    <el-input	size="small" v-model="formCustomer.number" placeholder="客户编号"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号">
-                    <el-input	size="small" type="tel" v-model="formCustomer.phone" placeholder="手机号"></el-input>
-                </el-form-item>
-                <el-form-item label="备注">
-                    <el-input	size="small" type="tel" v-model="formCustomer.marks" placeholder="备注信息"></el-input>
-                </el-form-item> -->
                 <el-form-item>
                     <!-- <el-button type="primary" size="small" @click="customerSearch">搜索</el-button> -->
                     <el-button type="primary" size="small" @click="dialogCustomerAdd = true">新增</el-button>
                     <!-- <el-button type="primary" size="small">导入</el-button>
                     <el-button type="primary" size="small">导出</el-button> -->
-                    <el-button type="primary" size="small" @click="reset">刷新</el-button>
+                    <el-button type="primary" size="small" @click="reset">刷 新</el-button>
                 </el-form-item>
             </el-form>
             <!-- 新增客户弹出框 -->

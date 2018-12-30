@@ -6,20 +6,20 @@ import store from './store'
 import VueAxios from 'vue-axios' 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import qs from 'qs'
-import FileSaver from "file-saver"
-import XLSX from "xlsx"
-import QRCode from 'qrcodejs2'
+import qs from 'qs' // post请求 处理插件
+import FileSaver from "file-saver" // 导出excel插件辅助插件
+import XLSX from "xlsx" // 导出excel插件
+import QRCode from 'qrcodejs2' // 二维码插件
 import echarts from 'echarts'
-Vue.prototype.$echarts = echarts
+import './tools/dialog-drag.js' // 自定义element-ui 的dialog可拖拽指令
+Vue.prototype.$echarts = echarts // 原型挂载百度echarts图表
 Vue.use(ElementUI)
 Vue.use(VueAxios,axios)
-Vue.prototype.$qs = qs
-Vue.prototype.$exportExcel = exportExcel
+Vue.prototype.$qs = qs // 原型挂载post请求head头问题的方法
+Vue.prototype.$exportExcel = exportExcel // 原型挂载导出excel方法
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
 
-/* eslint-disable no-new */
 new Vue({
   components: { App },
   router,

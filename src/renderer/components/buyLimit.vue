@@ -36,6 +36,7 @@
 <style>
     #buyLimit{
         border:1px solid #f4f4f4;
+        height:770px;
     }
     #buyLimit .el-row{
         margin-top:20px;

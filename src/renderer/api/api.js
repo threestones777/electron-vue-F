@@ -93,7 +93,7 @@ export const test = params => {
     }
     //采购订单
     export const shopOderList = params =>{
-        return axios.get("/opurchase/lists",params).then(res=>res.data)
+        return axios.post("/opurchase/lists",params).then(res=>res.data)
     }
     //采购入库单
     export const shopInList = params =>{
@@ -101,7 +101,7 @@ export const test = params => {
     }
     //购货退货单
     export const shopReturnList = params =>{
-        return axios.get("/repurchase/lists",params).then(res=>res.data)
+        return axios.post("/repurchase/lists",params).then(res=>res.data)
     }
     //采购收货===
         //列表

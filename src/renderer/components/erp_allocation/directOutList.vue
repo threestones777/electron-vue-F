@@ -10,12 +10,132 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <div style="margin:10px 0;text-align:center">
-                <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
-                <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
-                <el-button type="primary" size="small" @click="add" icon="el-icon-plus"></el-button>
-                <el-button type="primary" size="small" @click="reset">刷新</el-button>
-            </div>
+            <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                            <el-radio style="margin-bottom:7px" label="apply_time ">申请日期</el-radio><br>
+                            <el-radio style="margin-bottom:7px" label="fahuo_time ">发货日期</el-radio><br>
+                            <el-radio style="margin-bottom:7px" label="shouhuo_time ">收货日期</el-radio><br>
+                            <el-radio style="margin-bottom:7px" label="require_arrival_time ">要求到货日期</el-radio><br>
+                            <el-radio label="5">不按日期</el-radio><br>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col :span="4">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-bottom:5px"
+                        type="daterange" @change="chose"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search"  size="mini"  placeholder="单号"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search1"  size="mini"  placeholder="条码"></el-input>
+                        <el-select @change="chose" v-model="value5" size="small" placeholder="单据类型" style="margin-top:0px;width:100%">
+                            <el-option
+                            v-for="item in options5"
+                            :key="item.value5"
+                            :label="item.label"
+                            :value="item.value5">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search2"  size="mini"  placeholder="收货店区域">
+                        </el-input>
+                        <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search10"  size="mini"  placeholder="商品货号"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search4"  size="mini"  placeholder="商品名称"/>
+                        <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%;margin-bottom:0px;" v-model="search5"  size="mini"  placeholder="备注"/>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search6"  size="mini"  placeholder="申请人">
+                        </el-input>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search7"  size="mini"  placeholder="检验员">
+                        </el-input>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search8"  size="mini"  placeholder="拣货人">
+                        </el-input>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:0px;" v-model="search9"  size="mini"  placeholder="发货人">
+                        </el-input>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value2" size="small" placeholder="发货分店">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value2"
+                            :label="item.label"
+                            :value="item.value2">
+                            </el-option>
+                        </el-select> 
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value3" size="small" placeholder="发货分公司">
+                            <el-option
+                            v-for="item in options3"
+                            :key="item.value3"
+                            :label="item.label"
+                            :value="item.value3">
+                            </el-option>
+                        </el-select> 
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value6" size="small" placeholder="发货店类型">
+                            <el-option
+                            v-for="item in options6"
+                            :key="item.value6"
+                            :label="item.label"
+                            :value="item.value6">
+                            </el-option>
+                        </el-select> 
+                        <el-select @change="chose" v-model="value7" size="small" placeholder="发货状态">
+                            <el-option
+                            v-for="item in options7"
+                            :key="item.value7"
+                            :label="item.label"
+                            :value="item.value7">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value8" size="small" placeholder="收货分店">
+                            <el-option
+                            v-for="item in options8"
+                            :key="item.value8"
+                            :label="item.label"
+                            :value="item.value8">
+                            </el-option>
+                        </el-select> 
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value9" size="small" placeholder="收货分公司">
+                            <el-option
+                            v-for="item in options9"
+                            :key="item.value9"
+                            :label="item.label"
+                            :value="item.value9">
+                            </el-option>
+                        </el-select> 
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value10" size="small" placeholder="收货店类型">
+                            <el-option
+                            v-for="item in options10"
+                            :key="item.value10"
+                            :label="item.label"
+                            :value="item.value10">
+                            </el-option>
+                        </el-select>
+                        <el-select @change="chose" v-model="value11" size="small" placeholder="收货状态">
+                            <el-option
+                            v-for="item in options11"
+                            :key="item.value11"
+                            :label="item.label"
+                            :value="item.value11">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                </el-row>				
+			</fieldset>
             <!-- 按需选择列弹窗 -->
             <el-dialog
             title="按需选择列" style="text-align:left"
@@ -47,22 +167,27 @@
             return Object.keys(data).some(key => {
             return String(data[key]).toLowerCase().indexOf(search) > -1})})"
             border
+            show-summary
             :row-style="{height:0}"  
             :cell-style="{padding:0}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             style="width: 100%">
                 <el-table-column
-                prop="id"
                 align="center"
                 v-if="directOutListshow.show1"
                 label="id">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.id}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="to_subshop_id"
                 align="center"
                 v-if="directOutListshow.show2"
                 label="收货店号">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.to_subshop_id}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
@@ -97,6 +222,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column
+                prop="money"
                 align="center"
                 v-if="directOutListshow.show7"
                 label="金额">
@@ -105,6 +231,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column
+                prop="chengben_price"
                 align="center"
                 v-if="directOutListshow.show8"
                 label="成本金额">
@@ -113,6 +240,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column
+                prop="number"
                 align="center"
                 v-if="directOutListshow.show9"
                 label="数量">
@@ -223,6 +351,18 @@ export default {
             dialogServeDetail:false,
             dialogShow:false,
             search:'',
+            search1:'',
+            search2:'',
+            search3:['2017-7-7','2019-9-9'],
+            search4:'',
+            search5:'',
+            search6:'',
+            search7:'',
+            search8:'',
+            search9:'',
+            search10:'',
+            search11:'',
+            radio:"5",
             record_count:0,
             formServe:{
                 
@@ -230,8 +370,7 @@ export default {
             formServeAdd:{
                 type:0,
                 require_daohuo_time:Math.ceil(new Date().getTime()/1000-172800),
-                /* 
-                status:1,
+                /*status:1,
                 from_subshop_id:0,
                 from_subshop_name:阿斯蒂芬,
                 to_subshop_id:1,
@@ -275,6 +414,105 @@ export default {
                 show17:true,
                 show18:true,
             },
+            value: '' ,
+            value1: '' ,
+            value2: '' ,
+            value3: '' ,
+            value4: '' ,
+            value5: '' ,
+            value6: '' ,
+            value7: '' ,
+            value8: '' ,
+            value9: '' ,
+            value10: '' ,
+            value11: '' ,
+            options: [{
+            value: '选项1',
+            label: '现金券'
+            }, {
+            value: '选项2',
+            label: '满减券'
+            },{
+            value: '选项3',
+            label: '折扣券' 
+            }],  
+            options1: [{
+            value1: '选项1',
+            label: '商品'
+            }, {
+            value1: '选项2',
+            label: '服务'
+            },],  
+            options2: [{
+            value2: '0',
+            label: '分店1'
+            }, {
+            value2: '1',
+            label: '分店2'
+            },],  
+            options3: [{
+            value3: '0',
+            label: '公司1'
+            }, {
+            value3: '1',
+            label: '公司2'
+            },],  
+            options4: [{
+            value4: '选项1',
+            label: '标签1'
+            }, {
+            value4: '选项2',
+            label: '标签2'
+            },],  
+            options5: [{
+            value5: '0',
+            label: '类型1'
+            }, {
+            value5: '1',
+            label: '类型2'
+            },], 
+            options6: [{
+            value6: '0',
+            label: '类型1'
+            }, {
+            value6: '1',
+            label: '类型2'
+            },], 
+            options7: [{
+            value7: '0',
+            label: '未发货'
+            }, {
+            value7: '1',
+            label: '已发货'
+            },],
+            options8: [{
+            value8: '0',
+            label: '0分店'
+            }, {
+            value8: '1',
+            label: '1分店'
+            },],
+            options9: [{
+            value9: '0',
+            label: '1公司'
+            }, {
+            value9: '1',
+            label: '2公司'
+            },],
+            options10: [{
+            value10: '0',
+            label: '类型1'
+            }, {
+            value10: '1',
+            label: '类型2'
+            },],
+            options11: [{
+            value11: '0',
+            label: '未收货'
+            }, {
+            value11: '1',
+            label: '已收货'
+            },],
         }
     },
     methods:{
@@ -283,11 +521,47 @@ export default {
                 page:page,
                 page_size:10,
             });
+            this.data(data);
+        },
+        data(data){
             directOut(data).then(res=>{
                 console.log(res.data);
-            this.record_count=Number(res.data.filter.record_count);
-            this.directOutData=res.data.orders;
+                this.record_count=Number(res.data.filter.record_count);
+                for(let i=0;i<res.data.orders.length;i++){
+                    let reg = new RegExp( /^￥/ , "g" );
+                    res.data.orders[i].money=res.data.orders[i].money.replace(reg,"");
+                    res.data.orders[i].chengben_price=res.data.orders[i].chengben_price.replace(reg,"");
+                };
+                this.directOutData=res.data.orders;
             }); 
+        },
+        chose(){//--------------------选择查询
+            let data=this.$qs.stringify({
+                page:1,
+                page_size:10,
+                time_by:this.radio,
+                add_time1:this.search3[0],
+                add_time2:this.search3[1],
+                barcode:this.search1,
+                type:this.value5,
+                tosubshop_address:this.search2,
+                product_sn:this.search10,
+                goods_name:this.search4,
+                remark:this.search5,
+                apply_user:this.search6,
+                check_user:this.search7,
+                jianhuo_user:this.search8,
+                fahuo_user:this.search9,
+                from_subshop_id:this.value2,
+                fahuo_son_company:this.value3,
+                fahuo_subshop_type:this.value6,
+                fahuo_status:this.value7,
+                to_subshop_id:this.value8,
+                shouhuo_son_company:this.value9,
+                shouhuo_subshop_type:this.value10,
+                shouhuo_status:this.value11,
+            });
+            this.data(data);
         },
         handleClose(done){
             done();
@@ -317,8 +591,6 @@ export default {
             });
         },
         edit(row){ //--------------修改
-            row.money=row.money.slice(1);
-            row.chengben_price=row.chengben_price.slice(1);
             if(row.require_daohuo_time!==""){
                 row.require_daohuo_time=this.dateConverter(row.require_daohuo_time);
             }else{
@@ -348,14 +620,14 @@ export default {
                         message: res.errmsg,
                         duration: 1000
                     });
-                    this.reload();
+                    this.init(1);
                 }else{
                     this.$message({
                         type: "error",
                         message: res.errmsg,
                         duration: 1000
                     });
-                    this.reload();
+                    this.init(1);
                 }
             })
         },
@@ -373,8 +645,9 @@ export default {
                     this.$alert(res.errmsg)
                 }
             })
+            //this.reload();
         },
-        sendGoods(row){//--------------发货
+        sendGoods(row){//------------------发货
             console.log(row.id+"*"+row.status);
             let dataD = this.$qs.stringify({
                 id:row.id,
@@ -478,7 +751,8 @@ export default {
 .el-dialog__body .el-form {
   text-align: right;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 </style>

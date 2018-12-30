@@ -10,278 +10,361 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <!-- 搜索 -->
-            <el-form :inline="true" :model="formServe" class="demo-form-inline">
-                <!-- <el-form-item label="">
-                    <el-input	size="small" v-model="formServe.name" placeholder="名称"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="编号"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="备注信息"></el-input>
-                </el-form-item> -->
-                <el-form-item>
-                    <el-input placeholder="请输入商品名称" @input="search" v-model="keywords" style="width:50%;margin-right:10px" size="small">
-                        <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
-                    </el-input>
-                    <el-button type="primary" size="small" @click="dialogServeAdd = true">新增</el-button>
-                    <el-button type="primary" size="small" @click="reset">刷新</el-button>
-                </el-form-item>
-            </el-form>
-            <!-- 新增弹出框 -->
-            <el-dialog width="700px" title="新增" :visible.sync="dialogServeAdd">
-                <el-form :model="formServeAdd"  style="text-align:center">
-                    <!-- <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                             调拨查询id<el-input v-model="formServeAdd.id" disabled></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            分站id<el-input v-model="formServeAdd.subsite_id" disabled></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            调出店号<el-input v-model="formServeAdd.from_subshop_id"></el-input>
-                        </el-col>
-                    </el-row> -->  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            调出店名称<el-input v-model="formServeAdd.from_subshop_name"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            收货店号<el-input v-model="formServeAdd.to_subshop_id"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            收货店名称<el-input v-model="formServeAdd.to_subshop_name"></el-input>
-                        </el-col>
-                    </el-row>  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            条码<el-input v-model="formServeAdd.serial_code"></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            货号<el-input v-model="formServeAdd.product_sn"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            名称<el-input v-model="formServeAdd.goods_name"></el-input>
-                        </el-col>
-                    </el-row>  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            品牌id<el-input v-model="formServeAdd.brand_id"></el-input>     
-                        </el-col>
-                        <el-col :span="7">
-                            品牌名<el-input v-model="formServeAdd.brand_name"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            分类id<el-input v-model="formServeAdd.cat_id"></el-input>
-                        </el-col>
-                    </el-row>  
-                   <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            分类名<el-input v-model="formServeAdd.cat_name"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            规格<el-input v-model="formServeAdd.attr_value"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            申请数量<el-input v-model="formServeAdd.apply_num"></el-input>
-                        </el-col>
-                    </el-row>  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            申请金额<el-input v-model="formServeAdd.apply_money"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            申请售价金额<el-input v-model="formServeAdd.apply_shop_price"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            发货数量<el-input v-model="formServeAdd.fahuo_num"></el-input>
-                        </el-col>
-                    </el-row>  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            发货金额 <el-input v-model="formServeAdd.fahuo_money"></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            发货售价金额<el-input v-model="formServeAdd.fahuo_shop_price"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            收货数量<el-input v-model="formServeAdd.shouhuo_num"></el-input>
-                        </el-col>
-                    </el-row>  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            收货金额<el-input v-model="formServeAdd.shouhuo_money"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            收货售价金额<el-input v-model="formServeAdd.shouhuo_shop_price"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            供应商id<el-input v-model="formServeAdd.supplier_id"></el-input>
-                        </el-col>
-                    </el-row>  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            调出店号<el-input v-model="formServeAdd.from_subshop_id"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            供应商名称<el-input v-model="formServeAdd.supplier_name"></el-input>    
-                        </el-col>
-                    </el-row>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button	size="small" @click="dialogServeAdd = false">取 消</el-button>
-                    <el-button	size="small" type="primary" @click="add(),dialogServeAdd = false">确 定</el-button>
-                </div>
-            </el-dialog>
-            <!-- 详情弹出框 -->
-            <el-dialog width="700px" title="详情" :visible.sync="dialogServeDetail">
-                <el-form :model="formServeDetail"  style="text-align:center">
-                    <!-- <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                             调拨查询id<el-input v-model="formServeDetail.id" disabled></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            分站id<el-input v-model="formServeDetail.subsite_id" disabled></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            调出店号<el-input v-model="formServeDetail.from_subshop_id"></el-input>
-                        </el-col>
-                    </el-row>   -->
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            调出店名称<el-input v-model="formServeDetail.from_subshop_name"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            收货店号<el-input v-model="formServeDetail.to_subshop_id"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            收货店名称<el-input v-model="formServeDetail.to_subshop_name"></el-input>
-                        </el-col>
-                    </el-row>  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            条码<el-input v-model="formServeDetail.serial_code"></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            货号<el-input v-model="formServeDetail.product_sn"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            名称<el-input v-model="formServeDetail.goods_name"></el-input>
-                        </el-col>
-                    </el-row>  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            品牌id<el-input v-model="formServeDetail.brand_id"></el-input>     
-                        </el-col>
-                        <el-col :span="7">
-                            品牌名<el-input v-model="formServeDetail.brand_name"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            分类id<el-input v-model="formServeDetail.cat_id"></el-input>
-                        </el-col>
-                    </el-row>  
-                   <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            分类名<el-input v-model="formServeDetail.cat_name"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            规格<el-input v-model="formServeDetail.attr_value"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            申请数量<el-input v-model="formServeDetail.apply_num"></el-input>
-                        </el-col>
-                    </el-row>  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            申请金额<el-input v-model="formServeDetail.apply_money"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            申请售价金额<el-input v-model="formServeDetail.apply_shop_price"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            发货数量<el-input v-model="formServeDetail.fahuo_num"></el-input>
-                        </el-col>
-                    </el-row>  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            发货金额 <el-input v-model="formServeDetail.fahuo_money"></el-input>   
-                        </el-col>
-                        <el-col :span="7">
-                            发货售价金额<el-input v-model="formServeDetail.fahuo_shop_price"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            收货数量<el-input v-model="formServeDetail.shouhuo_num"></el-input>
-                        </el-col>
-                    </el-row>  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            收货金额<el-input v-model="formServeDetail.shouhuo_money"></el-input>    
-                        </el-col>
-                        <el-col :span="7">
-                            收货售价金额<el-input v-model="formServeDetail.shouhuo_shop_price"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            供应商id<el-input v-model="formServeDetail.supplier_id"></el-input>
-                        </el-col>
-                    </el-row>  
-                    <el-row type="flex" justify="space-around">
-                        <el-col :span="7">
-                            调出店号<el-input v-model="formServeDetail.from_subshop_id"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            供应商名称<el-input v-model="formServeDetail.supplier_name"></el-input>    
-                        </el-col>
-                    </el-row>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button	size="small" @click="dialogServeDetail = false">取 消</el-button>
-                    <el-button	size="small" type="primary" @click="edit(),dialogServeDetail = false">保存修改</el-button>
-                </div>
+            <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="4">
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                            <el-radio style="margin-bottom:7px" label="apply">申请日期</el-radio><br>
+                            <el-radio style="margin-bottom:7px" label="fahuo_time">发货日期</el-radio><br>
+                            <el-radio style="margin-bottom:7px" label="shouhuo_time">收货日期</el-radio><br>
+                        </el-radio-group>
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search"  size="mini"  placeholder="单号"/>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-bottom:5px"
+                        type="daterange" @change="chose"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value4" size="small" placeholder="调出分店">
+                            <el-option
+                            v-for="item in options4"
+                            :key="item.value4"
+                            :label="item.label"
+                            :value="item.value4">
+                            </el-option>
+                        </el-select>
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value5" size="small" placeholder="调入分店">
+                            <el-option
+                            v-for="item in options5"
+                            :key="item.value3"
+                            :label="item.label"
+                            :value="item.value5">
+                            </el-option>
+                        </el-select>
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value6" size="small" placeholder="标签">
+                            <el-option
+                            v-for="item in options6"
+                            :key="item.value6"
+                            :label="item.label"
+                            :value="item.value6">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4">
+                    <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search5"  size="mini"  placeholder="条形码"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search2"  size="mini"  placeholder="货号"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search4"  size="mini"  placeholder="商品名称"/>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value8" size="small" placeholder="分类汇总">
+                            <el-option
+                            v-for="item in options8"
+                            :key="item.value8"
+                            :label="item.label"
+                            :value="item.value8">
+                            </el-option>
+                        </el-select>
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value2" size="small" placeholder="品牌汇总">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value2"
+                            :label="item.label"
+                            :value="item.value2">
+                            </el-option>
+                        </el-select>
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value3" size="small" placeholder="状态">
+                            <el-option
+                            v-for="item in options3"
+                            :key="item.value3"
+                            :label="item.label"
+                            :value="item.value3">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search1"  size="mini"  placeholder="分类名称"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search7"  size="mini"  placeholder="品牌名称"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search8"  size="mini"  placeholder="供应商编码"/>
+                    </el-col>
+                    <el-col :span="4">
+                    <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search6"  size="mini"  placeholder="发货人"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search9"  size="mini"  placeholder="拣货人"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search10"  size="mini"  placeholder="检验员"/>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                </el-row>
+			</fieldset>
+
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" style="text-align:left"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="200px">
+                <el-checkbox v-model="allocatingQueryshow.show1">调拨查询id</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show2">调出店号</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show3">调出店名称</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show4">收货店号</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show5">收货店名称</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show6">条码</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show7">货号</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show8">商品名称</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show9">品牌id</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show10">品牌名</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show11">分类id</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show12">分类名</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show13">规格</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show14">申请数量</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show15">申请金额</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show16">申请售价金额</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show17">发货数量</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show18">发货金额</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show19">收货数量</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show20">收货金额</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show21">收货售价金额</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show22">供应商id</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show23">调出店号</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show24">供应商名称</el-checkbox><br>
+                <el-checkbox v-model="allocatingQueryshow.show25">发货售价金额</el-checkbox><br><br>
             </el-dialog>
             <!-- 表格 -->
             <el-table
-            :data="allocatData"
+            :data="allocatData.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
             border
-            :row-style="{height:0}"  
+            show-summary
+            :row-style="{height:0}"
             :cell-style="{padding:0}"
-            :header-row-style="{height:0}"  
+            :header-row-style="{height:0}"
             :header-cell-style="{padding:0}"
             style="width: 100%">
                 <el-table-column
-                prop="id"
                 align="center"
+                v-if="allocatingQueryshow.show1"
                 label="	调拨查询id">
-                </el-table-column>
-                <el-table-column
-                prop="from_subshop_id"
-                align="center"
-                label="调出店号">
-                </el-table-column>
-                <el-table-column
-                prop="from_subshop_name"
-                align="center"
-                label="调出店名称"
-                width="180">
-                </el-table-column>
-                <el-table-column
-                align="center"
-                label="商品名称">
                     <template slot-scope="scope">
-                        <span :title="scope.row.goods_name">{{scope.row.goods_name.slice(0,7)+"..."}}</span>
+                        <span>{{scope.row.id}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
-                prop="to_subshop_name"
                 align="center"
+                v-if="allocatingQueryshow.show2"
+                label="调出店号">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.from_subshop_id}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show3"
+                label="调出店名称">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.from_subshop_name"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show4"
+                label="收货店号">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.to_subshop_id"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show5"
                 label="收货店名称">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.to_subshop_name"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show6"
+                label="条码">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.serial_code"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show7"
+                label="货号">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.product_sn"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show8"
+                label="商品名称">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.goods_name"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show9"
+                label="品牌id">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.brand_id"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show10"
+                label="品牌名">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.brand_name"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show11"
+                label="分类id">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.cat_id"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show12"
+                label="分类名">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.cat_name"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show13"
+                label="规格">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.attr_value"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="apply_num"
+                align="center"
+                v-if="allocatingQueryshow.show14"
+                label="申请数量">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.apply_num"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="apply_money"
+                align="center"
+                v-if="allocatingQueryshow.show15"
+                label="申请金额">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.apply_money"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="apply_shop_price"
+                align="center"
+                v-if="allocatingQueryshow.show16"
+                label="申请售价金额">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.apply_shop_price"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="fahuo_num"
+                align="center"
+                v-if="allocatingQueryshow.show17"
+                label="发货数量">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.fahuo_num"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="fahuo_shop_price"
+                align="center"
+                v-if="allocatingQueryshow.show18"
+                label="发货金额">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.fahuo_money"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="fahuo_shop_price"
+                align="center"
+                v-if="allocatingQueryshow.show25"
+                label="发货售价金额">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.fahuo_shop_price"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="shouhuo_num"
+                align="center"
+                v-if="allocatingQueryshow.show19"
+                label="收货数量">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.shouhuo_num"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="shouhuo_money"
+                align="center"
+                v-if="allocatingQueryshow.show20"
+                label="收货金额">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.shouhuo_money"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="shouhuo_shop_price"
+                align="center"
+                v-if="allocatingQueryshow.show21"
+                label="收货售价金额">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.shouhuo_shop_price"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show22"
+                label="供应商id">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.supplier_id"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show23"
+                label="调出店号">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.from_subshop_id"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="allocatingQueryshow.show24"
+                label="供应商名称">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.supplier_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -289,8 +372,8 @@
             <!-- 分页器 -->
             <el-pagination
                 @current-change="handleCurrentChange"
-                layout="prev, pager, next,jumper"
-                :page-count="pages">
+                layout="total,prev, pager, next,jumper"
+                :total="record_count">
             </el-pagination>
         </div>
     </div>
@@ -304,33 +387,181 @@ export default {
             pages:1,
             dialogServeAdd:false,
             dialogServeDetail:false,
-            keywords:'',
-            formServe:{
-                name:"",
-                marks:""
-            },
+            dialogShow:false,
+            search:'',
+            search1:'',
+            search2:'',
+            search3:['2018-4-3','2019-9-9'],
+            search4:'',
+            search5:'',
+            search6:'',
+            search7:'',
+            search8:'',
+            search9:'',
+            search10:'',
+            radio:"apply",
+            record_count:0,
             formServeAdd:{
-                name:""
+                from_subshop_id:0,
+                to_subshop_id:0,
+                brand_id:0,
+                cat_id:0,
+                apply_num:0,
+                apply_money:0,
+                apply_shop_price:0,
+                fahuo_num:0,
+                fahuo_money:0,
+                fahuo_shop_price:0,
+                shouhuo_num:0,
+                shouhuo_money:0,
+                shouhuo_shop_price:0,
+                supplier_id:0,
             },
             formServeDetail:{},
             allocatData:[],
+            allocatingQueryshow:{
+                show1:false,
+                show2:true,
+                show3:true,
+                show4:true,
+                show5:true,
+                show6:true,
+                show7:true,
+                show8:true,
+                show9:true,
+                show10:true,
+                show11:true,
+                show12:true,
+                show13:true,
+                show14:true,
+                show15:true,
+                show16:true,
+                show17:true,
+                show18:true,
+                show19:true,
+                show20:true,
+                show21:true,
+                show22:true,
+                show23:true,
+                show24:true,
+                show25:true,
+            },
+            value: '' ,
+            value1: '' ,
+            value2: '' ,
+            value3: '' ,
+            value4: '' ,
+            value5: '' ,
+            value6: '' ,
+            value7: '' ,
+            value8: '' ,
+            value9: '' ,
+            value10: '' ,
+            value11: '' ,
+            options2: [{
+            value2: '0',
+            label: '品牌1'
+            }, {
+            value2: '1',
+            label: '品牌2'
+            },],
+            options3: [{
+            value3: '0',
+            label: '未审核'
+            }, {
+            value3: '1',
+            label: '已审核'
+            },],
+            options4: [{
+            value4: '0',
+            label: '调出分店1'
+            }, {
+            value4: '1',
+            label: '调出分店2'
+            },],
+            options5: [{
+            value5: '0',
+            label: '调入分店1'
+            }, {
+            value5: '1',
+            label: '调入分店2'
+            },],
+            options6: [{
+            value6: '0',
+            label: '调出分店'
+            }, {
+            value6: '1',
+            label: '调入分店'
+            },],
+            options8: [{
+            value8: '3',
+            label: '分类1'
+            }, {
+            value8: '7',
+            label: '分类2'
+            },],
         }
     },
     methods:{
-        search() {
+        init(page){//-----------------初始化数据
             let data=this.$qs.stringify({
-                goods_name:this.keywords
+                page:page,
+                page_size:10,
             });
+            this.data(data);
+        },
+        data(data){
             allocat(data).then(res=>{
                 console.log(res.data);
+                this.record_count=Number(res.data.filter.record_count);
+                for(let i=0;i<res.data.orders.length;i++){
+                    let reg = new RegExp( /^￥/ , "g" )
+                    res.data.orders[i].apply_money=res.data.orders[i].apply_money.replace(reg,"");
+                    res.data.orders[i].apply_shop_price=res.data.orders[i].apply_shop_price.replace(reg,"");;
+                    res.data.orders[i].fahuo_money=res.data.orders[i].fahuo_money.replace(reg,"");
+                    res.data.orders[i].fahuo_shop_price=res.data.orders[i].fahuo_shop_price.replace(reg,"");
+                    res.data.orders[i].shouhuo_money=res.data.orders[i].shouhuo_money.replace(reg,"");        
+                    res.data.orders[i].shouhuo_shop_price=res.data.orders[i].shouhuo_shop_price.replace(reg,"");   
+                }
                 this.allocatData=res.data.orders;
-            }); 
-        },         
+            });
+        },
+        chose(){//-----------------选择查询
+            let data=this.$qs.stringify({
+                page:1,
+                page_size:10,
+                time_by:this.radio,
+                add_time1:this.search3[0],
+                add_time2:this.search3[1],
+                from_subshop_id:this.value4,
+                to_subshop_id:this.value5,
+                tags:this.value6,
+                serial_code:this.search5,
+                product_sn:this.search2,
+                goods_name:this.search4,
+                cat_id:this.value8,
+                brand_id:this.value2,
+                status:this.value3,
+                cat_name:this.search1,
+                brand_name:this.search7,
+                supplier_id:this.search8,
+                fahuo_user:this.search6,
+                shipper:this.search9,
+                check_user:this.search10,
+            });
+            this.data(data);
+        },
+        handleClose(done){
+            done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.allocatingQuery=this.allocatingQueryshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+        },
         reset() {
             this.reload();
         },
         handleCurrentChange(val) {
-            console.log(val);          
+            this.init(val);
         },
         add(){//--------------添加
             let dataA=this.$qs.stringify(this.formServeAdd);
@@ -351,34 +582,36 @@ export default {
             allocatDe(dataD).then(res=>{
                 console.log(res.data);
                 this.formServeDetail=res.data;
-            }); 
+            });
         },
-        edit(){//--------------修改
-            this.formServeDetail.apply_money=this.formServeDetail.apply_money.slice(1);
-            this.formServeDetail.apply_shop_price=this.formServeDetail.apply_shop_price.slice(1);
-            this.formServeDetail.fahuo_money=this.formServeDetail.fahuo_money.slice(1);
-            this.formServeDetail.fahuo_shop_price=this.formServeDetail.fahuo_shop_price.slice(1);
-            this.formServeDetail.shouhuo_money=this.formServeDetail.shouhuo_money.slice(1);
-            this.formServeDetail.shouhuo_shop_price=this.formServeDetail.shouhuo_shop_price.slice(1);
-            let dataE=this.$qs.stringify(this.formServeDetail);
+        edit(row){//--------------修改
+            let dataE=this.$qs.stringify(row);
             allocatEd(dataE).then(res=>{
                 console.log(res.errno);
                 if(res.errno==0){
-                    this.$alert("修改成功")
-                    this.reload();
+                    this.$message({
+                        type: "success",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.init(1);
                 }else{
-                    this.$alert("修改失败")
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.init(1);
                 }
             })
         },
         deleteRow(row) {
-            console.log(row.id);
             let Message=confirm("确定删除此行数据？");
             if(Message){
                 let data=this.$qs.stringify({
                     id:row.id,
                     is_delete:1
-                }); 
+                });
                 allocatEd(data).then(res=>{
                     if(res.errno==0){
                         this.$alert("删除成功")
@@ -386,17 +619,23 @@ export default {
                     }else{
                         this.$alert("删除失败")
                     }
-                });   
+                });
             }else{
                 alert("用户取消操作");
             }
         }
     },
-    created: function () {  
-        allocat().then(res=>{
-            console.log(res.data);
-            this.allocatData=res.data.orders;
-        });   
+    created: function () {
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            if(erpTableSetting.allocatingQuery!==undefined){
+                this.allocatingQueryshow=erpTableSetting.allocatingQuery;
+            }
+        }else{
+            console.log("no");
+        };
+        this.init(1);
     }
 }
 </script>
@@ -424,7 +663,13 @@ export default {
 .el-form .el-form-item .el-input {
   width: 80%;
 }
-
+.el-table input{
+    width:100%;
+    height:34px;
+    border:1px solid #DCDFE6;
+    border-radius:4px;
+    padding:2px;
+}
 /* 分页器 */
 .el-pagination {
   padding: 20px 0;
@@ -438,7 +683,8 @@ export default {
 .el-dialog__body .el-form {
   text-align: right;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 </style>

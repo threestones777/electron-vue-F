@@ -18,8 +18,22 @@
                     </el-input>
                     <el-button type="primary" size="small" @click="dialogServeAdd = true">新增</el-button>
                     <el-button type="primary" size="small" @click="reset">刷新</el-button>
+                    <el-button icon="el-icon-tickets" type=primary size="small" @click="dialogShow=true">显示列</el-button>
                 </el-form-item>
             </el-form>
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" class="chose" style="text-align:left"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="200px">
+                <el-checkbox v-model="valueCardshow.show1">类型id</el-checkbox><br>
+                <el-checkbox v-model="valueCardshow.show2">类型名称</el-checkbox><br>
+                <el-checkbox v-model="valueCardshow.show3">卡积分</el-checkbox><br>
+                <el-checkbox v-model="valueCardshow.show4">发放数量</el-checkbox><br>
+                <el-checkbox v-model="valueCardshow.show5">开始日期</el-checkbox><br>
+                <el-checkbox v-model="valueCardshow.show6">结束日期</el-checkbox><br><br>
+            </el-dialog>
             <!-- 新增弹出框 -->
             <el-dialog width="550px" title="新增" :visible.sync="dialogServeAdd">
                 <el-form :model="formServeAdd">
@@ -174,47 +188,66 @@
             <el-table
             :data="valueCardTypeData"
             border
+            show-summary
             :row-style="{height:0}"  
-            :cell-style="{padding:0}"
+            :cell-style="{padding:7}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             style="width: 100%">
                 <el-table-column
                 prop="type_id"
                 align="center"
-                label="类型id">
+                v-if="valueCardshow.show1"
+                label="类型id">                  
                 </el-table-column>
                 <el-table-column
                 prop="type_name"
                 align="center"
+                v-if="valueCardshow.show2"
                 label="类型名称">
+                  <template slot-scope="scope">
+                        <input v-model="scope.row.type_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="type_integral"
                 align="center"
+                v-if="valueCardshow.show3"
                 label="卡积分">
+                  <template slot-scope="scope">
+                        <input v-model="scope.row.type_integral"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="send_count"
                 align="center"
+                v-if="valueCardshow.show4"
                 label="发放数量">
                 </el-table-column>
                 <el-table-column
                 prop="use_start_date"
                 align="center"
+                v-if="valueCardshow.show5"
                 label="开始日期">
+                  <template slot-scope="scope">
+                        <input v-model="scope.row.use_start_date"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="use_end_date"
                 align="center"
+                v-if="valueCardshow.show6"
                 label="结束日期">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.use_end_date"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click="getId(scope.row),dialogIssue = true">发放</el-button>
                         <el-button type="text" size="small" @click="check(scope.row),dialogCheck = true">查看</el-button>
                         <!-- <el-button type="text" title="删除" @click="deleteRow(scope.row)"  icon="el-icon-delete"></el-button> -->
@@ -266,6 +299,15 @@ export default {
       dialogCheck: false,
       dialogCheckDetail: false,
       dialogServeDetail: false,
+      dialogShow:false,
+      valueCardshow:{
+          show1:false,
+          show2:true,
+          show3:true,
+          show4:true,
+          show5:true,
+          show6:true,
+      },
       type_id: 0,
       id:0,
       send_sum: 0,
@@ -284,6 +326,22 @@ export default {
     };
   },
   methods: {
+    init(page){
+      let data=this.$qs.stringify({
+          page:page,
+          page_size:10,
+      }); 
+      valueCardType(data).then(res => {
+        console.log(res.data);
+        this.valueCardTypeData = res.data.orders;
+      });
+    },
+    handleClose(done){
+        done();
+        /* let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+        erpTableSetting.valueCard=this.valueCardshow;
+        localStorage.erpTableSetting=JSON.stringify(erpTableSetting); */
+    },
     search() {
       let data=this.$qs.stringify({
           type_name:this.keywords
@@ -297,7 +355,7 @@ export default {
       this.reload();
     },
     handleCurrentChange(val) {
-      console.log(val);
+      this.init(val);
     },
     handleChecktChange(val) {//--------------查看的 分页查询
       console.log(val);
@@ -325,16 +383,25 @@ export default {
         this.formServeDetail = res.data[0];
       });
     },
-    edit() {//--------------修改
+    edit(row) {//--------------修改
       console.log("修改");
-      let dataE = this.$qs.stringify(this.formServeDetail);
+      let dataE = this.$qs.stringify(row);
       valueCardTypeEd(dataE).then(res => {
         console.log(res.errno);
         if (res.errno == 0) {
-          this.$alert(res.errmsg);
-          this.reload();
+            this.$message({
+                type: "success",
+                message: res.errmsg,
+                duration: 1000
+            });
+          this.init(1);
         } else {
-          this.$alert(res.errmsg);
+            this.$message({
+                type: "error",
+                message: res.errmsg,
+                duration: 1000
+            });
+            this.init(1);
         }
       });
     },
@@ -349,10 +416,20 @@ export default {
       });
       valueCardIssue(dataI).then(res => {
         if (res.errno == 0) {
-          this.$alert(res.errmsg);
-          this.reload();
+          this.$message({
+              type: "success",
+              message: res.errmsg,
+              duration: 1000
+          });
+          this.init(1);
+          this.send_sum=0;
         } else {
-          this.$alert(res.errmsg);
+          this.$message({
+              type: "error",
+              message: res.errmsg,
+              duration: 1000
+          });
+          this.init(1);
         }
       });
     },
@@ -520,10 +597,16 @@ export default {
     }
   },
   created: function() {
-    valueCardType().then(res => {
-      console.log(res.data);
-      this.valueCardTypeData = res.data.orders;
-    });
+    if(localStorage.erpTableSetting!==undefined){
+        console.log("yes");
+        let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+        if(erpTableSetting.valueCard!==undefined){
+            this.valueCardshow=erpTableSetting.valueCard;
+        }
+    }else{
+        console.log("no");
+    }; 
+    this.init(1);
   }
 };
 </script>
@@ -556,7 +639,13 @@ export default {
   padding: 20px 0;
   text-align: right;
 }
-
+.el-table input{
+    width:100%;
+    height:34px;
+    border:1px solid #DCDFE6;
+    border-radius:4px;
+    padding:2px;
+}
 /* 新增弹出框 & 详情弹出框*/
 .main-table >>> .el-dialog__body {
   padding: 0 20px;

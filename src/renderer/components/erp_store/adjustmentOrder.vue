@@ -10,36 +10,76 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <!-- 单据搜索 -->
-            <el-form :inline="true" :model="formServe" class="demo-form-inline">
-                <!-- <el-form-item>
-                    <el-select	size="small" clearable v-model="formServe.time_by" placeholder="请选择时间过滤类型">
-                        <el-option label="制单时间" value="add_time" />
-                        <el-option label="审核时间" value="check_time" />
-                    </el-select>
-                </el-form-item>
-                <el-form-item v-show="formServe.time_by" label="起止日期">
-                    <el-date-picker
-                    v-model="formServe.time"
-                    type="daterange"
-                    clearable
-                    size="small"
-                    range-separator="至"
-                    value-format="timestamp"
-                    format="yyyy 年 MM 月 dd 日"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item>
-                    <el-input	size="small" clearable v-model="formServe.bill_sn" placeholder="编号"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-select	size="small" clearable v-model="formServe.status" placeholder="审核状态">
-                        <el-option label="已审核" value="1" />
-                        <el-option label="未审核" value="0" />
-                    </el-select>
-                </el-form-item> -->
+            <fieldset style="margin:10px 0;border-color: #fff;">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group v-model="radio" style="margin-top:5px;">
+                            <el-radio :label="1">制单日期</el-radio><br>
+                            <el-radio :label="2">审核日期</el-radio><br>
+                            <el-radio :label="4">不按日期</el-radio>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col :span="5">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-top:0px"
+                        type="daterange"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="订单号"/>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select v-model="value1" size="small" placeholder="状态">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select> 
+                        <el-select v-model="value2" size="small" placeholder="分店" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value2"
+                            :label="item.label"
+                            :value="item.value2">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select v-model="value3" size="small" placeholder="分公司">
+                            <el-option
+                            v-for="item in options3"
+                            :key="item.value3"
+                            :label="item.label"
+                            :value="item.value3">
+                            </el-option>
+                        </el-select> 
+                        <el-select v-model="value4" size="small" placeholder="分店类型" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options4"
+                            :key="item.value4"
+                            :label="item.label"
+                            :value="item.value4">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                </el-row>
+            </fieldset>
+                
+            <!-- <el-form :inline="true" :model="formServe" class="demo-form-inline">
                 <el-form-item>
                     <el-input placeholder="请输入调整单编号" @input="search" v-model="keywords" style="width:50%;margin-right:10px" size="small">
                         <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
@@ -47,7 +87,7 @@
                     <el-button type="primary" size="small" @click="add">新增单据</el-button>
                     <el-button type="primary" size="small" @click="reset">刷新</el-button>
                 </el-form-item>
-            </el-form>
+            </el-form> -->
             <!--增改商品弹出框 -->
             <el-dialog width="900px" title="增改商品" :visible.sync="dialogServeAdd">
                 <!-- 全局商品列表弹出卡片 -->
@@ -299,10 +339,46 @@ export default {
             bn_id:'', // 将要增改的单据id
             goodsList:[], // 供选择的全局商品列表拘束
             selectedGoods:[], // 选中的商品
+            search:'',
+            search3:['2017-7-7','2019-9-9'],
+            radio:4,
+            value: '' ,
+            value1: '' ,
+            value2: '' ,
+            value3: '' ,
+            value4: '' ,
+            options1: [{
+            value1: '选项1',
+            label: '未审核'
+            }, {
+            value1: '选项2',
+            label: '已审核'
+            },],
+            options2: [{
+            value2: '选项1',
+            label: '0分店'
+            }, {
+            value2: '选项2',
+            label: '1分店'
+            },],
+            options3: [{
+            value3: '选项1',
+            label: '分公司1'
+            }, {
+            value3: '选项2',
+            label: '分公司2'
+            },],
+            options4: [{
+            value4: '选项1',
+            label: '类型1'
+            }, {
+            value4: '选项2',
+            label: '类型2'
+            },],
         }
     },
     methods:{
-        search() {
+        /* search() {
             let data=this.$qs.stringify({
                 bill_sn:this.keywords
             });
@@ -314,7 +390,7 @@ export default {
                     this.loading = false;
                 }
             });
-        },
+        }, */
         initData(obj) {
             // 获取列表
             let data = {
@@ -626,8 +702,9 @@ export default {
 .main-table >>> .el-dialog__body .el-input-number {
   width: 100%;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 .btn-t {
     float: right;

@@ -5,6 +5,12 @@ Vue.use(Router)
 
 let router = new Router({
   routes: [
+    // temp
+    {
+      path: '/temp',
+      name: 'temp',
+      component: require('@/components/temp').default,
+    },
     // 收银台
     {
       path: '/erp_cashier_goodslists',

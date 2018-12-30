@@ -10,233 +10,170 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <div style="margin:10px 0;text-align:center">
-                <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
-                <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
-                <el-button type="primary" size="small" @click="add" icon="el-icon-plus"></el-button>
-                <el-button type="primary" size="small" @click="reset">刷新</el-button>
-            </div>
-            <!-- 按需选择列弹窗 -->
-            <el-dialog
-            title="按需选择列" class="chose"
-            :visible.sync="dialogShow"
-            :before-close="handleClose"
-            width="300px">
-                <el-checkbox v-model="retailSettingshow.show1">编号</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show2">打印店名字</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show3">打印店地址</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show4">小票标题</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show5">不打印小票编号</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show6">打印分店订货电话</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show7">打印分店传真</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show8">打印分店客服</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show9">尾页空行</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show10">右打印设置</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show11">打印营业员编码</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show12">打印营业员名称</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show13">打印营业员信息</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show14">特价商品打印原单价</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show15">尾页打印节省金额</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show16">打印积分</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show17">打印会员名称</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show18">打印商品全称和货号</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show19">打印商品全称和条形码</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show20">促销备注打印行数</el-checkbox><br>
-                <el-checkbox v-model="retailSettingshow.show21">小票结束词1</el-checkbox><br><br>
-            </el-dialog>
-            <!-- 表格 -->
-            <el-table
-            :data="retailsetData.filter(data =>  {
-            return Object.keys(data).some(key => {
-            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
-            border
-            :row-style="{height:0}"  
-            :cell-style="{padding:0}"
-            :header-row-style="{height:0}"  
-            :header-cell-style="{padding:0}"
-            style="width: 100%">
-                <el-table-column
-                prop="id"
-                align="center"
-                v-if="retailSettingshow.show1"
-                label="编号">
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show2"
-                label="打印店名字">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_subshop_name">
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show3"
-                label="打印店地址">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_subshop_address">
-                    </template>
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show4"
-                label="小票标题">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.ticket_title">
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show5"
-                label="不打印小票编号">
-                    <template slot-scope="scope">
-                        <el-checkbox v-model="scope.row.not_print_sn" true-label="0" false-label="1"/>
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show6"
-                label="打印分店订货电话">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_subshop_dh">
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show7"
-                label="打印分店传真">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_subshop_fax">
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show8"
-                label="打印分店客服">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_subshop_kefu">
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show9"
-                label="尾页空行">
-                    <template slot-scope="scope">
-                        <input type="number" v-model="scope.row.footer_konghang" />
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show10"
-                label="右打印设置">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.right_config">
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show11"
-                label="打印营业员编码">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_clerk_id">
-                    </template>
-                </el-table-column>                
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show12"
-                label="打印营业员名称">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_clerk_name">
-                    </template>                    
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show13"
-                label="打印营业员信息">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_clerk_info">
-                    </template> 
-                </el-table-column>                   
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show14"
-                label="特价商品打印原单价">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_old_price">
-                    </template> 
-                </el-table-column>                   
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show15"
-                label="尾页打印节省金额">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_save_money">
-                    </template>  
-                </el-table-column>                  
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show16"
-                label="打印积分">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_integral">
-                    </template> 
-                </el-table-column>                   
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show17"
-                label="打印会员名称">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_user_name">
-                    </template>  
-                </el-table-column>                  
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show18"
-                label="打印商品全称和货号">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_product_id">
-                    </template>  
-                </el-table-column>                  
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show19"
-                label="打印商品全称和条形码">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.print_txm">
-                    </template> 
-                </el-table-column>                   
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show20"
-                label="促销备注打印行数">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.remark_hangshu">
-                    </template>                    
-                </el-table-column>
-                <el-table-column
-                align="center"
-                v-if="retailSettingshow.show21"
-                label="小票结束词1">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.end_word1" />
-                    </template>                    
-                </el-table-column>
-                <el-table-column
-                fixed="right"
-                align="center"
-                label="相关操作">
-                    <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="savEdit(scope.row)">保存修改</el-button>
-                        <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <!-- 分页器 -->
-            <el-pagination
-                @current-change="handleCurrentChange"
-                layout="total,prev, pager, next,jumper"
-                :total="record_count">
-            </el-pagination>
+            <el-form ref="form" :model="retailsetData">
+               <el-form-item style="text-align:left">
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6">
+                            小票标题:<el-input size="small" style="width:70%" v-model="retailsetData.ticket_title"></el-input>  
+                        </el-col>
+                        <el-col :span="6">
+                            小票副标题:<el-input size="small" style="width:70%"  v-model="retailsetData.ticket_subtitle"></el-input>
+                        </el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_subshop_name" true-label="0" false-label="1">打印店名字</el-checkbox>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_subshop_address" true-label="0" false-label="1">打印店地址</el-checkbox>
+                        </el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.not_print_sn" true-label="0" false-label="1">不打印小票编号</el-checkbox> 
+                        </el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_subshop_dh" true-label="0" false-label="1">打印分店订货电话</el-checkbox>
+                        </el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_subshop_fax" true-label="0" false-label="1">打印分店传真</el-checkbox>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_subshop_kefu" true-label="0" false-label="1">打印分店客服</el-checkbox>
+                        </el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6">
+                            尾页空行:<el-input size="small" style="width:70%" v-model="retailsetData.footer_konghang"></el-input>
+                        </el-col>
+                        <el-col :span="6">
+                            打印纸宽度:<el-input size="small" style="width:70%" v-model="retailsetData.print_width"></el-input>
+                        </el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6">
+                            右打印设置:<el-input size="small" style="width:65%" v-model="retailsetData.right_config"></el-input>
+                        </el-col>
+                        <el-col :span="6"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_clerk_id" true-label="0" false-label="1">打印营业员编码</el-checkbox>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_clerk_name" true-label="0" false-label="1">打印营业员名称</el-checkbox>
+                        </el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_clerk_info" true-label="0" false-label="1">打印营业员信息</el-checkbox>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_old_price" true-label="0" false-label="1">特价商品打印原单价</el-checkbox>
+                        </el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_save_money" true-label="0" false-label="1">尾页打印节省金额</el-checkbox>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_integral" true-label="0" false-label="1">打印积分</el-checkbox>
+                        </el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_user_name" true-label="0" false-label="1">打印会员名称</el-checkbox>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_product_id" true-label="0" false-label="1">打印商品全称和货号</el-checkbox>
+                        </el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6">
+                            <el-checkbox style="float:left;" v-model="retailsetData.print_txm" true-label="0" false-label="1">打印商品全称和条形码</el-checkbox>
+                        </el-col>
+                        <el-col :span="6"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="9">
+                            促销备注打印行数:<el-input size="small" style="width:70%" v-model="retailsetData.remark_hangshu"></el-input>
+                        </el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6">
+                            小票结束词1:<el-input size="small" style="width:65%" v-model="retailsetData.end_word1"></el-input>
+                        </el-col>
+                        <el-col :span="6">
+                            小票结束词2:<el-input size="small" style="width:65%" v-model="retailsetData.end_word2"></el-input>
+                        </el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                    <el-row type="flex" justify="center" :gutter="10">
+                       <el-col :span="3"></el-col>
+                        <el-col :span="6"></el-col>
+                        <el-col :span="6"></el-col>
+                        <el-col :span="3"></el-col>
+                        <el-col :span="3">
+                            <el-button type="primary" style="float:right;" @click="savEdit">保存修改</el-button>
+                        </el-col>
+                        <el-col :span="3"></el-col>
+                    </el-row>
+                </el-form-item> 
+            </el-form>
         </div>
     </div>
 </template>
@@ -254,7 +191,7 @@ export default {
             record_count:0,
             formServeAdd:{},
             formDetail:{},
-            retailsetData:[],
+            retailsetData:{},
             retailSettingshow:{
                 show1:true,
                 show2:true,
@@ -289,7 +226,7 @@ export default {
             retailSetting(data).then(res=>{
                 this.record_count=Number(res.data.filter.record_count);
                 console.log(res.data.retailsetting_list);
-                this.retailsetData=res.data.retailsetting_list;
+                this.retailsetData=res.data.retailsetting_list[0];
             })
         }, 
         handleClose(done){
@@ -316,8 +253,8 @@ export default {
                 this.formDetail=res.data;
             })
         },
-        savEdit(row){//-------修改
-            let data =this.$qs.stringify(row)
+        savEdit(){//-------修改
+            let data =this.$qs.stringify(this.retailsetData)
             retailSettingEd(data).then(res=>{
                 console.log(res.errno);
                 if(res.errno==0){
@@ -357,7 +294,6 @@ export default {
             }else{
                 this.$alert("删除失败");
             }
-            
         }
     },
     created: function () { 
@@ -371,7 +307,6 @@ export default {
             console.log("no");
         };
         this.init(1);
-        
     }
 }
 </script>
@@ -416,8 +351,5 @@ export default {
 }
 .el-dialog__body .el-form {
   text-align: right;
-}
-.el-row {
-  border-top: 1px dashed #ccc;
 }
 </style>

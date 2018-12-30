@@ -10,13 +10,73 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <!-- 搜索 -->
-            <div style="margin:10px 0;text-align:center">
-                <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
-                <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
-                <el-button type="primary" size="small" @click="add" icon="el-icon-plus"></el-button>
-                <el-button type="primary" size="small" @click="reset">刷新</el-button>
-            </div>
+            <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                            <el-radio label="dinghuo_time">订货日期</el-radio><br>
+                            <el-radio label="dinghuo_check_time ">审核日期</el-radio><br>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                            <el-radio label="require_daohuo_time ">要求到货日期</el-radio><br>
+                            <el-radio label="4">不按日期</el-radio>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col :span="4">
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search"  size="mini"  placeholder="订单号"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search1"  size="mini"  placeholder="订货人"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:0px;" v-model="search2"  size="mini"  placeholder="订货核对人"/>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select @change="chose" v-model="value" size="small" placeholder="分店类型" style="margin-bottom:5px;">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <el-select @change="chose" v-model="value1" size="small" placeholder="分店">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select @change="chose" v-model="value4" size="small" placeholder="状态">
+                            <el-option
+                            v-for="item in options4"
+                            :key="item.value4"
+                            :label="item.label"
+                            :value="item.value4">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="5">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-top:0px"
+                        type="daterange" @change="chose"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                </el-row>				
+			</fieldset>
             <!-- 按需选择列弹窗 -->
             <el-dialog
             title="按需选择列" class="chose" style="text-align:left"
@@ -59,7 +119,7 @@
                 v-if="distributionAnalysisshow.show2"
                 label="状态">
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                 prop="xiadan_subshop_id"
                 align="center"
                 v-if="distributionAnalysisshow.show3"
@@ -72,7 +132,7 @@
                     <template slot-scope="scope">
                         <input v-model="scope.row.shouhuo_subshop_id"/>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
                 align="center"
                 v-if="distributionAnalysisshow.show5"
@@ -185,6 +245,9 @@ export default {
             dialogShow:false,
             record_count:0,
             search:'',
+            search1:'',
+            search2:'',
+            search3:['2017-7-7','2019-9-9'],
             formServe:{
                 name:"",
                 marks:""
@@ -202,7 +265,7 @@ export default {
             formServeDetail:{},
             distributionData:[],
             distributionAnalysisshow:{
-                show1:true,
+                show1:false,
                 show2:true,
                 show3:true,
                 show4:true,
@@ -215,6 +278,35 @@ export default {
                 show11:true,
                 show12:true,
             },
+            radio:"4",
+            value: '' ,
+            value1: '' ,
+            value3: '' ,
+            value4: '' ,
+            value5: '' ,
+            value6: '' ,
+            value7: '' ,
+            options: [{
+            value: '0',
+            label: '类型1'
+            }, {
+            value: '1',
+            label: '类型2'
+            },],  
+            options1: [{
+            value1: '0',
+            label: '0号店'
+            }, {
+            value1: '1',
+            label: '1号店'
+            },],
+            options4: [{
+            value4: '0',
+            label: '未审核'
+            }, {
+            value4: '1',
+            label: '已审核'
+            },],
         }
     },
     methods:{
@@ -223,12 +315,30 @@ export default {
                 page:page,
                 page_size:10,
             }); 
+            this.data(data);
+        }, 
+        data(data){
             distribution(data).then(res=>{
                 console.log(res.data.peihuo_list);
                 this.record_count=Number(res.data.filter.record_count);
                 this.distributionData=res.data.peihuo_list;
             }); 
-        }, 
+        },
+        chose(){//--------------------选择查询
+           let data=this.$qs.stringify({
+                page:1,
+                page_size:10,
+                time_by:this.radio,
+                dinghuo_user:this.search1,
+                dinghuo_check_user:this.search2,
+                subshop_type:this.value,
+                xiadan_subshop_id:this.value1,
+                status:this.value4,
+                add_time1:this.search3[0],
+                add_time2:this.search3[1],
+            }); 
+            this.data(data); 
+        },
         handleClose(done){
             done();
             let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
@@ -284,18 +394,18 @@ export default {
                         message: res.errmsg,
                         duration: 1000
                     });
-                    this.reload();
+                    this.init(1); 
                 }else{
                     this.$message({
                         type: "error",
                         message: res.errmsg,
                         duration: 1000
                     });
+                    this.init(1); 
                 }
             });            
         },
         add(){
-            console.log("添加");
             let dataA=this.$qs.stringify(this.formServeAdd);
             distributionAdd(dataA).then(res=>{
                 console.log(res.data);
@@ -395,7 +505,8 @@ export default {
 .el-dialog__body .el-form {
   text-align: right;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 </style>

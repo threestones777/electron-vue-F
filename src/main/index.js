@@ -18,8 +18,8 @@ const winURL = process.env.NODE_ENV === 'development'
 function createWindow () {
   Menu.setApplicationMenu(null)             //关闭菜单选项
   mainWindow = new BrowserWindow({
-    height:700,//window.screen.availHeight,
-    width:1400,//window.screen.availWidth,               
+    height:770,//window.screen.availHeight,
+    width:1350,//window.screen.availWidth,               
     useContentSize: true,
     frame: true,                     //有无边框                
     webPreferences: {webSecurity: false},  //解决跨域 

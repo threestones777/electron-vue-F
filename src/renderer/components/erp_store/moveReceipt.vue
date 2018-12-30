@@ -10,17 +10,77 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <!-- 搜索 -->
-            <el-form :inline="true" :model="formServe" class="demo-form-inline">
-                <!-- <el-form-item label="">
-                    <el-input	size="small" v-model="formServe.name" placeholder="名称"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="编号"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="备注信息"></el-input>
-                </el-form-item> -->
+            <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col :span="5">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-top:20px"
+                        type="daterange"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search"  size="mini"  placeholder="订单号"/>
+                        <el-select v-model="value2" size="small" placeholder="分店">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value2"
+                            :label="item.label"
+                            :value="item.value2">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select v-model="value1" size="small" placeholder="状态">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select> 
+                        <el-select v-model="value5" size="small" placeholder="移出仓" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options5"
+                            :key="item.value5"
+                            :label="item.label"
+                            :value="item.value5">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select v-model="value3" size="small" placeholder="分公司">
+                            <el-option
+                            v-for="item in options3"
+                            :key="item.value3"
+                            :label="item.label"
+                            :value="item.value3">
+                            </el-option>
+                        </el-select> 
+                        <el-select v-model="value4" size="small" placeholder="分店类型" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options4"
+                            :key="item.value4"
+                            :label="item.label"
+                            :value="item.value4">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                </el-row>          
+            </fieldset>
+
+            <!-- <el-form :inline="true" :model="formServe" class="demo-form-inline">
                 <el-form-item>
                     <el-input placeholder="请输入单据编号" @input="search" v-model="keywords" style="width:50%;margin-right:10px" size="small">
                         <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
@@ -28,7 +88,7 @@
                     <el-button type="primary" size="small" @click="add">新增</el-button>
                     <el-button type="primary" size="small" @click="reset">刷新</el-button>
                 </el-form-item>
-            </el-form>
+            </el-form> -->
             <!-- 新增弹出框 -->
             <el-dialog width="450px" title="新增" :visible.sync="dialogServeAdd">
                 <el-form :model="formServeAdd">
@@ -151,12 +211,55 @@ export default {
       formServeDetail: {},
       Data: [],
       rule: [{ required: true, message: "不能为空" }],
+      search:'',
+            search3:['2017-7-7','2019-9-9'],
+            radio:4,
+            value: '' ,
+            value1: '' ,
+            value2: '' ,
+            value3: '' ,
+            value4: '' ,
+            value5: '' ,
+            options1: [{
+            value1: '选项1',
+            label: '未审核'
+            }, {
+            value1: '选项2',
+            label: '已审核'
+            },],
+            options2: [{
+            value2: '选项1',
+            label: '0分店'
+            }, {
+            value2: '选项2',
+            label: '1分店'
+            },],
+            options3: [{
+            value3: '选项1',
+            label: '分公司1'
+            }, {
+            value3: '选项2',
+            label: '分公司2'
+            },],
+            options4: [{
+            value4: '选项1',
+            label: '类型1'
+            }, {
+            value4: '选项2',
+            label: '类型2'
+            },],
+            options5: [{
+            value5: '选项1',
+            label: '仓1'
+            }, {
+            value5: '选项2',
+            label: '仓2'
+            },],
     };
   },
   methods: {
     initData() {
-      // 获取列表
-      let data = this.$qs.stringify({
+      let data = this.$qs.stringify({//------------------- 获取列表
         subsite_id: 3,
         user_id: sessionStorage.user_id,
         page: this.page,
@@ -234,7 +337,7 @@ export default {
         }
       });
     },
-    search() {
+    /* search() {
       let data=this.$qs.stringify({
           bill_sn:this.keywords
       });
@@ -246,7 +349,7 @@ export default {
           this.loading = false;
         }
       });
-    },
+    }, */
     reset() {
       this.initData();
     },
@@ -355,7 +458,8 @@ export default {
 .main-table >>> .el-dialog__body .el-input-number {
   width: 100%;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 </style>

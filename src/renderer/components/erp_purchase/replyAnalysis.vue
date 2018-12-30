@@ -9,13 +9,61 @@
                 <el-breadcrumb-item>补货分析</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class="main-table">
-            <div style="margin:10px 0;text-align:center">
-                    <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
-                    <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
-                    <el-button type="primary" size="small" @click="add" icon="el-icon-plus"></el-button>
-                    <el-button type="primary" size="small" @click="reset">刷新</el-button>
-            </div>
+        <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
+            <legend>查询条件</legend>
+            <el-row type="flex" justify="space-around" :gutter="10">
+                <el-col style="text-align:left" :span="3">
+                <!--  <h3 >日期类型</h3> -->
+                    <el-radio-group v-model="radio" style="margin-top:5px;">
+                    <el-radio :label="3">订货日期</el-radio><br>
+                    <el-radio :label="6">要求到货日期</el-radio><br>
+                    <el-radio :label="9">不按日期</el-radio>
+                </el-radio-group>    
+                </el-col>
+                <el-col :span="4">
+                    <el-input  prefix-icon="el-icon-search" style="width:100%;margin-top:30px;" v-model="search"  size="mini"  placeholder="输入订单号"/>
+                </el-col>
+                <el-col :span="4">
+                    <el-select style="margin-top:30px;" v-model="value1" size="small" placeholder="分店">
+                        <el-option
+                        v-for="item in options1"
+                        :key="item.value1"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>    
+                </el-col>
+                <el-col :span="5">
+                    <el-date-picker
+                    v-model="search3" size="small"
+                    style="width:100%;margin-top:30px"
+                    type="daterange"
+                    align="right"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
+                    </el-date-picker>
+                    <!-- <el-input  prefix-icon="el-icon-search" style="width:100%;margin-top:5px;"  size="mini"  placeholder="输入关键字搜索"/> -->
+                </el-col>
+                <el-col :span="4">
+                    <el-select v-model="value4" size="small" placeholder="分店类型" style="margin-top:30px;width:100%;">
+                        <el-option
+                        v-for="item in options4"
+                        :key="item.value4"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select> 
+                </el-col>
+                <el-col :span="3">
+                    <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                    <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                </el-col>
+            </el-row>            
+        </fieldset>
+
+        <div class="main-table" style="margin-top:10px;">
             <!-- 按需选择列弹窗 -->
             <el-dialog
             title="按需选择列" class="chose"
@@ -30,7 +78,7 @@
                 <el-checkbox v-model="replyAnalysisshow.show6">订货操作人</el-checkbox><br>
                 <el-checkbox v-model="replyAnalysisshow.show7">要求到货日期</el-checkbox><br>
                 <el-checkbox v-model="replyAnalysisshow.show8">备注</el-checkbox><br><br>
-            </el-dialog>
+            </el-dialog>    
             <!-- 新增弹出框 -->
             <el-dialog width="550px" title="新增" :visible.sync="dialogServeAdd">
                 <el-form :model="formServeAdd">
@@ -138,7 +186,7 @@
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             style="width: 100%">
-                <el-table-column
+                <!-- <el-table-column
                 prop="id"
                 v-if="replyAnalysisshow.show1"
                 align="center"
@@ -149,75 +197,59 @@
                 v-if="replyAnalysisshow.show2"
                 align="center"
                 label="店铺id">
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
+                prop="subshop_name"
                 align="center"
                 v-if="replyAnalysisshow.show3"
                 label="门店名称">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.subshop_name">
-                    </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="bill_sn"
                 v-if="replyAnalysisshow.show4"
                 label="单号">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.bill_sn">
-                    </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="add_time"
                 v-if="replyAnalysisshow.show5"
                 label="订货日期">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.add_time">
-                    </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="adminid"
                 v-if="replyAnalysisshow.show6"
                 label="订货操作人">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.adminid">
-                    </template>
                 </el-table-column>
-                <!-- <el-table-column
+                <el-table-column
                 align="center"
+                prop="check_time"
                 label="订单审核日期">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.check_time">
-                    </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="check_adminid"
                 label="订货审核人">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.check_adminid">
-                    </template>
-                </el-table-column> -->
+                </el-table-column>
                 <el-table-column
                 align="center"
+                prop="require_time"
                 v-if="replyAnalysisshow.show7"
                 label="要求到货日期">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.require_time">
-                    </template>
                 </el-table-column>
                 <el-table-column
                 v-if="replyAnalysisshow.show8"
                 align="center"
+                prop="remark"
                 label="备注">
-                    <template slot-scope="scope">
-                        <input v-model="scope.row.remark">
-                    </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
+                        <!-- <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button> -->
                         <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -244,6 +276,14 @@ export default {
             record_count:0,
             keywords:'',
             search:'',
+            search1:'',
+            search2:'',
+            search3:'',
+            value: '' ,
+            value1: '' ,
+            value3: '' ,
+            value4: '' ,
+            radio:3,
             formServeAdd:{
                 status:0,
                 add_time:new Date().getTime()/1000,
@@ -258,13 +298,41 @@ export default {
             replyAnalysisshow:{
                 show1:false,
                 show2:false,
-                show3:false,
-                show4:false,
-                show5:false,
-                show6:false,
+                show3:true,
+                show4:true,
+                show5:true,
+                show6:true,
                 show7:true,
-                show8:false,
+                show8:true,
             },
+            options: [{
+            value: '选项1',
+            label: '审核'
+            }, {
+            value: '选项2',
+            label: '未审核'
+            },],  
+            options1: [{
+            value1: '选项1',
+            label: '0号店'
+            }, {
+            value1: '选项2',
+            label: '1号店'
+            },],  
+            options3: [{
+            value3: '选项1',
+            label: '分公司1'
+            }, {
+            value3: '选项2',
+            label: '分公司2'
+            },],  
+            options4: [{
+            value4: '选项1',
+            label: '类型1'
+            }, {
+            value4: '选项2',
+            label: '类型2'
+            },],  
         }
     },
     methods:{
@@ -301,7 +369,8 @@ export default {
             let data=this.$qs.stringify({
                 id:row.id,
                 subsite_id:3,
-                subshop_id:0
+                subshop_id:0,
+                subsite_id:1,
             });
             replyAnalysisDe(data).then(res=>{
                 console.log(res.data);
@@ -428,7 +497,8 @@ export default {
 .el-dialog__body .el-form {
   text-align: right;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 </style>

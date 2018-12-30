@@ -10,14 +10,73 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <div style="margin:10px 0;text-align:center">
-                <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
-                <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
-                <el-button type="primary" size="small" @click="reset">刷新</el-button>
-            </div>
+            <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="5">
+                        <el-checkbox v-model="radio">查询今天数据</el-checkbox>
+                        <el-date-picker
+                        v-model="value7" size="mini" style="width:100%;margin-top:10px"
+                        type="daterange" @change="chose"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-select @change="chose" v-model="value" size="small" placeholder="收银员" style="margin-bottom:5px;">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <el-select @change="chose" v-model="value1" size="small" placeholder="支付方式">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select>    
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select @change="chose" v-model="value5" size="small" placeholder="分店类型" style="margin-top:0px;width:100%">
+                            <el-option
+                            v-for="item in options5"
+                            :key="item.value5"
+                            :label="item.label"
+                            :value="item.value5">
+                            </el-option>
+                        </el-select> 
+                        <el-select @change="chose" v-model="value4" size="small" placeholder="分店" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options4"
+                            :key="item.value4"
+                            :label="item.label"
+                            :value="item.value4">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="4">
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="营业员"/>
+                        <el-input @input="chose" v-model="search2"  prefix-icon="el-icon-search" style="width:100%"  size="mini"  placeholder="分店区域"/>
+                    </el-col>
+                    <el-col :span="4"></el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                </el-row>				
+			</fieldset>
+
             <!-- 按需选择列弹窗 -->
             <el-dialog
-            title="按需选择列" class="chose"
+            title="按需选择列"
             :visible.sync="dialogShow"
             :before-close="handleClose"
             width="300px">
@@ -57,9 +116,10 @@
             :cell-style="{padding:0}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
+            show-summary
             :default-sort = "{prop: 'date', order: 'descending'}"
             style="width: 100%">
-                <el-table-column
+                <!-- <el-table-column
                 prop="id"
                 align="center"
                 v-if="cashierCheckshow.show1"
@@ -70,7 +130,7 @@
                 v-if="cashierCheckshow.show2"
                 align="center"
                 label="分店id">
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
                 prop="add_time"
                 align="center"
@@ -78,7 +138,7 @@
                 sortable
                 label="日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.add_time">
+                        <span >{{scope.row.add_time}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -86,7 +146,7 @@
                 v-if="cashierCheckshow.show4"
                 label="分店名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.subshop_name">
+                        <span >{{scope.row.subshop_name}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -94,31 +154,33 @@
                 v-if="cashierCheckshow.show5"
                 label="收银员">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.adminid">
+                        <span >{{scope.row.adminid}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="total_price"
                 v-if="cashierCheckshow.show6"
                 label="收款总额">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.total_price">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="cash"
                 v-if="cashierCheckshow.show7"
                 label="现金">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.cash">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
                 v-if="cashierCheckshow.show8"
                 label="银行卡">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.bank_card">
+                        <span >{{scope.row.bank_card}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -126,138 +188,154 @@
                 v-if="cashierCheckshow.show9" 
                 label="储值卡">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.value_card">
+                        <span >{{scope.row.value_card}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="chongzhi_price"
                 v-if="cashierCheckshow.show10"
                 label="储值卡充值金额">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.chongzhi_price">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="integral"
                 v-if="cashierCheckshow.show11"
                 label="积分付款">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.integral">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="gift_card"
                 v-if="cashierCheckshow.show12"
                 label="礼券">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.gift_card">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="payment"
                 v-if="cashierCheckshow.show13"
-                label="付款">
-                    <template slot-scope="scope">
+                label="支付方式">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.payment">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="weixin"
                 v-if="cashierCheckshow.show14"
                 label="微信">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.weixin">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="zhifubao"
                 v-if="cashierCheckshow.show15"
                 label="支付宝">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.zhifubao">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="moling_price"
                 v-if="cashierCheckshow.show16"
                 label="抹零金额">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.moling_price">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="sum_price"
                 v-if="cashierCheckshow.show17"
                 label="总金额">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.sum_price">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="sum_num"
                 v-if="cashierCheckshow.show18"
                 label="总单数">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.sum_num">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="per_price"
                 v-if="cashierCheckshow.show19"
                 label="客单价">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.per_price">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="xiaoshou_price"
                 v-if="cashierCheckshow.show20"
                 label="销售金额">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.xiaoshou_price">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="xiaoshou_per_num"
                 v-if="cashierCheckshow.show21"
                 label="销售客单数">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.xiaoshou_per_num">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="xiaoshou_per_price"
                 v-if="cashierCheckshow.show22"
                 label="销售客单金额">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.xiaoshou_per_price">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="back_price"
                 v-if="cashierCheckshow.show23"
                 label="退货金额">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.back_price">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="back_per_num"
                 v-if="cashierCheckshow.show24"
                 label="退货客单数">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.back_per_num">
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                 align="center"
+                prop="back_per_price"
                 v-if="cashierCheckshow.show25"
                 label="退货客单价">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <input v-model="scope.row.back_per_price">
-                    </template>
+                    </template> -->
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                 fixed="right"
                 align="center"
                 label="相关操作">
@@ -265,7 +343,7 @@
                         <el-button type="text" size="small" @click="savEdit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <!-- 分页器 -->
             <el-pagination
@@ -287,6 +365,16 @@ export default {
             dialogServeDetail:false,
             dialogShow:false,
             search:'',
+            search1:'',
+            search2:'',
+            search3:'',
+            search4:'',
+            search5:'',
+            search6:'',
+            search7:'',
+            search8:'',
+            search9:'',
+            radio:false,
             keywords:'',
             record_count:0,
             formServeAdd:{
@@ -295,8 +383,8 @@ export default {
             formDetails:{},
             cashierCheckData:[],
             cashierCheckshow:{
-                show1:true,
-                show2:true,
+                show1:false,
+                show2:false,
                 show3:true,
                 show4:true,
                 show5:true,
@@ -321,6 +409,54 @@ export default {
                 show24:true,
                 show25:true,
             },
+            value: '' ,
+            value1: '' ,
+            value3: '' ,
+            value4: '' ,
+            value5: '' ,
+            value6: '' ,
+            value7: '' ,
+            options: [{
+            value: '0',
+            label: '全部' 
+            },{
+            value: '001',
+            label: '001'
+            }, {
+            value: '8848',
+            label: '002'
+            },],  
+            options1: [{
+            value1: '1',
+            label: '现金'
+            }, {
+            value1: '2',
+            label: '银行卡'
+            },{
+            value1: '3',
+            label: '扫码'
+            }],  
+            options3: [{
+            value3: '选项1',
+            label: '分公司1'
+            }, {
+            value3: '选项2',
+            label: '分公司2'
+            },],  
+            options4: [{
+            value4: '0',
+            label: '0分店'
+            }, {
+            value4: '1',
+            label: '1分店'
+            },],  
+            options5: [{
+            value5: '0',
+            label: '店1'
+            }, {
+            value5: '1',
+            label: '店2'
+            },], 
         }
     },
     methods:{
@@ -329,12 +465,29 @@ export default {
                 page:page,
                 page_size:10,
             }); 
+            this.data(data);
+        },
+        data(data){
             cashierCheck(data).then(res=>{
                 console.log(res.data);
                 this.record_count=Number(res.data.filter.record_count);
                 this.cashierCheckData=res.data.cashiercheck_list;
             }) 
         }, 
+        chose(){//-----------------选择查询
+            let data=this.$qs.stringify({
+                page:1,
+                page_size:10,
+                adminid:this.value,
+                subshop_id:this.value4,
+                payment:this.value1,
+                subshop_type:this.value5,
+                subshop_address:this.search2,
+                add_time1:this.value7[0],
+                add_time2:this.value7[1],
+            }); 
+            this.data(data);
+        },
         handleClose(done){
             done();
             let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
@@ -469,7 +622,8 @@ export default {
 .el-dialog__body .el-form {
   text-align: right;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 </style>

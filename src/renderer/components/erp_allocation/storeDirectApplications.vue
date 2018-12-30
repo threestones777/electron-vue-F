@@ -10,25 +10,110 @@
             </el-breadcrumb>
         </div>
         <div class="main-table">
-            <!-- 搜索 -->
-            <el-form :inline="true" :model="formServe" class="demo-form-inline">
-                <!-- <el-form-item label="">
-                    <el-input	size="small" v-model="formServe.name" placeholder="名称"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="编号"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="备注信息"></el-input>
-                </el-form-item> -->
-                <el-form-item>
-                    <el-input placeholder="请输入单据编号" @input="search" v-model="keywords" style="width:50%;margin-right:10px" size="small">
-                        <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
-                    </el-input>
-                    <el-button type="primary" size="small" @click="dialogServeAdd = true">新增</el-button>
-                    <el-button type="primary" size="small" @click="reset">刷新</el-button>
-                </el-form-item>
-            </el-form>
+            <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group v-model="radio" style="margin-top:5px;">
+                            <el-radio :label="1">申请日期</el-radio><br>
+                            <el-radio :label="2">发货日期</el-radio><br>
+                            <el-radio :label="3">收货日期</el-radio>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group v-model="radio" style="margin-top:5px;">
+                        <el-radio :label="4">要求到货日期</el-radio><br>
+                        <el-radio :label="5">不按日期</el-radio>
+                    </el-radio-group>    
+                    </el-col>
+                    <el-col :span="5">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-top:0px"
+                        type="daterange"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="订单号"/>
+                        <el-select v-model="value" size="small" placeholder="申请状态" style="margin-bottom:5px;">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select v-model="value1" size="small" placeholder="发货状态">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label" 
+                            :value="item.value1">
+                            </el-option>
+                        </el-select> 
+                        <el-select v-model="value2" size="small" placeholder="收货状态" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value2"
+                            :label="item.label"
+                            :value="item.value2">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select v-model="value3" size="small" placeholder="发货分店">
+                            <el-option
+                            v-for="item in options3"
+                            :key="item.value3"
+                            :label="item.label"
+                            :value="item.value3">
+                            </el-option>
+                        </el-select> 
+                        <el-select v-model="value4" size="small" placeholder="收货分店" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options4"
+                            :key="item.value4"
+                            :label="item.label"
+                            :value="item.value4">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <!-- <el-button type="primary"  style="margin-top:5px" size="small" @click="dialogServeAdd=true">新增</el-button><br> -->
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                </el-row>				
+			</fieldset>
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" class="chose" style="text-align:left"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="200px">
+                <el-checkbox v-model="storeDirectApplicationsshow.show1">编号</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show2">状态</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show3">发货店号</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show4">发货店名</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show5">单据编号</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show6">单据类型</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show7">要求到货日期</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show8">申请人</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show9">申请时间</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show10">发货人</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show11">发货时间</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show12">收货人</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show13">收货时间</el-checkbox><br>
+                <el-checkbox v-model="storeDirectApplicationsshow.show14">备注</el-checkbox><br><br>
+            </el-dialog>
             <!-- 新增弹出框 -->
             <el-dialog width="700px" title="新增" :visible.sync="dialogServeAdd">
                 <el-form :model="formServeAdd">
@@ -132,49 +217,134 @@
             </el-dialog>
             <!-- 表格 -->
             <el-table
-            :data="storeDirectData"
+            :data="storeDirectData.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
             border
+            show-summary
             :row-style="{height:0}"  
             :cell-style="{padding:0}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             style="width: 100%">
                 <el-table-column
-                prop="id"
                 align="center"
+                v-if="storeDirectApplicationsshow.show1"
                 label="编号">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.id}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="status"
                 align="center"
+                v-if="storeDirectApplicationsshow.show2"
                 label="状态">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.status}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="from_subshop_id"
                 align="center"
+                v-if="storeDirectApplicationsshow.show3"
                 label="发货店号">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.from_subshop_id}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="from_subshop_name"
                 align="center"
+                v-if="storeDirectApplicationsshow.show4"
                 label="发货店名">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.from_subshop_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="bill_sn"
+                v-if="storeDirectApplicationsshow.show5"
                 align="center"
                 label="单据编号">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.bill_sn"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="type"
                 align="center"
+                v-if="storeDirectApplicationsshow.show6"
                 label="单据类型">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.type"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="storeDirectApplicationsshow.show7"
+                label="要求到货日期">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.arrival_time"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="storeDirectApplicationsshow.show8"
+                label="申请人">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.apply_user"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="storeDirectApplicationsshow.show9"
+                label="申请时间">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.apply_time"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="storeDirectApplicationsshow.show10"
+                label="发货人">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.fahuo_user"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="storeDirectApplicationsshow.show11"
+                label="发货时间">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.fahuo_time"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="storeDirectApplicationsshow.show12"
+                label="收货人">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.shouhuo_user"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="storeDirectApplicationsshow.show13"
+                label="收货时间">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.shouhuo_time"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                v-if="storeDirectApplicationsshow.show14"
+                label="备注">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.remark"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -182,8 +352,8 @@
             <!-- 分页器 -->
             <el-pagination
                 @current-change="handleCurrentChange"
-                layout="prev, pager, next,jumper"
-                :page-count="pages">
+                layout="total,prev, pager, next,jumper"
+                :total="record_count">
             </el-pagination>
         </div>
     </div>
@@ -197,7 +367,33 @@ export default {
             pages:1,
             dialogServeAdd:false,
             dialogServeDetail:false,
+            dialogShow:false,
+            record_count:0,
             keywords:'',
+            search:'',
+            search3:'',
+            radio:3,
+            value: '' ,
+            value1: '' ,
+            value2: '' ,
+            value3: '' ,
+            value4: '' ,
+            storeDirectApplicationsshow:{
+                show1:false,
+                show2:true,
+                show3:true,
+                show4:true,
+                show5:true,
+                show6:true,
+                show7:true,
+                show8:true,
+                show9:true,
+                show10:true,
+                show11:true,
+                show12:true,
+                show13:false,
+                show14:true,
+            },
             formServe:{
                 name:"",
                 marks:""
@@ -209,28 +405,71 @@ export default {
                 name:""
             },
             storeDirectData:[],
+            options: [{
+            value: '选项1',
+            label: '审核'
+            }, {
+            value: '选项2',
+            label: '未审核'
+            },],  
+            options1: [{
+            value1: '选项1',
+            label: '未发货'
+            }, {
+            value1: '选项2',
+            label: '已发货'
+            },],
+            options2: [{
+            value2: '选项1',
+            label: '未收货'
+            }, {
+            value2: '选项2',
+            label: '已收货'
+            },],
+            options3: [{
+            value3: '选项1',
+            label: '发货分店1'
+            }, {
+            value3: '选项2',
+            label: '发货分店2'
+            },],
+            options4: [{
+            value4: '选项1',
+            label: '收货分店1'
+            }, {
+            value4: '选项2',
+            label: '收货分店2'
+            },],
         }
     },
     methods:{
+        init(page){
+             let data=this.$qs.stringify({
+                page:page,
+                page_size:10,
+            }); 
+            storeDirect(data).then(res=>{
+                console.log(res.data);
+                this.record_count=Number(res.data.filter.record_count);
+                this.storeDirectData=res.data.storedirect_list;
+            }); 
+        },
+        handleClose(done){
+            done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.storeDirectApplications=this.storeDirectApplicationsshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+        }, 
         dateConverter(str) { //-----------------------日期转秒数
             var arr = str.split(/[-:\/]/);
             var startDate = Date.parse(new Date(arr[0], arr[1]-1, arr[2]))/1000;
             return startDate;
-        },
-        search() {
-            let data=this.$qs.stringify({
-                bill_sn:this.keywords
-            });
-            storeDirect(data).then(res=>{
-                console.log(res.data);
-                this.storeDirectData=res.data.storedirect_list;
-            });  
-        },         
+        },     
         reset() {
            this.reload();
         },
         handleCurrentChange(val) {
-            console.log(val);          
+            this.init(val);          
         },
         showDetails(row){//--------------详情
             console.log(row.id);
@@ -247,20 +486,29 @@ export default {
                 }
             });
         },
-        edit(){//--------------修改
-            this.formServeDetail.arrival_time=this.dateConverter(this.formServeDetail.arrival_time);
-            this.formServeDetail.apply_time=this.dateConverter(this.formServeDetail.apply_time);
-            this.formServeDetail.fahuo_time=this.dateConverter(this.formServeDetail.fahuo_time);
-            this.formServeDetail.shouhuo_time=this.dateConverter(this.formServeDetail.shouhuo_time);
-            this.formServeDetail.status=this.formServeDetail.status=="未审核"?0:1;
-            let dataE=this.$qs.stringify(this.formServeDetail);
+        edit(row){//--------------修改
+            row.arrival_time=this.dateConverter(row.arrival_time);
+            row.apply_time=this.dateConverter(row.apply_time);
+            row.fahuo_time=this.dateConverter(row.fahuo_time);
+            row.shouhuo_time=this.dateConverter(row.shouhuo_time);
+            row.status=row.status=="未审核"?0:1;
+            let dataE=this.$qs.stringify(row);
             storeDirectEd(dataE).then(res=>{
                 console.log(res.errno);
                 if(res.errno==0){
-                    this.$alert(res.errmsg)
-                    this.reload();
+                    this.$message({
+                        type: "success",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.init();
                 }else{
-                    this.$alert(res.errmsg)
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.init(1);
                 }
             })
         },
@@ -299,11 +547,17 @@ export default {
             }
         }
     },
-    created: function () {  
-        storeDirect().then(res=>{
-            console.log(res.data);
-           this.storeDirectData=res.data.storedirect_list;
-        });    
+    created: function () { 
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.storeDirectApplications!==undefined){
+                this.storeDirectApplicationsshow=erpTableSetting.storeDirectApplications;
+            }
+        }else{
+            console.log("no");
+        };    
+       this.init(1);    
     }
 }
 </script>
@@ -342,7 +596,15 @@ export default {
 .el-dialog__body .el-form {
   text-align: right;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
+}
+.el-table input{
+    width:100%;
+    height:34px;
+    border:1px solid #DCDFE6;
+    border-radius:4px;
+    padding:2px;
 }
 </style>

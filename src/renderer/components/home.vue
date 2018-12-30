@@ -21,7 +21,7 @@
             <el-menu text-color="#ccc" class="el-menu-vertical-demo" :router="true" background-color="#2f4050" :unique-opened="true" :collapse="isCollapse">
                 <el-submenu :index="index.toString()" v-for="(item, index) in asideMenuList" :key="index">
                     <template slot="title">
-                        <i class="el-icon-goods"></i>
+                        <i class="el-icon-" :class="'el-icon-'+ icon[item.action_code]"></i>
                         <span slot="title">{{item.value}}</span>
                     </template>
                     <el-menu-item :index="'/'+v.action_code+'?action_id='+v.action_id" v-for="(v, i) in item.priv" :key="i">{{v.value}}</el-menu-item>
@@ -256,7 +256,7 @@
                 </el-dropdown-menu>
             </el-dropdown> -->
             <!-- 系统消息 -->
-            <el-badge style="margin-top:10px;" :value="count" :max="1000" class="message-item">
+            <el-badge style="margin-top:10px;" :value="count" :max="10000" class="message-item">
                 <el-button type="text" style="font-size:25px" icon="el-icon-bell" @click="$router.push('/sysMessage')" ></el-button>
             </el-badge>
             <router-link 
@@ -294,11 +294,12 @@ export default {
   data() {
     return {
       isRouterAlive: true,
-      isCollapse: false,
-      newWidth: "200px",
+      isCollapse: true,
+      newWidth: "100px",
       count:0,
       asideMenuList:[],
-      erpTableSetting:{}
+      erpTableSetting:{},
+      icon:{erp_purchase:'goods',erp_retail:'bell',erp_allocation:'document',erp_member:'star-on',erp_clerks:'service',erp_write_off:'menu',erp_store:'location',erp_money:'star-off',erp_report:'tickets',erp_config:'setting'}
     };
   },
   watch: {
