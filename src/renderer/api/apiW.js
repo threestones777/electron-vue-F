@@ -41,15 +41,23 @@ axios.interceptors.request.use(function (config) {
     //采购订单
         //详情
         export const shopOderListDe = params => {
-            return axios.get("/opurchase/view",params).then(res=>res.data)
+            return axios.get("/purchase/view",params).then(res=>res.data)
         } 
         //审核
         export const shopOderListCh = params => {
             return axios.post("/purchase/check",params).then(res=>res.data)
         } 
+        //审核
+        export const shopOderQueryBcode = params => {
+            return axios.post("/purchase/querybarcode",params).then(res=>res.data)
+        } 
         //添加商品
         export const shopOderAddG = params => {
             return axios.post("/purchase/addgoods",params).then(res=>res.data)
+        } 
+        //手动添加商品
+        export const addGoodsByHand = params => {
+            return axios.post("/purchase/addgoodstoerp",params).then(res=>res.data)
         } 
         //修改商品
         export const shopOderEdG = params => {
@@ -548,9 +556,25 @@ axios.interceptors.request.use(function (config) {
         } 
 //==========================================零售=======================================
     //收银台
+        //营业员
+        export const saleclerklist = params => {
+            return axios.get("/clerk/saleclerklist",params).then(res=>res.data)
+        } 
         //商品列表
         export const goodsDesk = params => {
-            return axios.get("/cashier/goodslists",params).then(res=>res.data)
+            return axios.post("/cashier/goodslists",params).then(res=>res.data)
+        } 
+        //发送验证码
+        export const sendMobileCode = params => {
+            return axios.post("/customer/sendmobilecode",params).then(res=>res.data)
+        } 
+        //发送验证码
+        export const register = params => {
+            return axios.post("/customer/register",params).then(res=>res.data)
+        } 
+        //收银员列表
+        export const cashierList = params => {
+            return axios.get("/cashier/cashierlist",params).then(res=>res.data)
         } 
         //购物区列表
         export const cart = params => {
@@ -560,13 +584,17 @@ axios.interceptors.request.use(function (config) {
         export const cartAdd = params => {
             return axios.post("/cashier/addtocart",params).then(res=>res.data)
         } 
+        //修改购物车商品数量
+        export const editCartN = params => {
+            return axios.get("/cashier/editcart",params).then(res=>res.data)
+        } 
         //删除购物车商品
         export const cartDel = params => {
             return axios.get("/cashier/dropcartgoods",params).then(res=>res.data)
         } 
         //清空购物车
         export const clearcart = params => {
-            return axios.get("/cashier/clearcart",params).then(res=>res.data)
+            return axios.get("/cashier/clear-cart",params).then(res=>res.data)
         } 
         //检查订单
         export const checkout = params => {
@@ -584,9 +612,21 @@ axios.interceptors.request.use(function (config) {
         export const serverDesk = params => {
             return axios.get("/cashier/serverlists",params).then(res=>res.data)
         } 
+        //挂起
+        export const pickData = params => {
+            return axios.get("/cashier/addguaqi",params).then(res=>res.data)
+        } 
+        //取消挂起
+        export const cancelPick = params => {
+            return axios.get("/cashier/cancelguaqi",params).then(res=>res.data)
+        } 
         //现金支付
         export const cashPay = params => {
             return axios.post("/cashier/cashpay",params).then(res=>res.data)
+        } 
+        //余额支付
+        export const balancepay = params => {
+            return axios.post("/cashier/balancepay",params).then(res=>res.data)
         } 
 //--------------------------------------------报表-----------------------------------------------
 //购货对账单
@@ -651,4 +691,8 @@ axios.interceptors.request.use(function (config) {
         //修改+删除
         export const profitformEd = params => {
             return axios.post("/profitform/edit",params).then(res=>res.data)
-        }    
+        }
+//-------------------发送短信   
+export const sendMsg = params => {
+    return axios.post("/customer/message",params).then(res=>res.data)
+}

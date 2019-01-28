@@ -301,7 +301,7 @@
 <style scoped>
     #shopBuyList{
         text-align:center;
-        margin: 20px;
+        margin: 10px;
     }
     #shopBuyList .el-dialog .el-input{
        width:10%;

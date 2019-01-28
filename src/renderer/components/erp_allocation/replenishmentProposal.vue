@@ -2,18 +2,89 @@
     <div class="replenishmentProposal">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
+            <!-- <h3>温州美联 管理中心</h3> -->
             <el-breadcrumb separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>调拨</el-breadcrumb-item>
                 <el-breadcrumb-item>补货建议</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                <i class="el-icon-loading"></i>
+                <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                <i class="el-icon-tickets"></i>
+                <div>显示列</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
                 <legend>查询条件</legend>
                 <el-row type="flex" justify="space-around" :gutter="10">
-                    <el-col style="text-align:left" :span="6">
+                    <el-col style="text-align:left" :span="5">
                         <el-date-picker
                         v-model="search3" size="small"
                         style="width:100%;margin-top:0px"
@@ -26,17 +97,16 @@
                         end-placeholder="结束日期">
                         </el-date-picker>
                     </el-col>
-                    <el-col :span="4">
+                    <el-col :span="3">
                         <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search"  size="mini"  placeholder="商品货号"/>
                         <!-- <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search1"  size="mini"  placeholder="商品名称"/> -->
                         <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%;margin-bottom:0px;" v-model="search2"  size="mini"  placeholder="条码"/>
                     </el-col>
-                    <el-col :span="4">
+                    <el-col :span="3">
                         <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search4"  size="mini"  placeholder="品牌"/>
                         <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search5"  size="mini"  placeholder="类别"/>
-                        <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%;margin-bottom:0px;" v-model="search6"  size="mini"  placeholder="供应商"/>
                     </el-col>
-                    <el-col :span="4">
+                    <el-col :span="3">
                         <el-select @change="chose" v-model="value" size="small" placeholder="分公司" style="margin-bottom:5px;">
                             <el-option
                             v-for="item in options"
@@ -45,14 +115,7 @@
                             :value="item.value">
                             </el-option>
                         </el-select>
-                        <el-select @change="chose" v-model="value1" size="small" placeholder="销售门店">
-                            <el-option
-                            v-for="item in options1"
-                            :key="item.value1"
-                            :label="item.label"
-                            :value="item.value1">
-                            </el-option>
-                        </el-select>
+                        
                         <el-select @change="chose" v-model="value4" size="small" placeholder="分店类型">
                             <el-option
                             v-for="item in options4"
@@ -62,12 +125,22 @@
                             </el-option>
                         </el-select> 
                     </el-col>
-                    <el-col :span="4"></el-col>
                     <el-col :span="3">
-                        <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
-                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                        <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search6"  size="mini"  placeholder="供应商"/>
+                        <el-select @change="chose" v-model="value1" size="small" placeholder="销售门店">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select>
                     </el-col>
-                    <el-col :span="5"></el-col>
+                    <el-col :span="3">
+                        <!-- <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button> -->
+                    </el-col>
+                    <el-col :span="6"></el-col>
                 </el-row>				
 			</fieldset>
             <!-- 按需选择列弹窗 -->
@@ -83,7 +156,7 @@
                 <el-checkbox v-model="replenishmentProposalshow.show5">货号</el-checkbox><br>
                 <el-checkbox v-model="replenishmentProposalshow.show6">品牌id</el-checkbox><br>
                 <el-checkbox v-model="replenishmentProposalshow.show7">分类</el-checkbox><br>
-                <el-checkbox v-model="replenishmentProposalshow.show8">供应商id</el-checkbox><br>
+                <!-- <el-checkbox v-model="replenishmentProposalshow.show8">供应商id</el-checkbox><br> -->
                 <el-checkbox v-model="replenishmentProposalshow.show9">供货商名称</el-checkbox><br>
                 <el-checkbox v-model="replenishmentProposalshow.show10">送货周期</el-checkbox><br>
                 <el-checkbox v-model="replenishmentProposalshow.show11">进货规格</el-checkbox><br>
@@ -359,10 +432,10 @@
             :data="ProposalData.filter(data =>  {
             return Object.keys(data).some(key => {
             return String(data[key]).toLowerCase().indexOf(search) > -1})})"
-            border
+            border stripe
             show-summary
             :row-style="{height:0}"  
-            :cell-style="{padding:0}"
+            :cell-style="{padding:3}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             style="width:100%">
@@ -377,7 +450,7 @@
                 v-if="replenishmentProposalshow.show2"
                 label="分店名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.subshop_name"/>
+                        <el-input v-model="scope.row.subshop_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -385,23 +458,25 @@
                 v-if="replenishmentProposalshow.show3"
                 label="条码">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.serial_code"/>
+                        <el-input v-model="scope.row.serial_code"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="130"
                 v-if="replenishmentProposalshow.show4"
                 label="添加日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.add_time"/>
+                        <el-input v-model="scope.row.add_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="150"
                 v-if="replenishmentProposalshow.show5"
                 label="货号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.product_sn"/>
+                        <el-input v-model="scope.row.product_sn"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -409,7 +484,7 @@
                 v-if="replenishmentProposalshow.show6"
                 label="品牌id">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.brand_id"/>
+                        <el-input v-model="scope.row.brand_id"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -417,23 +492,23 @@
                 v-if="replenishmentProposalshow.show7"
                 label="分类">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.cat_id"/>
+                        <el-input v-model="scope.row.cat_id"/>
                     </template>
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                 align="center"
                 v-if="replenishmentProposalshow.show8"
                 label="供应商id">
                     <template slot-scope="scope">
                         <input v-model="scope.row.supplier_id"/>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
                 align="center"
                 v-if="replenishmentProposalshow.show9"
                 label="供货商名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.supplier_name"/>
+                        <el-input v-model="scope.row.supplier_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -441,15 +516,16 @@
                 v-if="replenishmentProposalshow.show10"
                 label="送货周期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.delivery_cycle"/>
+                        <el-input v-model="scope.row.delivery_cycle"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="140"
                 v-if="replenishmentProposalshow.show11"
                 label="进货规格">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.jinhuo_attr"/>
+                        <el-input v-model="scope.row.jinhuo_attr"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -457,33 +533,36 @@
                 v-if="replenishmentProposalshow.show12"
                 label="单位">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.unit"/>
+                        <el-input v-model="scope.row.unit"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="replenishmentProposalshow.show13"
                 label="规格">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.attr_value"/>
+                        <el-input v-model="scope.row.attr_value"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="chengben_price"
                 align="center"
+                width="100"
                 v-if="replenishmentProposalshow.show14"
                 label="成本价">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.chengben_price"/>
+                        <el-input v-model="scope.row.chengben_price"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="total_money"
                 align="center"
+                width="100"
                 v-if="replenishmentProposalshow.show15"
                 label="总金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.total_money"/>
+                        <el-input v-model="scope.row.total_money"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -492,7 +571,7 @@
                 v-if="replenishmentProposalshow.show16"
                 label="本周销量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.this_week_sale"/>
+                        <el-input v-model="scope.row.this_week_sale"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -501,7 +580,7 @@
                 v-if="replenishmentProposalshow.show17"
                 label="上周销量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.last_week_sale"/>
+                        <el-input v-model="scope.row.last_week_sale"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -510,7 +589,7 @@
                 v-if="replenishmentProposalshow.show18"
                 label="第三周销量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.third_week_sale"/>
+                        <el-input v-model="scope.row.third_week_sale"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -519,7 +598,7 @@
                 v-if="replenishmentProposalshow.show19"
                 label="可销量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.marketable_num"/>
+                        <el-input v-model="scope.row.marketable_num"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -528,7 +607,7 @@
                 v-if="replenishmentProposalshow.show20"
                 label="第四周销量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fourth_week_sale"/>
+                        <el-input v-model="scope.row.fourth_week_sale"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -537,7 +616,7 @@
                 v-if="replenishmentProposalshow.show21"
                 label="本月销量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.this_month_sale"/>
+                        <el-input v-model="scope.row.this_month_sale"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -546,7 +625,7 @@
                 v-if="replenishmentProposalshow.show22"
                 label="上月销量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.last_month_sale"/>
+                        <el-input v-model="scope.row.last_month_sale"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -555,7 +634,7 @@
                 v-if="replenishmentProposalshow.show23"
                 label="上上月销量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.third_month_sale"/>
+                        <el-input v-model="scope.row.third_month_sale"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -564,7 +643,7 @@
                 v-if="replenishmentProposalshow.show24"
                 label="最小安全库存">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.min_safe_kucun"/>
+                        <el-input v-model="scope.row.min_safe_kucun"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -573,7 +652,7 @@
                 v-if="replenishmentProposalshow.show25"
                 label="最大安全库存">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.max_safe_kucun"/>
+                        <el-input v-model="scope.row.max_safe_kucun"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -582,7 +661,7 @@
                 v-if="replenishmentProposalshow.show26"
                 label="可销天数">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.marketable_days"/>
+                        <el-input v-model="scope.row.marketable_days"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -591,7 +670,7 @@
                 v-if="replenishmentProposalshow.show27"
                 label="采购在途量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.purchase_on_way"/>
+                        <el-input v-model="scope.row.purchase_on_way"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -600,7 +679,7 @@
                 v-if="replenishmentProposalshow.show28"
                 label="调拨在途量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.move_on_way"/>
+                        <el-input v-model="scope.row.move_on_way"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -609,12 +688,13 @@
                 v-if="replenishmentProposalshow.show29"
                 label="建议订货量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.suggest_dh_num"/>
+                        <el-input v-model="scope.row.suggest_dh_num"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
+                width="120"
                 label="相关操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
@@ -650,7 +730,6 @@ export default {
                 show5:true,
                 show6:true,
                 show7:true,
-                show8:true,
                 show9:true,
                 show10:true,
                 show11:true,
@@ -876,7 +955,7 @@ export default {
 </script>
 <style scoped>
 .replenishmentProposal{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -902,13 +981,10 @@ export default {
   padding: 20px 0;
   text-align: right;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
-}
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
+} 
 /* 新增弹出框 & 详情弹出框*/
 .main-table>>>.el-dialog__body {
   padding: 0 20px;

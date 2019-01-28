@@ -13,23 +13,19 @@
             <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
                 <legend>查询条件</legend>
                 <el-row type="flex" justify="space-around" :gutter="10">
-                    <el-col style="text-align:left" :span="2">
-                        <el-radio-group v-model="radio" style="margin-top:5px;">
-                            <el-radio :label="1">制单日期</el-radio><br>
-                            <el-radio :label="2">审核日期</el-radio>
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                            <el-radio label="add_time">制单日期</el-radio><br>
+                            <el-radio label="check_time">审核日期</el-radio><br>
+                            <el-radio label="handle_time">处理日期</el-radio><br>
+                            <el-radio label="4">不按日期</el-radio>
                         </el-radio-group>    
                     </el-col>
-                    <el-col style="text-align:left" :span="2">
-                        <el-radio-group v-model="radio" style="margin-top:5px;">
-                        <el-radio :label="3">处理日期</el-radio><br>
-                        <el-radio :label="4">不按日期</el-radio>
-                    </el-radio-group>    
-                    </el-col>
-                    <el-col :span="5">
+                    <el-col :span="6">
                         <el-date-picker
                         v-model="search3" size="small"
                         style="width:100%;margin-top:0px"
-                        type="daterange"
+                        type="daterange" @change="chose"
                         align="right"
                         unlink-panels
                         value-format="yyyy-MM-dd"
@@ -39,18 +35,11 @@
                         </el-date-picker>
                     </el-col>
                     <el-col :span="4">
-                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="订单号"/>
-                        <el-select v-model="value" size="small" placeholder="退至配送中心" style="margin-bottom:5px;">
-                            <el-option
-                            v-for="item in options"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                            </el-option>
-                        </el-select>
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search"  size="mini"  placeholder="订单号"/>
+                        <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%" v-model="value"  size="mini"  placeholder="退至配送中心"/>
                     </el-col>
                     <el-col :span="4">
-                        <el-select v-model="value1" size="small" placeholder="状态">
+                        <el-select @change="chose" v-model="value1" size="small" placeholder="状态">
                             <el-option
                             v-for="item in options1"
                             :key="item.value1"
@@ -58,7 +47,7 @@
                             :value="item.value1">
                             </el-option>
                         </el-select> 
-                        <el-select v-model="value2" size="small" placeholder="分店" style="margin-top:5px">
+                        <el-select @change="chose" v-model="value2" size="small" placeholder="分店" style="margin-top:5px">
                             <el-option
                             v-for="item in options2"
                             :key="item.value2"
@@ -68,7 +57,7 @@
                         </el-select> 
                     </el-col>
                     <el-col :span="4">
-                        <el-select v-model="value3" size="small" placeholder="分公司">
+                        <el-select @change="chose" v-model="value3" size="small" placeholder="分公司">
                             <el-option
                             v-for="item in options3"
                             :key="item.value3"
@@ -76,7 +65,7 @@
                             :value="item.value3">
                             </el-option>
                         </el-select> 
-                        <el-select v-model="value4" size="small" placeholder="分店类型" style="margin-top:5px">
+                        <el-select @change="chose" v-model="value4" size="small" placeholder="分店类型" style="margin-top:5px">
                             <el-option
                             v-for="item in options4"
                             :key="item.value4"
@@ -89,6 +78,7 @@
                         <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
                         <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
                     </el-col>
+                    <el-col :span="10"></el-col>
                 </el-row>				
 			</fieldset>
             <!-- 按需选择列弹窗 -->
@@ -298,113 +288,125 @@
                 v-if="warehouseInshow.show3"
                 label="退至店号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.to_subshop_id"/>
+                        <el-input v-model="scope.row.to_subshop_id"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="110"
                 v-if="warehouseInshow.show4"
                 label="退至店号名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.to_shipping_name"/>
+                        <el-input v-model="scope.row.to_shipping_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
-                prop="bill_sn"
                 align="center"
                 v-if="warehouseInshow.show5"
+                width="160"
                 label="单据编号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.bill_sn"/>
+                        <el-input v-model="scope.row.bill_sn"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="warehouseInshow.show6"
                 label="状态">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.status"/>
+                        <el-input v-model="scope.row.status"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 v-if="warehouseInshow.show7"
+                width="130"
                 label="要求处理时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.require_handle_time"/>
+                        <el-input v-model="scope.row.require_handle_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="65"
                 v-if="warehouseInshow.show8"
                 label="制单人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.adminid"/>
+                        <el-input v-model="scope.row.adminid"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="130"
                 v-if="warehouseInshow.show9"
                 label="核对时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.check_time"/>
+                        <el-input v-model="scope.row.check_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="65"
                 v-if="warehouseInshow.show10"
                 label="核对人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.check_user"/>
+                        <el-input v-model="scope.row.check_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="130"
                 v-if="warehouseInshow.show11"
                 label="处理时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.handle_time"/>
+                        <el-input v-model="scope.row.handle_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="65"
                 v-if="warehouseInshow.show12"
                 label="处理人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.handle_user"/>
+                        <el-input v-model="scope.row.handle_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="150"
                 v-if="warehouseInshow.show13"
                 label="相关单号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.relevant_sn"/>
+                        <el-input v-model="scope.row.relevant_sn"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="shop_price"
                 align="center"
+                width="110"
                 v-if="warehouseInshow.show14"
                 label="售价金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shop_price"/>
+                        <el-input v-model="scope.row.shop_price"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="120"
                 v-if="warehouseInshow.show15"
                 label="分店名">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.subshop_name"/>
+                        <el-input v-model="scope.row.subshop_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="120"
                 v-if="warehouseInshow.show17"
                 label="制单人姓名">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.admin_name"/>
+                        <el-input v-model="scope.row.admin_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -412,12 +414,13 @@
                 v-if="warehouseInshow.show16"
                 label="备注">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.remark"/>
+                        <el-input v-model="scope.row.remark"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
+                width="120"
                 label="相关操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
@@ -448,7 +451,7 @@ export default {
             record_count:0,
             warehouseInshow:{
                 show1:false,
-                show2:true,
+                show2:false,
                 show3:true,
                 show4:true,
                 show5:true,
@@ -471,7 +474,7 @@ export default {
             },
             search:'',
             search3:['2017-7-7','2019-9-9'],
-            radio:4,
+            radio:"4",
             value: '' ,
             value1: '' ,
             value2: '' ,
@@ -488,31 +491,31 @@ export default {
             label: '中心2'
             },],  
             options1: [{
-            value1: '选项1',
-            label: '未审核'
+            value1: '0',
+            label: '未退货'
             }, {
-            value1: '选项2',
-            label: '已审核'
+            value1: '1',
+            label: '已退货'
             },],
             options2: [{
-            value2: '选项1',
+            value2: '0',
             label: '0分店'
             }, {
-            value2: '选项2',
+            value2: '1',
             label: '1分店'
             },],
             options3: [{
-            value3: '选项1',
+            value3: '0',
             label: '分公司1'
             }, {
-            value3: '选项2',
+            value3: '1',
             label: '分公司2'
             },],
             options4: [{
-            value4: '选项1',
+            value4: '0',
             label: '类型1'
             }, {
-            value4: '选项2',
+            value4: '1',
             label: '类型2'
             },],
         }
@@ -523,11 +526,29 @@ export default {
                 page:page,
                 page_size:10,
             });
+            this.data(data); 
+        },
+        data(data){
             warehouseIn(data).then(res=>{
                 console.log(res.data);
                 this.record_count=Number(res.data.filter.record_count);
                 this.warehouseInData=res.data.ware_list;
             }); 
+        },
+        chose(){
+            let data=this.$qs.stringify({
+                page:1,
+                page_size:10,
+                time_by:this.radio,
+                add_time1:this.search3[0],
+                add_time2:this.search3[1],
+                to_shipping_name:this.value,
+                status:this.value1,
+                subshop_id:this.value2,
+                son_company:this.value3,
+                subshop_type:this.value4,
+            });
+            this.data(data); 
         },
         handleClose(done){
             done();
@@ -655,7 +676,7 @@ export default {
 </script>
 <style scoped>
 .warehouseInstructions{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -677,12 +698,9 @@ export default {
 .el-form .el-form-item .el-input {
   width: 80%;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
 }
 /* 分页器 */
 .el-pagination {

@@ -87,7 +87,7 @@
 </script>
 <style>
     #alwaysUse{
-        margin:20px;
+        margin:10px;
     }
     #alwaysUse .main-header{
         text-align:left;

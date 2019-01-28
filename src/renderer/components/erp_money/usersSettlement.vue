@@ -12,7 +12,7 @@
 
 
         <!-- 搜索条件区域 -->
-        <div class="search-area">
+       <!--  <div class="search-area">
         <fieldset>
             <legend>查询条件</legend>
             <div class="out-box">
@@ -86,9 +86,103 @@
             </div>
             </div>
         </fieldset>
-        </div>
+        </div> -->
 
        <div class="main-table">
+           <fieldset style="margin:10px 0;border-color: #fff;">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="2">
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                            <el-radio label="add_time">修改日期</el-radio><br/>
+                            <el-radio label="check_time">审核日期</el-radio><br>
+                            <el-radio label="3">不按日期</el-radio><br>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col :span="5">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-top:0px"
+                        type="daterange" @change="chose"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                        <el-select @change="chose" v-model="value" size="small" placeholder="状态" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="3">
+                        <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%;" v-model="search2"  size="mini"  placeholder="单号"/>
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-top:5px;" v-model="search"  size="mini"  placeholder="客户"/>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-select @change="chose" v-model="value3" size="small" placeholder="支付方式">
+                            <el-option
+                            v-for="item in options3"
+                            :key="item.value3"
+                            :label="item.label"
+                            :value="item.value3">
+                            </el-option>
+                        </el-select> 
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-top:5px;" v-model="value4"  size="mini"  placeholder="银行账户"/>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-select @change="chose" v-model="value1" size="small" placeholder="分公司">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select> 
+                        <el-select @change="chose" v-model="value2" size="small" placeholder="分店" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value2"
+                            :label="item.label"
+                            :value="item.value2">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="add">新增</el-button>
+                    </el-col>
+                </el-row>
+            </fieldset>
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" class="chose" style="text-align:left"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="200px">
+                <el-checkbox v-model="usersSettlementshow.show1">单号</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show2">分店名称</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show3">客户名</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show4">结算价格</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show5">抵扣金额</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show6">优惠金额</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show7">现金支付金额</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show8">支付方式</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show9">银行账号</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show10">修改人姓名</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show11">状态</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show12">修改日期</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show13">审核时间</el-checkbox><br>
+                <el-checkbox v-model="usersSettlementshow.show14">备注</el-checkbox><br><br>
+            </el-dialog>
             <!-- 搜索 -->
             <!-- <el-form :inline="true" :model="formServe" class="demo-form-inline">
                 <el-form-item>
@@ -115,7 +209,7 @@
                 </div>
             </el-dialog>
             <!-- 详情弹出框 --> 
-            <!-- <el-dialog width="900px" title="结算信息" :visible.sync="dialogServeDetail">
+            <el-dialog width="900px" title="结算信息" :visible.sync="dialogServeDetail">
                 <el-form :disabled="formServeDetail.status=='已审核'" label-position="left" ref="form" :model="formServeDetail" :inline="true" class="demo-form-inline">
                     <el-row>
                         <el-col :span="8">
@@ -202,7 +296,7 @@
                     <el-button	size="small" @click="dialogServeDetail = false">取 消</el-button>
                     <el-button	size="small" type="primary" @click="editDone('form')">保存</el-button>
                 </div>
-            </el-dialog> -->
+            </el-dialog>
 
 
             <!-- 显示列和排序模块 -->
@@ -271,93 +365,156 @@
 
             <!-- 表格 -->
             <el-table
-                :data="Data"
-                border
+                :data="Data.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
+                border stripe
+                show-summary
                 v-loading="loading"
                 :row-style="{height:0}"  
-                :cell-style="{padding:0}"
+                :cell-style="{padding:3}"
                 :header-row-style="{height:0}"  
                 :header-cell-style="{padding:0}"
                 style="width: 100%">
                 <el-table-column
-                prop="bill_sn"
                 align="center"
+                width="200"
+                v-if="usersSettlementshow.show1"
                 label="单号">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.bill_sn"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="subshop_name"
                 align="center"
+                width="100"
+                v-if="usersSettlementshow.show2"
                 label="分店名称">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.subshop_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="user_name"
                 align="center"
+                width="100"
+                v-if="usersSettlementshow.show3"
                 label="客户名">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.user_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="jiesuan_price"
                 align="center"
+                width="100"
+                v-if="usersSettlementshow.show4"
                 label="结算价格">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.jiesuan_price"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="dikou_price"
                 align="center"
+                width="100"
+                v-if="usersSettlementshow.show5"
                 label="抵扣金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.dikou_price"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="discount_price"
                 align="center"
+                width="100"
+                v-if="usersSettlementshow.show6"
                 label="优惠金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.discount_price"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="cash_pay_price"
                 align="center"
+                width="100"
+                v-if="usersSettlementshow.show7"
                 label="现金支付金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.cash_pay_price"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="payment"
                 align="center"
+                width="100"
+                v-if="usersSettlementshow.show8"
                 label="支付方式">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.payment"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="bank_account"
                 align="center"
-                label="银行账号">
+                width="150"
+                v-if="usersSettlementshow.show9"
+                label="银行账号">  
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.bank_account"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="admin_name"
                 align="center"
+                width="150"
+                v-if="usersSettlementshow.show10"
                 label="修改人姓名">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.admin_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="status"
                 align="center"
+                width="100"
+                v-if="usersSettlementshow.show11"
                 label="状态">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.status}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="add_time"
                 align="center"
+                width="130"
+                v-if="usersSettlementshow.show12"
                 label="修改日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.add_time"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="check_time"
                 align="center"
+                width="130"
+                v-if="usersSettlementshow.show13"
                 label="审核时间">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.check_time"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="remark"
                 align="center"
+                width="100"
+                v-if="usersSettlementshow.show14"
                 label="备注">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.remark"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
-                label="相关操作"
-                width="90">
+                width="150"
+                label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button :disabled="scope.row.status=='已审核'" type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
-                        <el-button v-show="scope.row.status!='已审核'" type="text" size="small" @click.native.prevent="checkRow(scope.row)">审核</el-button>
+                        <el-button :disabled="scope.row.status=='已审核'" type="text" size="small" @click.native.prevent="checkRow(scope.row)">审核</el-button> 
                     </template>
                 </el-table-column>
             </el-table>
@@ -416,6 +573,23 @@ export default {
             ],
             dialogServeAdd:false,
             dialogServeDetail:false,
+            dialogShow:false,
+            usersSettlementshow:{
+                show1:true,
+                show2:true,
+                show3:true,
+                show4:true,
+                show5:true,
+                show6:true,
+                show7:true,
+                show8:true,
+                show9:true,
+                show10:true,
+                show11:true,
+                show12:true,
+                show13:true,
+                show14:true,
+            },
             keywords:'',
             formServe:{
                 name:"",
@@ -429,6 +603,46 @@ export default {
             },
             Data:[],
             rule: [{ required: true, message: "不能为空" }],
+            search:'',
+            search2:'',
+            search3:['2011-1-1','2020-2-2'],
+            radio:"3",
+            value: '' ,
+            value1: '' ,
+            value2: '' ,
+            value3: '' ,
+            value4: '' ,
+            options: [{
+            value: '0',
+            label: '未审核'
+            }, {
+            value: '1',
+            label: '已审核'
+            },],
+            options1: [{
+            value1: '0',
+            label: '分公司1'
+            }, {
+            value1: '1',
+            label: '分公司2'
+            },],
+            options2: [{
+            value2: '0',
+            label: '0分店'
+            }, {
+            value2: '1',
+            label: '1分店'
+            },],
+            options3: [{
+            value3: '0',
+            label: '现金'
+            }, {
+            value3: '银行卡',
+            label: '银行卡'
+            },{
+            value3: '支付宝',
+            label: '支付宝' 
+            }],
         }
     },
     methods:{
@@ -440,6 +654,12 @@ export default {
         console.log(e);
         this.sortSelected = e;
         },
+        handleClose(done){
+            done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.usersSettlement=this.usersSettlementshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+        },
         initData() { // 获取列表
             let data = this.$qs.stringify({
                 subsite_id:3,
@@ -447,14 +667,35 @@ export default {
                 page:this.page,
                 page_size:this.page_size
             })
+            this.data(data);
+        },
+        data(data){
             getUsersettlementList(data).then(res=>{
                 console.log(res.data)
                 if(res.errno == 0) {
-                    this.Data = res.data.settlement_list
-                    this.total = Number(res.data.record_count)
-                    this.loading = false
+                    this.Data = res.data.settlement_list;
+                    this.total = Number(res.data.record_count);
+                    this.loading = false;
                 }
             })
+        },
+        chose(){//-----------------选择查询
+            let data = this.$qs.stringify({
+                subsite_id:3,
+                //   user_id:sessionStorage.user_id,
+                page:1,
+                page_size:10,
+                time_by:this.radio,
+                add_time1:this.search3[0],
+                add_time2:this.search3[1],
+                bill_sn:this.search2,
+                status:this.value,
+                payment:this.value3,
+                bank_account:this.value4,
+                son_company:this.value1,
+                subshop_id:this.value2,
+            })
+            this.data(data);
         },
         add() {
             this.isEdit = false;
@@ -463,6 +704,43 @@ export default {
                 this.$refs.form.resetFields();
             }
             this.dialogServeDetail = true;
+        },
+        dateConverter(str) { //-----------------------日期转秒数
+            var arr = str.split(/[- : \/]/);
+            var startDate = Date.parse(new Date(arr[0], arr[1]-1, arr[2]))/1000;
+            return startDate;
+        },
+        edit(row){//--------------------修改
+            row.status=="未审核"?row.status=0:row.status=1;
+            if(row.add_time!==""){
+                row.add_time=this.dateConverter(row.add_time);
+            }else{
+                row.add_time=new Date().getTime()/1000-86400;
+            }
+            if(row.check_time!==""){
+                row.check_time=this.dateConverter(row.check_time);
+            }else{
+                row.check_time=new Date().getTime()/1000-86400;
+            }
+            row.check_user=2;
+            let Data = this.$qs.stringify(row);
+            editUsersettlement(Data).then(res => {
+                if (res.errno == 0) {
+                    this.$message({
+                        type: "success",
+                        message:res.errmsg,
+                        duration: 1000
+                    });
+                    this.initData();
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.initData();
+                }
+            });
         },
         editDone(formName) {
             this.$refs[formName].validate(valid => {
@@ -517,22 +795,7 @@ export default {
                 }
                 }
             });
-        },
-        search() {
-            let data=this.$qs.stringify({
-                page:1,
-                page_size:10,
-                bill_sn:this.keywords
-            });
-            getUsersettlementList(data).then(res=>{
-                console.log(res.data)
-                if(res.errno == 0) {
-                    this.Data = res.data.settlement_list
-                    this.total = Number(res.data.record_count)
-                    this.loading = false
-                }
-            })
-        },         
+        },       
         reset() {
             this.initData()
         },
@@ -612,13 +875,22 @@ export default {
         }
     },
     created() {
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.usersSettlement!==undefined){
+                this.usersSettlementshow=erpTableSetting.usersSettlement;
+            }
+        }else{
+            console.log("no");
+        }; 
         this.initData()
     }
 }
 </script>
 <style scoped>
 .usersSettlement{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -657,10 +929,10 @@ fieldset {
   width: 220px;
 }
 .content-r,
-.el-form {
+/* .el-form {
   display: flex;
   align-items: center;
-}
+} */
 .content-r .el-form {
   flex-wrap: wrap;
   flex: 1;
@@ -713,7 +985,10 @@ fieldset {
   overflow: auto;
   text-align: left;
 }
-
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
+}
 .aaa {
   width: 100%;
   position: absolute;
@@ -770,8 +1045,9 @@ fieldset {
 .main-table >>> .el-dialog__body .el-input-number {
   width: 100%;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 
 </style>

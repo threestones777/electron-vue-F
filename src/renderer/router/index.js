@@ -52,6 +52,11 @@ let router = new Router({
           name: 'memberAccount',
           component: require('@/components/memberAccount').default
         },
+        { // 商户资料页
+          path: '/traderInfo',
+          name: 'traderInfo',
+          component: require('@/components/traderInfo').default
+        },
         { // 测试页面
           path: '/erp_test_lists',
           name: 'test',
@@ -730,12 +735,7 @@ let router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  let user_id;
-  if(localStorage.getItem('user_id')) {
-    user_id = localStorage.getItem('user_id')
-  }else {
-    user_id = sessionStorage.getItem('user_id')
-  }
+  let user_id = sessionStorage.getItem('user_id');
   // 如果已经登录，放行
   if (user_id) {
     next()

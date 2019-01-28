@@ -2,16 +2,87 @@
   <div class="agencyPayAnalysis">
     <!-- 头部面包屑 -->
     <div class="main-header">
-      <h3>温州美联 管理中心</h3>
+      <!-- <h3>温州美联 管理中心</h3> -->
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
         <el-breadcrumb-item>资金</el-breadcrumb-item>
         <el-breadcrumb-item>机构账期分析</el-breadcrumb-item>
       </el-breadcrumb>
+      <div class="operate-in">
+        <!-- <div>
+          <i class="el-icon-circle-plus"></i>
+          <div>增加</div>
+        </div>
+        <div>
+          <i class="el-icon-edit"></i>
+          <div>编辑</div>
+        </div>
+        <div>
+          <i class="el-icon-remove"></i>
+          <div>删除</div>
+        </div>
+        <div>
+          <i class="el-icon-circle-check"></i>
+          <div>保存</div>
+        </div>
+        <div>
+          <i class="el-icon-circle-close"></i>
+          <div>取消</div>
+        </div>
+        <div>
+          <i class="el-icon-view"></i>
+          <div>审核</div>
+        </div> 
+        <div class="card">
+          <i class="el-icon-search"></i>
+          <div>查询</div>
+        </div>
+        <div class="card">
+          <i class="el-icon-setting"></i>
+          <div>功能</div>
+          <b class="el-icon-caret-bottom"></b>
+        </div>
+        <div class="card">
+          <i class="el-icon-printer"></i>
+          <div>打印</div>
+          <b class="el-icon-caret-bottom"></b>
+        </div>
+        <div class="card">
+          <i class="el-icon-menu"></i>
+          <div>设置</div>
+        </div>
+        <div class="card">
+          <i class="el-icon-zoom-in"></i>
+          <div>高级查询</div>
+        </div>
+        <div class="card">
+          <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+            <div class="card-title">
+              <i class="el-icon-download"></i>
+              <div>导入/导出</div>
+            </div>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="in">导入</el-dropdown-item>
+              <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+              <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+              <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+          <b class="el-icon-caret-bottom"></b>
+        </div>-->
+        <div @click="reset" class="card">
+          <i :class="'el-icon-'+(loading?'loading':'refresh')"></i>
+          <div>刷新</div>
+        </div>
+        <div @click="dialogShow=true" class="card">
+          <i class="el-icon-tickets"></i>
+          <div>显示列</div>
+        </div>
+      </div> 
     </div>
 
     <!-- 搜索条件区域 -->
-    <div class="search-area">
+    <!-- <div class="search-area">
       <fieldset>
         <legend>查询条件</legend>
         <div class="out-box">
@@ -60,9 +131,85 @@
           </div>
         </div>
       </fieldset>
-    </div>
+    </div> -->
 
     <div class="main-table">
+      <fieldset style="margin:10px 0;border-color: #fff;">
+          <legend>查询条件</legend>
+          <el-row type="flex" justify="space-around" :gutter="10">
+              <el-col style="text-align:left" :span="2">
+                  <el-radio-group v-model="radio" style="margin-top:5px;">
+                      <el-radio :label="1">单据审核日期</el-radio><br>
+                      <el-radio :label="2">应结日期</el-radio><br>
+                      <el-radio :label="4">不按日期</el-radio>
+                  </el-radio-group>    
+              </el-col>
+              <el-col :span="5">
+                  <el-date-picker
+                  v-model="search3" size="small"
+                  style="width:100%;margin-top:0px"
+                  type="daterange"
+                  align="right"
+                  unlink-panels
+                  value-format="yyyy-MM-dd"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期">
+                  </el-date-picker>
+              </el-col>
+              <el-col :span="4">
+                  <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="机构"/>
+                  <el-select v-model="value1" size="small" placeholder="类型">
+                      <el-option
+                      v-for="item in options1"
+                      :key="item.value1"
+                      :label="item.label"
+                      :value="item.value1">
+                      </el-option>
+                  </el-select> 
+              </el-col>
+              <el-col :span="4">
+                  <el-select v-model="value3" size="small" placeholder="分公司">
+                      <el-option
+                      v-for="item in options3"
+                      :key="item.value3"
+                      :label="item.label"
+                      :value="item.value3">
+                      </el-option>
+                  </el-select> 
+                  <el-select v-model="value2" size="small" placeholder="分店" style="margin-top:5px">
+                      <el-option
+                      v-for="item in options2"
+                      :key="item.value2"
+                      :label="item.label"
+                      :value="item.value2">
+                      </el-option>
+                  </el-select>
+              </el-col>
+              <el-col :span="9">
+                  <!-- <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                  <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button> -->
+              </el-col>
+          </el-row>
+      </fieldset>
+      <!-- 按需选择列弹窗 -->
+      <el-dialog
+      title="按需选择列" class="chose" style="text-align:left"
+      :visible.sync="dialogShow"
+      :before-close="handleClose"
+      width="200px">
+          <el-checkbox v-model="agencyPayshow.show1">单号</el-checkbox><br>
+          <el-checkbox v-model="agencyPayshow.show2">分店店名</el-checkbox><br>
+          <el-checkbox v-model="agencyPayshow.show3">机构名称</el-checkbox><br>
+          <el-checkbox v-model="agencyPayshow.show4">应收金额</el-checkbox><br>
+          <el-checkbox v-model="agencyPayshow.show5">已收金额</el-checkbox><br>
+          <el-checkbox v-model="agencyPayshow.show6">折扣金额</el-checkbox><br>
+          <el-checkbox v-model="agencyPayshow.show7">未收金额</el-checkbox><br>
+          <el-checkbox v-model="agencyPayshow.show8">应收日期</el-checkbox><br>
+          <el-checkbox v-model="agencyPayshow.show9">类型</el-checkbox><br>
+          <el-checkbox v-model="agencyPayshow.show10">最近收款日期</el-checkbox><br>
+          <el-checkbox v-model="agencyPayshow.show11">备注</el-checkbox><br><br>
+      </el-dialog>
       <!-- 搜索 -->
       <!-- <el-form :inline="true" :model="formServe" class="demo-form-inline">
                 <el-form-item>
@@ -89,7 +236,7 @@
         </div>
       </el-dialog>
       <!-- 详情弹出框 -->
-      <!-- <el-dialog width="900px" title="客户信息" :visible.sync="dialogServeDetail">
+      <el-dialog width="900px" title="客户信息" :visible.sync="dialogServeDetail">
                 <el-form label-position="left" ref="form" :model="formServeDetail">
                     <el-row>
                         <el-col :span="8">
@@ -159,9 +306,9 @@
                     <el-button	size="small" @click="dialogServeDetail = false">取 消</el-button>
                     <el-button	size="small" type="primary" @click="editDone('form')">保存</el-button>
                 </div>
-      </el-dialog>-->
+      </el-dialog>
       <!-- 显示列和排序模块 -->
-      <div style="text-align:right">
+      <!-- <div style="text-align:right">
         <el-button @click="dialogColumnDiy=true" size="small" icon="el-icon-tickets">显示列</el-button>
         <el-dropdown :hide-on-click="false" @command="handleCommand">
           <el-button size="small" icon="el-icon-sort">排序
@@ -203,10 +350,10 @@
             </div>
           </el-dropdown-menu>
         </el-dropdown>
-      </div>
+      </div> -->
 
       <!-- 显示列弹窗 -->
-      <el-dialog
+      <!-- <el-dialog
         class="columnDialog"
         width="300px"
         title="自定义显示列"
@@ -221,40 +368,127 @@
           </el-table-column>
           <el-table-column prop="name" label="列名"></el-table-column>
         </el-table>
-      </el-dialog>
+      </el-dialog> -->
 
       <!-- 表格 -->
       <el-table
-        :data="Data"
-        border
+        :data="Data.filter(data =>  {
+        return Object.keys(data).some(key => {
+        return String(data[key]).toLowerCase().indexOf(search) > -1})})"
+        border stripe
+        show-summary
         :row-style="{height:0}"
         :cell-style="{padding:0}"
         :header-row-style="{height:0}"
         :header-cell-style="{padding:0}"
-        v-loading="loading"
-        style="width: 100%"
-      >
-        <el-table-column prop="bill_sn" align="center" label="单号"></el-table-column>
-        <el-table-column prop="subshop_name" align="center" label="分店店名"></el-table-column>
-        <el-table-column prop="jigou_name" align="center" label="机构名称"></el-table-column>
-        <el-table-column prop="yingshou_price" align="center" label="应收金额"></el-table-column>
-        <el-table-column prop="yishou_price" align="center" label="已收金额"></el-table-column>
-        <el-table-column prop="discount_price" align="center" label="折扣金额"></el-table-column>
-        <el-table-column prop="weishou_price" align="center" label="未收金额"></el-table-column>
-        <el-table-column prop="yingjie_time" align="center" label="应收日期"></el-table-column>
-        <el-table-column prop="type" align="center" label="类型"></el-table-column>
-        <el-table-column prop="near_shoukuan_time" align="center" label="最近收款日期"></el-table-column>
-        <el-table-column prop="remark" align="center" label="备注"></el-table-column>
-        <!-- <el-table-column
-                fixed="right"
-                align="center"
-                label="相关操作"
-                width="90">
-                    <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
-                        <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
-                    </template>
-        </el-table-column>-->
+        v-loading="loading">
+        <el-table-column 
+        align="center"
+        width="140"
+        v-if="agencyPayshow.show1" 
+        label="单号">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.bill_sn" />
+          </template>
+        </el-table-column>
+        <el-table-column 
+        align="center" 
+        v-if="agencyPayshow.show2"
+        label="分店店名"> 
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.subshop_name" />
+          </template>
+        </el-table-column>
+        <el-table-column 
+        align="center" 
+        width="120"
+        v-if="agencyPayshow.show3"
+        label="机构名称">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.jigou_name" />
+          </template>
+        </el-table-column>
+        <el-table-column 
+        prop="yingshou_price" 
+        align="center" 
+        width="110"
+        v-if="agencyPayshow.show4"
+        label="应收金额">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.yingshou_price" />
+          </template>
+        </el-table-column>
+        <el-table-column 
+        prop="yishou_price" 
+        align="center" 
+        v-if="agencyPayshow.show5"
+        label="已收金额">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.yishou_price" />
+          </template>
+        </el-table-column>
+        <el-table-column 
+        prop="discount_price" 
+        align="center"
+        v-if="agencyPayshow.show6" 
+        label="折扣金额">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.discount_price" />
+          </template>
+        </el-table-column>
+        <el-table-column 
+        prop="weishou_price" 
+        align="center"
+        v-if="agencyPayshow.show7" 
+        label="未收金额">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.weishou_price" />
+          </template>
+        </el-table-column>
+        <el-table-column 
+        align="center" 
+        width="95"
+        v-if="agencyPayshow.show8"
+        label="应收日期">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.yingjie_time" />
+          </template>
+        </el-table-column>
+        <el-table-column 
+        align="center" 
+        v-if="agencyPayshow.show9"
+        label="类型">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.type" />
+          </template>
+        </el-table-column>
+        <el-table-column 
+        align="center" 
+        width="95"
+        v-if="agencyPayshow.show10"
+        label="最近收款日期">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.near_shoukuan_time" />
+          </template>
+        </el-table-column>
+        <el-table-column 
+        align="center"
+        v-if="agencyPayshow.show11" 
+        label="备注">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.remark" />
+          </template>
+        </el-table-column>
+        <el-table-column
+        fixed="right"
+        align="center"
+        label="相关操作"
+        width="90">
+            <template slot-scope="scope">
+                <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
+                <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
+            </template>
+        </el-table-column>
       </el-table>
       <!-- 分页器 -->
       <el-pagination
@@ -274,6 +508,7 @@ import {
   editAgencypayanalysis
 } from "../../api/api";
 export default {
+  inject:['reload'],
   data() {
     return {
       page: 1,
@@ -311,6 +546,20 @@ export default {
       ],
       dialogServeAdd: false,
       dialogServeDetail: false,
+      dialogShow:false,
+      agencyPayshow:{
+          show1:true,
+          show2:true,
+          show3:true,
+          show4:true,
+          show5:true,
+          show6:true,
+          show7:true,
+          show8:true,
+          show9:true,
+          show10:true,
+          show11:true,
+      },
       keywords: "",
       formServe: {
         name: "",
@@ -321,10 +570,45 @@ export default {
       },
       formServeDetail: {},
       Data: [],
-      rule: [{ required: true, message: "不能为空" }]
+      rule: [{ required: true, message: "不能为空" }],
+      search:'',
+      search3:['2017-7-7','2019-9-9'],
+      radio:4,
+      value: '' ,
+      value1: '' ,
+      value2: '' ,
+      value3: '' ,
+      value4: '' ,
+      options1: [{
+      value1: '选项1',
+      label: '未审核'
+      }, {
+      value1: '选项2',
+      label: '已审核'
+      },],
+      options2: [{
+      value2: '选项1',
+      label: '0分店'
+      }, {
+      value2: '选项2',
+      label: '1分店'
+      },],
+      options3: [{
+      value3: '选项1',
+      label: '分公司1'
+      }, {
+      value3: '选项2',
+      label: '分公司2'
+      },],
     };
   },
   methods: {
+    handleClose(done){
+        done();
+        let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+        erpTableSetting.agencyPay=this.agencyPayshow;
+        localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+    },
     changeColumn() {
       this.columnData = this.columnData;
       console.log(this.columnData);
@@ -344,6 +628,12 @@ export default {
       getAgencypayanalysisList(data).then(res => {
         console.log(res.data);
         if (res.errno == 0) {
+          for(let i=0;i<res.data.agencyanalysis_list.length;i++){
+            res.data.agencyanalysis_list[i].yingshou_price=res.data.agencyanalysis_list[i].yingshou_price.replace(/^￥/,"");
+            res.data.agencyanalysis_list[i].yishou_price=res.data.agencyanalysis_list[i].yishou_price.replace(/^￥/,"");
+            res.data.agencyanalysis_list[i].discount_price=res.data.agencyanalysis_list[i].discount_price.replace(/^￥/,"");
+            res.data.agencyanalysis_list[i].weishou_price=res.data.agencyanalysis_list[i].weishou_price.replace(/^￥/,"");
+          };
           this.Data = res.data.agencyanalysis_list;
           this.total = Number(res.data.record_count);
           this.loading = false;
@@ -357,6 +647,41 @@ export default {
         this.$refs.form.resetFields();
       }
       this.dialogServeDetail = true;
+    },
+    dateConverter(str) { //-----------------------日期转秒数
+        var arr = str.split(/[- : \/]/);
+        var startDate = Date.parse(new Date(arr[0], arr[1]-1, arr[2]))/1000;
+        return startDate;
+    },
+    edit(row){
+      if(row.yingjie_time!==""){
+        row.yingjie_time=this.dateConverter(row.yingjie_time);
+      }else{
+        row.yingjie_time=new Date().getTime()/1000-86400;
+      }
+      if(row.near_shoukuan_time!==""){
+        row.near_shoukuan_time=this.dateConverter(row.near_shoukuan_time);
+      }else{
+        row.near_shoukuan_time=new Date().getTime()/1000-86400;
+      }
+      let data=this.$qs.stringify(row);
+      editAgencypayanalysis(data).then(res=>{
+        if (res.errno == 0) {
+          this.$message({
+            type: "success",
+            message: "修改成功!",
+            duration: 1000
+          });
+          this.initData();
+        } else {
+          this.$message({
+            type: "error",
+            message: res.errmsg,
+            duration: 1000
+          });
+          this.initData();
+        }
+      });
     },
     editDone(formName) {
       this.$refs[formName].validate(valid => {
@@ -411,7 +736,7 @@ export default {
         }
       });
     },
-    search() {
+    /* search() {
       let data = this.$qs.stringify({
         page: 1,
         page_size: 10,
@@ -425,9 +750,9 @@ export default {
           this.loading = false;
         }
       });
-    },
+    }, */
     reset() {
-      this.initData();
+      this.reload();
     },
     handleCurrentChange(val) {
       this.page = val;
@@ -486,6 +811,15 @@ export default {
     }
   },
   created() {
+    if(localStorage.erpTableSetting!==undefined){
+        console.log("yes");
+        let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+        if(erpTableSetting.agencyPay!==undefined){
+            this.agencyPayshow=erpTableSetting.agencyPay;
+        }
+    }else{
+        console.log("no");
+    };
     this.initData();
   }
 };
@@ -501,6 +835,9 @@ export default {
 }
 .main-header .el-breadcrumb {
   margin: 8px 0 0 10px;
+}
+.main-header .el-breadcrumb span {
+  font-size: 18px;
 }
 /* 搜索操作 */
 .main-table .el-form {
@@ -530,10 +867,10 @@ fieldset {
   width: 220px;
 }
 .content-r,
-.el-form {
+/* .el-form {
   display: flex;
   align-items: center;
-}
+} */
 .content-r .el-form {
   flex-wrap: wrap;
   flex: 1;
@@ -586,7 +923,10 @@ fieldset {
   overflow: auto;
   text-align: left;
 }
-
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
+}
 .aaa {
   width: 100%;
   position: absolute;
@@ -643,7 +983,52 @@ fieldset {
 .main-table >>> .el-dialog__body .el-input-number {
   width: 100%;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
+}
+.card-title {
+  text-align: center;
+}
+.card-title:focus {
+  outline: none;
+}
+.card {
+  transition: all 0.3s;
+  padding: 5px 0;
+}
+.card:hover {
+  border-radius:7px;
+  transform: translateY(-2px);
+  box-shadow: 0px 2px 5px 4px rgba(0, 0, 0,0.1)
+}
+.card:hover i,
+.card:hover div,
+.card:hover b {
+  color: #6cf;
+}
+.operate-in {
+  display: flex;
+  margin-top: 12px;
+}
+.operate-in > div {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+.operate-in > div div {
+  font-size: 16px;
+}
+.operate-in i {
+  font-size: 30px;
+}
+.operate-in b {
+  font-size: 16px;
+  position: absolute;
+  top: 20%;
+  right: 5%;
 }
 </style>

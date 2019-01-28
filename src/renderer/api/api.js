@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const baseURL = "http://api.guimishuo1.com/erp"
-
+const subsite_id = 3
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.baseURL = baseURL
 
@@ -24,11 +24,19 @@ axios.defaults.baseURL = baseURL
 
 // 登录
 export const login = params => {
-    return axios.post("/login/login?subsite_id=3",params).then(res => res.data)
+    return axios.post("/login/login?subsite_id="+subsite_id,params).then(res => res.data)
 }
 // 用户资料页
 export const getMember = params => {
     return axios.get("/user/edit",params).then(res => res.data)
+}
+// 商户资料页
+export const getShopInfo = params => {
+    return axios.post("/user/editshop?subsite_id="+subsite_id,params).then(res => res.data)
+}
+// 商户资料提交修改
+export const setShopInfo = params => {
+    return axios.post("/user/updateshop?subsite_id="+subsite_id,params).then(res => res.data)
 }
 // 用户资料修改确认
 export const updateMemberInfo = params => {
@@ -36,11 +44,11 @@ export const updateMemberInfo = params => {
 }
 // 获取侧边栏
 export const getAsideMenu = params => {
-    return axios.post("/quanxian/menu?subsite_id=3",params).then(res => res.data)
+    return axios.post("/quanxian/menu2?subsite_id="+subsite_id,params).then(res => res.data)
 }
 // 获取子权限
 export const getSubAuthority = params => {
-    return axios.post("/quanxian/one?subsite_id=3",params).then(res => res.data)
+    return axios.post("/quanxian/one?subsite_id="+subsite_id,params).then(res => res.data)
 }
 // 获取操作人能管理的仓库列表
 export const getStoreList = params => {
@@ -51,6 +59,10 @@ export const test = params => {
     return axios.post("/clerk/lists",params).then(res => res.data)
 }
 // ------------------主页
+    //首页数据统计
+    export const indexCounts = params => {
+        return axios.get("/index/counts",params).then(res => res.data)
+    }
     //用户数据趋势
     export const userdatatrend = params => {
         return axios.post("/datastatistics/userdatatrend",params).then(res => res.data)
@@ -93,7 +105,7 @@ export const test = params => {
     }
     //采购订单
     export const shopOderList = params =>{
-        return axios.post("/opurchase/lists",params).then(res=>res.data)
+        return axios.post("/purchase/lists",params).then(res=>res.data)
     }
     //采购入库单
     export const shopInList = params =>{
@@ -553,7 +565,7 @@ export const test = params => {
     export const editCustomercare = params => {
         return axios.post("/customercare/edit",params).then(res => res.data)
     }
-//====================================职员=========================================================================
+//=====================职员============================
 // 职员=>职员管理
     // 获取职员列表
     export const getWorkerList = params => {
@@ -571,7 +583,15 @@ export const test = params => {
     export const editWorker = params => {
         return axios.post("/clerk/edit",params).then(res => res.data)
     }
-
+//职员=>签到
+    // 签到
+    export const signIn = params => {
+        return axios.post("/clerk/sign",params).then(res => res.data)
+    }
+    // 签到
+    export const signList = params => {
+        return axios.post("/clerk/signlist",params).then(res => res.data)
+    }
 
 
 //====================================仓库=========================================================================
@@ -642,7 +662,7 @@ export const test = params => {
     }
     // 获取库存详情
     export const getRoomDetail = params => {
-        return axios.get("/room/view",params).then(res => res.data)
+        return axios.post("/room/view",params).then(res => res.data)
     }
 
 // 仓库=>库存盘点
@@ -874,11 +894,27 @@ export const test = params => {
 // 资金=>其他支出单
     // 获取其他支出单列表
     export const getOtpaymentList = params => {
-        return axios.get("/otpayment/lists",params).then(res => res.data)
+        return axios.post("/otpayment/lists",params).then(res => res.data)
     }
     // 获取其他支出单详情
     export const getOtpaymentDetail = params => {
-        return axios.get("/otpayment/view",params).then(res => res.data)
+        return axios.post("/otpayment/view",params).then(res => res.data)
+    }
+    // 其他支出单修改
+    export const editOtpayment = params => {
+        return axios.post("/otpayment/edit",params).then(res => res.data)
+    }
+    // 其他支出单添加
+    export const addOtpayment = params => {
+        return axios.post("/otpayment/add",params).then(res => res.data)
+    }
+    // 其他支出单删除
+    export const dropOtpayment = params => {
+        return axios.post("/otpayment/drop",params).then(res => res.data)
+    }
+    // 其他支出单审核
+    export const checkOtpayment = params => {
+        return axios.post("/otpayment/check",params).then(res => res.data)
     }
 
 // 资金=>资金调拨单
@@ -1290,7 +1326,7 @@ export const test = params => {
 // 设置=>客户管理
     // 获取客户管理列表
     export const getcustomerList = params => {
-        return axios.get("/customer/lists",params).then(res => res.data)
+        return axios.post("/customer/lists",params).then(res => res.data)
     }
     // 获取客户详情
     export const getcustomerDetail = params => {

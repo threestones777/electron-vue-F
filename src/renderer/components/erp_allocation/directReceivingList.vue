@@ -2,12 +2,83 @@
     <div class="directReceivingList">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>调拨</el-breadcrumb-item>
                 <el-breadcrumb-item>直调收货单</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                <i class="el-icon-loading"></i>
+                <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                <i class="el-icon-tickets"></i>
+                <div>显示列</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
@@ -74,10 +145,11 @@
                             </el-option>
                         </el-select>
                     </el-col>
-                    <el-col :span="3">
-                        <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
-                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    <el-col :span="4">
+                        <!-- <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button> -->
                     </el-col>
+                    <el-col :span="4"></el-col>
                 </el-row>				
 			</fieldset>
             <!-- 按需选择列弹窗 -->
@@ -94,6 +166,7 @@
                 <el-checkbox v-model="directReceivingListshow.show6">收货店名</el-checkbox><br>
                 <el-checkbox v-model="directReceivingListshow.show7">单号</el-checkbox><br>
                 <el-checkbox v-model="directReceivingListshow.show8">单据类型</el-checkbox><br>
+                <el-checkbox v-model="directReceivingListshow.show19">要求到货日期</el-checkbox><br>
                 <el-checkbox v-model="directReceivingListshow.show9">金额</el-checkbox><br>
                 <el-checkbox v-model="directReceivingListshow.show10">申请人</el-checkbox><br>
                 <el-checkbox v-model="directReceivingListshow.show11">申请日期</el-checkbox><br>
@@ -110,7 +183,7 @@
             :data="directReceData.filter(data =>  {
             return Object.keys(data).some(key => {
             return String(data[key]).toLowerCase().indexOf(search) > -1})})"
-            border
+            border stripe
             show-summary
             :row-style="{height:0}"  
             :cell-style="{padding:0}"
@@ -128,9 +201,10 @@
                 <el-table-column
                 v-if="directReceivingListshow.show2"
                 align="center"
+                width="100"
                 label="状态">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.status"/>
+                        <span>{{scope.row.status}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -143,10 +217,11 @@
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="directReceivingListshow.show4"
                 label="发货分店名">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.from_subshop_name"/>
+                        <el-input v-model="scope.row.from_subshop_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -154,124 +229,140 @@
                 v-if="directReceivingListshow.show5"
                 label="收货分店">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.to_subshop_id"/>
+                        <span>{{scope.row.to_subshop_id}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="directReceivingListshow.show6"
                 label="收货店名">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.to_subshop_name"/>
+                        <el-input v-model="scope.row.to_subshop_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="directReceivingListshow.show7"
                 label="单号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.bill_sn"/>
+                        <el-input v-model="scope.row.bill_sn"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directReceivingListshow.show8"
                 label="单据类型">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.type"/>
+                        <el-input v-model="scope.row.type"/>
                     </template>
                 </el-table-column>
-                <!-- <el-table-column
+                <el-table-column
                 align="center"
+                v-if="directReceivingListshow.show19"
+                width="130"
                 label="要求到货日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.require_arrival_time"/>
+                        <el-input v-model="scope.row.require_arrival_time"/>
                     </template>
-                </el-table-column> -->
+                </el-table-column>
                 <el-table-column
                 prop="money"
                 align="center"
+                width="100"
                 v-if="directReceivingListshow.show9"
                 label="金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.money"/>
+                        <el-input v-model="scope.row.money"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directReceivingListshow.show10"
                 label="申请人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.apply_user"/>
+                        <el-input v-model="scope.row.apply_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="directReceivingListshow.show11"
                 label="申请日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.apply_time"/>
+                        <el-input v-model="scope.row.apply_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directReceivingListshow.show12"
                 label="发货人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fahuo_user"/>
+                        <el-input v-model="scope.row.fahuo_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="directReceivingListshow.show13"
                 label="发货日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fahuo_time"/>
+                        <el-input v-model="scope.row.fahuo_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directReceivingListshow.show14"
                 label="收货人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shouhuo_user"/>
+                        <el-input v-model="scope.row.shouhuo_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="directReceivingListshow.show15"
                 label="收货时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shouhuo_time"/>
+                        <el-input v-model="scope.row.shouhuo_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directReceivingListshow.show17"
                 label="拣货员">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.jianhuo_user"/>
+                        <el-input v-model="scope.row.jianhuo_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directReceivingListshow.show18"
                 label="检验员">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.jianyan_user"/>
+                        <el-input v-model="scope.row.jianyan_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directReceivingListshow.show16"
                 label="备注">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.remark"/>
+                        <el-input v-model="scope.row.remark"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
+                width="100"
                 label="相关操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
@@ -326,7 +417,7 @@ export default {
             directReceData:[],
             directReceivingListshow:{
                 show1:false,
-                show2:true,
+                show2:false,
                 show3:true,
                 show4:true,
                 show5:true,
@@ -343,7 +434,9 @@ export default {
                 show16:true,
                 show17:true,
                 show18:true,
+                show19:true,
             },
+            recordPage:1,
             value: '' ,
             value1: '' ,
             value2: '' ,
@@ -399,8 +492,7 @@ export default {
                 console.log(res.data);
                 this.record_count=Number(res.data.filter.record_count);
                 for(let i=0;i<res.data.orders.length;i++){
-                    let reg = new RegExp( /^￥/ , "g" );
-                    res.data.orders[i].money=res.data.orders[i].money.replace(reg,"");
+                    res.data.orders[i].money=res.data.orders[i].money.replace(/^￥/,"");
                 };
                 this.directReceData=res.data.orders;
             }); 
@@ -436,7 +528,8 @@ export default {
             this.reload();
         },
         handleCurrentChange(val) {
-            this.init(val);            
+            this.init(val); 
+            this.recordPage=val;           
         },
         receiveGoods(row){//--------------收货
             let dataD = this.$qs.stringify({
@@ -481,8 +574,6 @@ export default {
             })
         },
         edit(row){//--------------修改
-            //row.money=row.money.slice(1);
-            //row.require_arrival_time=this.dateConverter(row.require_arrival_time);
             if(row.apply_time!==""){
                 row.apply_time=this.dateConverter(row.apply_time);
             }else{
@@ -508,14 +599,14 @@ export default {
                         message: res.errmsg,
                         duration: 1000
                     });
-                    this.init(1);
+                    this.init(this.recordPage);
                 }else{
                     this.$message({
                         type: "error",
                         message: res.errmsg,
                         duration: 1000
                     });
-                    this.init(1);
+                    this.init(this.recordPage);
                 }
             })
         },
@@ -549,13 +640,13 @@ export default {
         }else{
             console.log("no");
         }; 
-        this.init(1);  
+        this.init(this.recordPage);  
     }
 }
 </script>
 <style scoped>
 .directReceivingList{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -583,12 +674,9 @@ export default {
   padding: 20px 0;
   text-align: right;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
 }
 /* 新增弹出框 & 详情弹出框*/
 .main-table>>>.el-dialog__body {

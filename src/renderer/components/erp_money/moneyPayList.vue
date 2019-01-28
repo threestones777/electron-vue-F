@@ -24,7 +24,7 @@
                     <el-input placeholder="请输入管理员id" @input="search" v-model="keywords" style="width:60%;margin-right:10px" size="small">
                         <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
                     </el-input>
-                    <el-button type="primary" size="small">刷新</el-button>
+                    <el-button type="primary" size="small" @click="reset">刷新</el-button>
                 </el-form-item>
             </el-form>
             <!--选择客户弹出窗口-->
@@ -33,7 +33,7 @@
                 :visible.sync="selectSupplier"
                 width="880px"
                 class="customer"
-                :before-close="handleClose">
+                :before-close="handleClose1">
                 名称 :<el-input size="small" v-model="formServe.order" placeholder="客户名称"></el-input>          
                 编号 :<el-input size="small" v-model="formServe.order" placeholder="客户编号"></el-input>          
                 联系人 :<el-input size="small" v-model="formServe.order" placeholder="联系人"></el-input>          
@@ -225,7 +225,7 @@
                 align="center"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row),dialogServeDetail = true">详情</el-button>
                         <el-button type="text" size="small">删除</el-button>
                     </template>
                 </el-table-column>
@@ -326,12 +326,30 @@ export default {
                 }
             });
         },
-        handleClose(done) {
+        handleClose1(done) {
             done();
         },
-        editDone() {
-
-        },
+        /* edit(row) {
+            let Data = this.$qs.stringify(row);
+            editCombinationsplitting(Data).then(res=>{
+                console.log(res);
+                if (res.errno == 0) {
+                    this.$message({
+                    type: "success",
+                    message: "修改成功!",
+                    duration: 1000
+                    });
+                    this.initData();
+                } else {
+                    this.$message({
+                    type: "error",
+                    message: res.errmsg,
+                    duration: 1000
+                    });
+                    this.initData();
+                }
+            });
+        }, */
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },

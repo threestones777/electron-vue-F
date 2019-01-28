@@ -1,17 +1,31 @@
 <template>
     <div id="shopReturnList">
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item :to="{ path: '/' }">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>购货</el-breadcrumb-item>
                 <el-breadcrumb-item>采购退货</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <div @click="test(),dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div>
+                <div @click="()=>{dialogAdd=true}" class="card">
+                    <i class="el-icon-plus"></i>
+                    <div>添加订单</div>
+                </div>
+            </div>
         </div>
         <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
             <legend>查询条件</legend>
             <el-row type="flex" style="padding-bottom:0px;" justify="space-around" :gutter="10">
-            <el-col :span="7">
+            <el-col :span="6">
                 <el-row type="flex" justify="space-around" :gutter="5">
                     <el-col :span="12">
                         <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="输入订单号"/>
@@ -37,7 +51,7 @@
                     </el-col>
                 </el-row> 
             </el-col>
-            <el-col :span="7">
+            <el-col :span="6">
                 <el-row type="flex" justify="space-around" :gutter="5">
                     <el-col :span="12">
                     <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;" v-model="search2"  size="mini"  placeholder="实际退货人"/>
@@ -54,7 +68,7 @@
                     </el-col>
                 </el-row>
             </el-col>
-            <el-col :span="7">
+            <el-col :span="6">
                 <el-row type="flex" justify="space-around" :gutter="5">
                     <el-col :span="12">
                         <el-date-picker
@@ -63,7 +77,8 @@
                         value-format="yyyy-MM-dd"
                         placeholder="预定到货日期">
                         </el-date-picker>
-                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-top:5px" v-model="search5"  size="mini"  placeholder="对方单号"/> 
+                        <!-- <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-top:5px" v-model="search5"  size="mini"  placeholder="对方单号"/>  -->
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-top:5px" v-model="search7"  size="mini"  placeholder="供应商编码"/> 
                     </el-col>
                     <el-col :span="12">
                         <el-date-picker
@@ -72,25 +87,25 @@
                         value-format="yyyy-MM-dd"
                         placeholder="退货日期">
                         </el-date-picker>
-                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-top:5px" v-model="search7"  size="mini"  placeholder="供应商编码"/> 
                     </el-col>
                 </el-row>
             </el-col>
-            <el-col :span="3" style="padding-left:30px;">
+            <!-- <el-col :span="3" style="padding-left:30px;">
                 <el-button style="margin-top:10px;" type="primary" size="small" @click="reset">刷新</el-button><br>
+                <el-button type="primary" size="small" @click="()=>{dialogAdd=true}">添加</el-button><br>
                 <el-button icon="el-icon-tickets"  style="margin-top:10px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
-            </el-col>
+            </el-col> -->
+            <el-col :span="6"></el-col>
         </el-row>
         </fieldset>
-            
-        <div style="text-align:left;margin-top:10px;">
+        <!-- <div style="text-align:left;margin-top:10px;">
             <el-input size="small" style="width:15%;" placeholder="请输入商品主条码"  v-model="formAdd.purchase_sn" autofocus/>
             <el-input size="small" v-model="formAdd.remark"  style="width:15%;" placeholder="备注"></el-input>
             <el-button type="primary" size="small" @click="add">添加</el-button>
-            <el-button type="primary" size="small" @click="saveData" id="save" :disabled="save">保存</el-button>
-            <el-button type="primary" size="small" @click="check">审核</el-button>
+        </div> -->
+            <!-- <el-button type="primary" size="small" @click="saveData" id="save" :disabled="save">保存</el-button>
+            <el-button type="primary" size="small" @click="check">审核</el-button> -->
             <!-- <el-button type="primary" size="small" @click="edit">修改</el-button> -->
-        </div>
         <!-- 按需选择列弹窗 -->
             <el-dialog
             title="按需选择列" style="text-align:left" class="chose"
@@ -112,7 +127,7 @@
                 <el-checkbox v-model="shopReturnshow.show13">联系人</el-checkbox><br>
                 <el-checkbox v-model="shopReturnshow.show14">手机</el-checkbox><br>
             </el-dialog>
-        <el-dialog
+        <!-- <el-dialog
         title="选择供应商"
         :visible.sync="selectSupplier"
         width="95%"
@@ -208,10 +223,10 @@
                 <el-button	size="small" @click="selectSupplier=false">取 消</el-button>
                 <el-button	size="small" type="primary" @click="selectSupplier=false">确 定</el-button>
             </span>
-        </el-dialog> 
+        </el-dialog> --> 
         <!-- 新增购货退货单弹窗 -->
         <el-dialog
-        title="新增购货退货单"
+        title="新增采购退货单"
         :visible.sync="dialogAdd"
         width="700px">
             <el-form :model="formAdd" class="detail">
@@ -220,7 +235,7 @@
                         采购订单sn<input class="spe" v-model="formAdd.purchase_sn" ref="input" @blur="exam" @input="()=>{this.status=0}"/>
                     </el-col>
                     <el-col :span="7">
-                        备注<el-input v-model="formAdd.remark" ></el-input>
+                        备注<el-input v-model="formAdd.remark"></el-input>
                     </el-col>
                 </el-row> 
             </el-form>
@@ -233,93 +248,26 @@
         :data="shopReturnData.filter(data =>  {
         return Object.keys(data).some(key => {
         return String(data[key]).toLowerCase().indexOf(search) > -1})})"
-        border
+        border stripe
         :row-style="{height:0}"  
         :cell-style="{padding:0}"
         :header-row-style="{height:0}"  
-        :header-cell-style="{padding:0}"
+        :header-cell-style="tableRowStyle"
         show-summary
         style="width: 100%">
-            <!-- <el-table-column
-                prop="purchase_sn"
-                align="center"
-                v-if="shopReturnshow.show3"
-                label="采购单编号">
-            </el-table-column>
-            <el-table-column
-                prop="status_name"
-                align="center"
-                v-if="shopReturnshow.show5"
-                :filters="[{text: '未审核', value: '未审核'},{text: '已退货', value: '已退货'}]"
-                :filter-method="filterHandler"
-                label="状态名">
-            </el-table-column>
-            <el-table-column
-                prop="money"
-                align="center"
-                v-if="shopReturnshow.show6"
-                label="单据金额">
-            </el-table-column>
-            <el-table-column
-                prop="back_time"
-                align="center"
-                v-if="shopReturnshow.show7"
-                label="退货时间">
-            </el-table-column>
             <el-table-column
                 align="center"
-                v-if="shopReturnshow.show8"
-                label="退货人">
-            </el-table-column>
-            <el-table-column
-                align="center"
-                v-if="shopReturnshow.show9"
-                label="退货审核人">
-            </el-table-column>
-            <el-table-column
-                align="center"
-                v-if="shopReturnshow.show10"
-                label="审核日期">
-            </el-table-column>
-            <el-table-column
-                prop="remark"
-                align="center"
-                v-if="shopReturnshow.show11"
-                label="备注">
-            </el-table-column> 
-            <el-table-column
-                align="center"
-                v-if="shopReturnshow.show12"
-                label="电话">
-            </el-table-column> 
-            <el-table-column
-                align="center"
-                v-if="shopReturnshow.show13"
-                label="联系人">
-            </el-table-column> 
-            <el-table-column
-                align="center"
-                v-if="shopReturnshow.show14"
-                label="手机">
-            </el-table-column> 
-            <el-table-column
-                align="center"
-                v-if="shopReturnshow.show15"
-                label="传真">
-            </el-table-column>  -->
-            <el-table-column
-                align="center"
-                width="190"
-                label="主条码">
+                width="175"
+                label="单据编号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.purchase_sn">
+                        <span>{{scope.row.purchase_sn}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="标配">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.standard">
+                        <span>{{scope.row.standard}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -332,22 +280,22 @@
                 width="130"
                 label="货号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.product_id">
+                        <span>{{scope.row.product_id}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
-                width="250"
+                width="120"
                 label="名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.goods_name">
+                        <span>{{scope.row.goods_name}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="规格">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.attr_value">
+                        <span>{{scope.row.attr_value}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -355,7 +303,7 @@
                 prop="money"
                 label="售价">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.money">
+                        <span style="color:#B58900">{{scope.row.money}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -363,42 +311,42 @@
                 width="50"
                 label="退货折扣">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.discount">
+                        <span>{{scope.row.discount}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="退货进价">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_jinjia">
+                        <span>{{scope.row.sh_jinjia}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="箱数">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_box_number">
+                        <span>{{scope.row.sh_box_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_goods_number">
+                        <span>{{scope.row.sh_goods_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="赠送数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_give_number">
+                        <span>{{scope.row.sh_give_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="退货金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_money">
+                        <span>{{scope.row.sh_money}}</span>
                     </template>
                 </el-table-column>
                 <!-- <el-table-column
@@ -412,70 +360,70 @@
                 align="center"
                 label="退货售价金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_shoujia">
+                        <span>{{scope.row.sh_shoujia}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="退货箱数">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.dh_box_number">
+                        <span>{{scope.row.dh_box_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="退货数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.dh_goods_number">
+                        <span>{{scope.row.dh_goods_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="退货赠送数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.dh_give_number">
+                        <span>{{scope.row.dh_give_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="退货赠送金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.dh_give_money">
+                        <span>{{scope.row.dh_give_money}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="退货金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.dh_money">
+                        <span>{{scope.row.dh_money}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="箱装数">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.box_in_number">
+                        <span>{{scope.row.box_in_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="毛利额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.gross_profit">
+                        <span>{{scope.row.gross_profit}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="毛利率">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.gross_interest_rate">
+                        <span>{{scope.row.gross_interest_rate}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 label="批发价">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.wholesale_price">
+                        <span>{{scope.row.wholesale_price}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -483,7 +431,7 @@
                 width="50"
                 label="单位">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.supplier_id">
+                        <span>{{scope.row.supplier_id}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -491,7 +439,7 @@
                 width="100"
                 label="退货时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.back_time">
+                        <span>{{scope.row.back_time}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -499,26 +447,28 @@
                 width="100"
                 label="失效日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.expiry_date">
+                        <span>{{scope.row.expiry_date}}</span>
                     </template>
                 </el-table-column>
-            <!--<el-table-column
+            <el-table-column
                 fixed="right"
                 align="center"
+                width="120"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogDetail = true">详情</el-button>
-                        <el-button type="text" size="small" @click="getId(scope.row)" :disabled="isCheck">审核</el-button>
-                         <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button> 
+                       <el-button type="text" size="small" @click="showDetails(scope.row),dialogDetail=true">商品详情</el-button>
+                       <!-- <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button> -->
+                        <el-button :disabled="scope.row.status_name!=='未审核'" type="text" size="small" @click="getId(scope.row)">审核</el-button>
+                        <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button> 
                     </template>
-                </el-table-column>-->        
+                </el-table-column>   
         </el-table>
-    <!-------------------------------------------------------- 详情弹窗 ---------------------------------------------------------------->
-    <el-dialog width="800px" title="购货退货单详情" :visible.sync="dialogDetail">
-        <el-button size="small" type="primary" class="addGoods" @click="getGoods(),dialogAddGoods=true">添加商品</el-button>
+    <!------------------ 详情弹窗 ---------------------------------------->
+    <el-dialog width="800px" title="采购退货单详情" :visible.sync="dialogDetail">
+        <el-button style="float:right;margin-bottom:10px;" size="small" type="primary" class="addGoods" @click="getGoods(),dialogAddGoods=true">添加商品</el-button>
         <el-table
         :data="goodsData"
-        border
+        border stripe
         :row-style="{height:0}"  
         :cell-style="{padding:0}"
         :header-row-style="{height:0}"  
@@ -546,6 +496,9 @@
                 prop="goods_sn"
                 align="center"
                 label="商品条码">
+                <template slot-scope="scope">
+                    <span>{{scope.row.goods_sn}}</span>
+                </template>
             </el-table-column>
             <el-table-column
                 prop="number"
@@ -558,96 +511,92 @@
                 label="标配">
             </el-table-column>
             <el-table-column
-                prop=""
+                prop="shop_price"
                 align="center"
                 label="售价">
             </el-table-column>
             <el-table-column
-                prop=""
+                prop="sh_price"
                 align="center"
                 label="收货进价">
             </el-table-column>
             <el-table-column
-                prop=""
+                prop="amount"
                 align="center"
                 label="箱数">
             </el-table-column>
             <el-table-column
-                prop=""
+                prop="giveNumber"
                 align="center"
                 label="赠送数量">
             </el-table-column>
             <el-table-column
-                prop=""
+                prop="shDmoney"
                 align="center"
                 label="收货金额">
             </el-table-column>
             <el-table-column
-                prop=""
+                prop="sh_money"
                 align="center"
                 label="收货赠送金额">
             </el-table-column>
             <el-table-column
-                prop=""
+                prop="dh_number"
                 align="center"
                 label="订货箱数">
             </el-table-column>
             <el-table-column
-                prop=""
+                prop="dh_amount"
                 align="center"
                 label="订货数量">
             </el-table-column>
             <el-table-column
-                prop=""
+                prop="dh_givenumber"
                 align="center"
                 label="订货赠送数量">
             </el-table-column>
             <el-table-column
-                prop=""
+                prop="dh_givemoney"
                 align="center"
                 label="订货赠送金额">
             </el-table-column>
             <el-table-column
-                prop=" "
+                prop="mori_money"
                 align="center"
                 label="毛利额">
             </el-table-column>
             <el-table-column
-                prop=" "
+                prop="mori_lv"
                 align="center"
                 label="毛利率">
             </el-table-column>
             <el-table-column
-                prop=" "
+                prop="whole_sale"
                 align="center"
                 label="批发价">
             </el-table-column>
-            <!-- <el-table-column
+            <el-table-column
             fixed="right"
             align="center"
             label="相关操作">
                 <template slot-scope="scope">
-                    <el-button type="text" size="small" @click="editGoods(scope.row)" icon="el-icon-edit"></el-button>
+                    <!-- <el-button type="text" size="small" @click="editGoods(scope.row)" icon="el-icon-edit"></el-button> -->
                     <el-button type="text" size="small" @click="deleteGoods(scope.row)" icon="el-icon-delete"></el-button>
                 </template>
-            </el-table-column>-->   
+            </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
             <el-button size="small" @click="dialogDetail = false">取 消</el-button>
             <el-button size="small" type="primary" @click="dialogDetail = false">确定</el-button>
         </div>
     </el-dialog>
-    <!---------------------------------------------- 审核弹窗 ------------------------>
+    <!------------------------------------ 审核弹窗 ------------------------>
     <el-dialog width="30%" title="订单审核" :visible.sync="dialogCheck">
-        <el-radio-group v-model="status">
+        <el-radio-group @change="checkSta"  v-model="status">
             <el-radio :label="0">未审核</el-radio>
-            <!-- <el-radio :label="1" disabled>已审核</el-radio> -->
+            <el-radio :label="1">已审核</el-radio>
             <el-radio :label="2">已退货</el-radio>
-        </el-radio-group>              
-        <div slot="footer" class="dialog-footer">
-            <el-button size="small" @click="dialogCheck = false">取 消</el-button>
-            <el-button size="small" type="primary" @click="checkSta(scope.row)">保存审核</el-button>
-        </div>
+        </el-radio-group> 
     </el-dialog>
     <!----------------------------- 添加商品弹窗 -------------------------------------->
     <el-dialog
@@ -680,14 +629,24 @@
                 </template>
             </el-table-column>
             <el-table-column
+                prop="attr_value"
+                align="center"
+                label="属性">
+            </el-table-column>
+            <el-table-column
                 prop="number"
                 align="center"
                 label="数量">
             </el-table-column>
             <el-table-column
-                prop="attr_value"
+                prop="per_price"
                 align="center"
-                label="属性">
+                label="单个金额">
+            </el-table-column>
+            <el-table-column
+                prop="money"
+                align="center"
+                label="总金额">
             </el-table-column>
             <el-table-column
                 prop="note"
@@ -723,7 +682,7 @@
     }
     #shopReturnList{
         text-align:center;
-        margin: 20px;
+        margin: 10px;
     }
     #shopReturnList .el-dialog .el-input{
        width:10%;
@@ -768,7 +727,6 @@
     .el-table input{
         width:100%;
         height:34px;
-        border:1px solid #DCDFE6;
         border-radius:4px;
         padding:2px;
     }
@@ -781,6 +739,50 @@
     .spe:focus{
         border:1px solid #409EFF;
         outline-color: #fff;
+    }
+    .card-title {
+        text-align: center;
+    }
+    .card-title:focus {
+        outline: none;
+    }
+    .card {
+        transition: all 0.3s;
+        padding: 5px 0;
+    }
+    .card:hover {
+        border-radius:7px;
+        transform: translateY(-2px);
+        box-shadow: 0px 2px 5px 4px rgba(0, 0, 0,0.1)
+    }
+    .card:hover i,
+    .card:hover div,
+    .card:hover b {
+        color: #409EFF;
+    }
+    .operate-in {
+        display: flex;
+        margin-top: 12px;
+    }
+    .operate-in > div {
+        width: 80px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+    }
+    .operate-in > div div {
+        font-size: 16px;
+    }
+    .operate-in i {
+        font-size: 30px;
+    }
+    .operate-in b {
+        font-size: 16px;
+        position: absolute;
+        top: 20%;
+        right: 5%;
     }
 </style>    
 <script>
@@ -883,37 +885,26 @@ import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,rep
       }
     },
     methods:{
-        check(){
-            this.$message({
-                type: "success",
-                message:"已审核",
-                duration: 1000
-            });
-        },
-        saveData(){
-            this.$message({
-                type: "success",
-                message:"保存成功",
-                duration: 1000
-            });
-            let input=document.querySelectorAll(".el-table input");
-            console.log(document.querySelectorAll(".el-table input"));
-            for(let i=0;i<input.length;i++){
-                input[i].disabled="true";
-            };
-            this.save=true;
+        test(){
+            //var my={id:"1",name:"惠济路",sex:'女'};
+            var my=[1,2,3,4,5];
+            my.money=1500;
+            for(var i of my){
+                console.log(i);
+                //console.log(my[i]);
+            }
         },
         init(page){//-----------------初始化数据
             let data=this.$qs.stringify({
                 page:page,
-                page_size:10
+                page_size:10,
             });
             shopReturnList(data).then(res=>{
                 this.record_count=Number(res.data.filter.record_count);
                 this.shopReturnData=res.data.list;
             }) 
         }, 
-        reset(){
+        reset(){//--------------刷新
             this.reload();
         },
         handleClose(done) {
@@ -948,10 +939,11 @@ import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,rep
                 back_time:this.search6,
                 supplier_name:this.search7,
             }); 
-            this.data(data);  
+            this.data(data); 
         },
-        open(){
+        open(){//---------打开
             this.dialogAdd=true;
+            this.$nextTick(()=>{this.refs['input'].focus()});
             this.$nextTick(() => {this.$refs['input'].focus()})
         },
         exam(){
@@ -1064,16 +1056,26 @@ import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,rep
                 }
             });
         },
-        checkSta(row){//------------------审核
-            
+        checkSta(){//------------------审核
             this.dialogCheck = false;
             let dataC=this.$qs.stringify({
                 back_sn:this.back_sn,
                 status:this.status
             });
             repurchaseCh(dataC).then(res=>{
-                this.$alert("单据已退货，不能审核");
-                
+                if(res.errno==0){
+                    this.$message({
+                        type: "error",
+                        message: res.data.message,
+                        duration: 1000
+                    });
+                }else{
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                };
                 this.reload();
             });
                 
@@ -1092,13 +1094,18 @@ import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,rep
             repurchaseAddG(dataA).then(res=>{
                 console.log(res);
                 if(res.errno==0){
-                    this.$alert(res.data.message,{
-                        callback:action=>{
-                            this.detailGoods();    
-                        }
-                    })
+                    this.$message({
+                        type: "success",
+                        message: res.data.message,
+                        duration: 1000
+                    });
+                    this.detailGoods();    
                 }else{
-                    this.$alert(res.errmsg)
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
                 }
             });
         },
@@ -1166,6 +1173,9 @@ import {repurchaseDe,repurchaseAddG,repurchaseEdG,repurchaseRmv,repurchaseCh,rep
                 alert("用户取消操作");
             }
         },
+       tableRowStyle({ row, rowIndex }) {
+            return 'background-color:#949494;color:#fff;'
+        }, 
     },
     created: function () { 
         if(localStorage.erpTableSetting!==undefined){

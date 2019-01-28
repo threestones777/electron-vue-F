@@ -19,7 +19,8 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" size="small">搜索</el-button>
-                    <el-button type="primary" size="small">刷新</el-button>
+                    <el-button type="primary" @click="add" size="small">新增</el-button>
+                    <el-button type="primary" size="small" @click="reset">刷新</el-button>
                 </el-form-item>
             </el-form>
             <!-- 详情弹出框 -->
@@ -68,9 +69,10 @@
             <el-table
                 :data="Data"
                 v-loading="loading"
-                border
+                show-summary
+                border stripe
                 :row-style="{height:0}"  
-                :cell-style="{padding:0}"
+                :cell-style="{padding:3}"
                 :header-row-style="{height:0}"  
                 :header-cell-style="{padding:0}"
                 style="width: 100%">
@@ -83,34 +85,62 @@
                     prop="add_time"
                     align="center"
                     label="单据日期">
+                    <!-- <template slot-scope="scope">
+                        <el-input disabled v-model="scope.row.add_time"/>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
-                    prop="monery"
+                    prop="money"
                     align="center"
                     label="单据金额">
+                    <!-- <template slot-scope="scope">
+                        <el-input disabled v-model="scope.row.money"/>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
-                    prop="remark"
                     align="center"
                     label="单据备注">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.remark"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="jiesuan_account"
                     align="center"
                     label="账户">
+                    <template slot-scope="scope">
+                        <el-select size="small" v-model="scope.row.jiesuan_account" placeholder="请选择">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.zijin_account_id"
+                            :label="item.account_name"
+                            :value="item.zijin_account_id">
+                            </el-option>
+                        </el-select>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                    prop="admin_name"
+                    prop="status"
+                    align="center"
+                    label="状态">
+                </el-table-column>
+                <el-table-column
                     align="center"
                     label="制单人">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.admin_name}}</span>
+                        </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
+                width="190"
                 label="相关操作">
                     <template slot-scope="scope">
+                        <el-button :disabled="scope.row.status=='已审核'" type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
-                        <el-button type="text" size="small">删除</el-button>
+                        <el-button :disabled="scope.row.status=='已审核'" type="text" size="small" @click="check(scope.row)">审核</el-button>
+                        <el-button type="text" size="small" @click="del(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -118,21 +148,8 @@
             <el-pagination
             @current-change="handleCurrentChange"
                 layout="total,prev, pager, next,jumper"
-                :page_size="page_size"
                 :total="total">
             </el-pagination>
-        </div>
-        <div class="footer">
-            备注信息：<el-input	size="small" v-model="input" style="width:200px" placeholder="请输入备注信息"></el-input>
-            制单人:
-            <el-select	size="small" v-model="value" placeholder="请选择">
-                <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-                </el-option>
-            </el-select>    
         </div>
     </div>
 </template>   
@@ -140,25 +157,29 @@
 import {
   getOtpaymentList,
   getOtpaymentDetail,
+  editOtpayment,
+  addOtpayment,
+  dropOtpayment,
+  checkOtpayment,
 } from "../../api/api";
 export default {
     data() {
       return {
         selectSupplier:false,
         dialogServeDetail:false,
-        options: [{
-          value: '选项1',
-          label: '10条记录'
-        }, {
-          value: '选项2',
-          label: '25条记录'
-        }, {
-          value: '选项3',
-          label: '50条记录'
-        }, {
-          value: '选项4',
-          label: '100条记录'
-        }],
+        options:[{
+			"zijin_account_id": "1",
+			"account_name": "民生银行"
+		}, {
+			"zijin_account_id": "2",
+			"account_name": "中信银行"
+		}, {
+			"zijin_account_id": "3",
+			"account_name": "支付宝"
+		}, {
+			"zijin_account_id": "4",
+			"account_name": "微信"
+		}],
         value: '',
         input:'',
         formServe:{
@@ -178,13 +199,13 @@ export default {
     methods:{
         initData() {
         // 获取列表
-            let data = {
+            let data = this.$qs.stringify({
                 subsite_id: 3,
                 user_id: sessionStorage.user_id,
                 page: this.page,
                 page_size: this.page_size
-            };
-            getOtpaymentList({params:data}).then(res => {
+            });
+            getOtpaymentList(data).then(res => {
                 console.log(res.data);
                 if (res.errno == 0) {
                 this.Data = res.data.otpayment_list;
@@ -196,12 +217,91 @@ export default {
         handleClose(done) {
             done();
         },
-        editDone() {
-
+        add() { // 打开 添加单据 弹出框
+            this.isEdit = false;
+            this.formServeDetail = {};
+            if (this.$refs.form) {
+                this.$refs.form.resetFields();
+            }
+            this.dialogServeDetail = true;
+        },
+        edit(row){//--------------------修改
+            if(!Number(row.jiesuan_account)) {
+                this.options.forEach((v,i)=>{
+                    if(v.account_name == row.jiesuan_account) {
+                        row.jiesuan_account = v.zijin_account_id
+                    }
+                })
+            }
+            let data=this.$qs.stringify(row);
+            editOtpayment(data).then(res=>{
+                if (res.errno == 0) {
+                    this.$message({
+                        type: "success",
+                        message: "修改成功!",
+                        duration: 1000
+                    });
+                    this.initData();
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.initData();
+                }
+            });
+        },
+        check(row){
+            row.status=="未审核"?row.status=1:row.status=0;
+            let data=this.$qs.stringify({
+                id:row.id,
+                status:row.status,
+            });
+            checkOtpayment(data).then(res=>{
+                if (res.errno == 0) {
+                    this.$message({
+                        type: "success",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.initData();
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.initData();
+                }
+            });
+        },
+        editDone(formName){
+            let tmpData = this.$qs.stringify(this.formServeDetail);
+                addOtpayment(tmpData).then(res => {
+                if (res.errno == 0) {
+                    this.$message({
+                    type: "success",
+                    message: "添加成功!",
+                    duration: 1000
+                    });
+                } else {
+                    this.$message({
+                        type: "error",
+                    message: res.errmsg,
+                    duration: 1000
+                    });
+                }
+                this.initData();
+                this.dialogServeDetail = false;
+                });
         },
         showDetails(row) {
             this.isEdit = true;
-            getOtpaymentDetail({params:{id:row.id}}).then(res => {
+            let data = this.$qs.stringify({
+                id:row.id
+            });
+            getOtpaymentDetail(data).then(res => {
                 if (res.errno == 0) {
                 this.formServeDetail = res.data;
                 // this.formServeDetail.shop_price = res.data.shop_price.substring(1);
@@ -209,9 +309,40 @@ export default {
                 }
             });
         },
+        reset(){
+            this.initData();
+        },
         handleCurrentChange(val) {
             this.page = val;
             this.initData();
+        },
+        del(row) { //--------------------删除单据
+            this.$confirm("即将执行删除操作, 确认删除吗?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }).then(() => {
+                let tmpData = this.$qs.stringify({id:row.id})
+                dropOtpayment(tmpData)
+                .then(res => {
+                    if (res.errno == 0) {
+                        this.$message({
+                            type: "success",
+                            message: "删除成功!",
+                            duration: 1000
+                        });
+                        this.initData();
+                    }else {
+                        this.$message({
+                            type: "error",
+                            message: res.errmsg,
+                            duration: 1000
+                        });
+                    }
+                })
+            }).catch(res => {
+                console.log("用户取消删除");
+            })
         },
     },
     created() {

@@ -11,7 +11,7 @@
         </div>
 
         <!-- 搜索条件区域 -->
-        <div class="search-area">
+        <!--< div class="search-area">
         <fieldset>
             <legend>查询条件</legend>
             <div class="out-box">
@@ -88,10 +88,111 @@
             </div>
             </div>
         </fieldset>
-        </div>
+        </div> -->
 
 
         <div class="main-table">
+            <fieldset style="margin:10px 0;border-color: #fff;">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="2">
+                        <el-radio-group v-model="radio" style="margin-top:5px;">
+                            <el-radio :label="1">修改日期</el-radio><br>
+                            <el-radio :label="2">审核日期</el-radio><br>
+                            <el-radio :label="3">开始日期</el-radio>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col style="text-align:left" :span="2">
+                        <el-radio-group v-model="radio" style="margin-top:5px;">
+                            <el-radio :label="4">结束日期</el-radio><br>
+                            <el-radio :label="5">不按日期</el-radio><br>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col :span="5">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-bottom:5px"
+                        type="daterange"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                        <el-select v-model="value1" size="small" placeholder="状态">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="3">
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="单号"/>
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="合同号"/>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-select v-model="value" size="small" placeholder="费用描述">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select> 
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-top:5px;" v-model="search"  size="mini"  placeholder="供应商编码"/>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-select v-model="value3" size="small" placeholder="分公司">
+                            <el-option
+                            v-for="item in options3"
+                            :key="item.value3"
+                            :label="item.label"
+                            :value="item.value3">
+                            </el-option>
+                        </el-select> 
+                        <el-select v-model="value2" size="small" placeholder="分店" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value2"
+                            :label="item.label"
+                            :value="item.value2">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                    <el-col :span="3"></el-col>
+                </el-row>
+            </fieldset>
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" class="chose" style="text-align:left"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="200px">
+                <el-checkbox v-model="associatedCollshow.show1">单号</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show2">供应商</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show3">店名</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show4">费用描述</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show5">合同号</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show6">开始销售日期</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show7">结束销售日期</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show8">销售金额</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show9">供应商货款</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show10">销售税额</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show11">供应商承担税额比例</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show12">其他金额</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show13">实际应付金额</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show14">应结日期</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show15">修改日期</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show16">审核日期</el-checkbox><br>
+                <el-checkbox v-model="associatedCollshow.show17">状态</el-checkbox><br><br>
+            </el-dialog>
             <!-- 搜索 -->
             <!-- <el-form :inline="true" :model="formServe" class="demo-form-inline">
                 <el-form-item>
@@ -118,7 +219,7 @@
                 </div>
             </el-dialog> -->
             <!-- 详情弹出框 -->
-            <!-- <el-dialog width="920px" title="客户信息" :visible.sync="dialogServeDetail">
+            <el-dialog width="920px" title="客户信息" :visible.sync="dialogServeDetail">
                 <el-form label-position="left" ref="form" :model="formServeDetail" :inline="true" class="demo-form-inline">
                     <el-row>
                         <el-col :span="8">
@@ -230,7 +331,7 @@
                     <el-button	size="small" @click="dialogServeDetail = false">取 消</el-button>
                     <el-button	size="small" type="primary" @click="editDone('form')">保存</el-button>
                 </div>
-            </el-dialog> -->
+            </el-dialog>
 
             <!-- 显示列和排序模块 -->
             <div style="text-align:right">
@@ -283,8 +384,7 @@
                 width="300px"
                 title="自定义显示列"
                 v-dialogDrag
-                :visible.sync="dialogColumnDiy"
-            >
+                :visible.sync="dialogColumnDiy">
                 <el-table :data="columnData" style="width: 100%">
                 <el-table-column width="60" align="center" label="显示">
                     <template slot-scope="scope">
@@ -299,105 +399,172 @@
             <!-- 表格 -->
             <el-table
             :data="Data"
-            border
+            border stripe
+            show-summary
             :row-style="{height:0}"  
-            :cell-style="{padding:0}"
+            :cell-style="{padding:3}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             v-loading="loading"
             style="width: 100%">
                 <el-table-column
-                prop="bill_sn"
                 align="center"
+                width="110"
+                v-if="associatedCollshow.show1"
                 label="单号">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.bill_sn" />
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="supplier_name"
                 align="center"
+                width="110"
+                v-if="associatedCollshow.show2"
                 label="供应商">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.supplier_name" />
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="subshop_name"
                 align="center"
+                v-if="associatedCollshow.show3"
                 label="店名">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.subshop_name" />
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="fee_desc"
                 align="center"
+                width="110"
+                v-if="associatedCollshow.show4"
                 label="费用描述">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.fee_desc" />
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="hetong_sn"
                 align="center"
+                width="150"
+                v-if="associatedCollshow.show5"
                 label="合同号">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.hetong_sn" />
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="start_time"
                 align="center"
+                width="130"
+                v-if="associatedCollshow.show6"
                 label="开始销售日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.start_time" />
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="end_time"
                 align="center"
+                width="130"
+                v-if="associatedCollshow.show7"
                 label="结束销售日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.end_time" />
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="xiaoshou_money"
                 align="center"
+                v-if="associatedCollshow.show8"
                 label="销售金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.xiaoshou_money" />
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="supplier_money"
                 align="center"
+                v-if="associatedCollshow.show9"
                 label="供应商货款">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.supplier_money" />
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="xiaoshou_shui"
                 align="center"
+                v-if="associatedCollshow.show10"
                 label="销售税额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.xiaoshou_shui" />
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="supplier_shui_bili"
                 align="center"
+                v-if="associatedCollshow.show11"
                 label="供应商承担税额比例">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.supplier_shui_bili" />
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="other_money"
                 align="center"
+                v-if="associatedCollshow.show12"
                 label="其他金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.other_money" />
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="real_pay_money"
                 align="center"
+                v-if="associatedCollshow.show13"
                 label="实际应付金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.real_pay_money" />
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="yingjie_time"
                 align="center"
+                width="130"
+                v-if="associatedCollshow.show14"
                 label="应结日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.yingjie_time" />
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="add_time"
                 align="center"
+                width="130"
+                v-if="associatedCollshow.show15"
                 label="修改日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.add_time" />
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="check_time"
                 align="center"
+                width="130"
+                v-if="associatedCollshow.show16"
                 label="审核日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.check_time" />
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="status"
                 align="center"
+                v-if="associatedCollshow.show17"
                 label="状态">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.status" />
+                    </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
-                label="相关操作"
-                width="90">
+                width="120"
+                label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -405,8 +572,7 @@
             <!-- 分页器 -->
             <el-pagination
                 @current-change="handleCurrentChange"
-                layout="total,prev, pager, next,jumper"
-                :page_size="page_size"
+                layout="total,prev,pager,next,jumper"
                 :total="total">
             </el-pagination>
         </div>
@@ -457,22 +623,77 @@ export default {
             ],
             dialogServeAdd:false,
             dialogServeDetail:false,
+            dialogShow:false,
+            associatedCollshow:{
+                show1:true,
+                show2:true,
+                show3:true,
+                show4:true,
+                show5:true,
+                show6:true,
+                show7:true,
+                show8:true,
+                show9:true,
+                show10:true,
+                show11:true,
+                show12:true,
+                show13:true,
+                show14:true,
+                show15:true,
+                show16:true,
+                show17:true,
+            },
             keywords:'',
-            formServe:{
-                name:"",
-                marks:""
-            },
-            formServeAdd:{
-                name:""
-            },
-            formServeDetail:{
-                
-            },
+            formServe:{},
+            formServeAdd:{},
+            formServeDetail:{},
             Data:[],
             rule: [{ required: true, message: "不能为空" }],
+            search:'',
+            search3:['2017-7-7','2019-9-9'],
+            radio:4,
+            value: '' ,
+            value1: '' ,
+            value2: '' ,
+            value3: '' ,
+            value4: '' ,
+            options: [{
+            value: '选项1',
+            label: '未审核'
+            }, {
+            value: '选项2',
+            label: '已审核'
+            },],
+            options1: [{
+            value1: '选项1',
+            label: '未审核'
+            }, {
+            value1: '选项2',
+            label: '已审核'
+            },],
+            options2: [{
+            value2: '选项1',
+            label: '0分店'
+            }, {
+            value2: '选项2',
+            label: '1分店'
+            },],
+            options3: [{
+            value3: '选项1',
+            label: '分公司1'
+            }, {
+            value3: '选项2',
+            label: '分公司2'
+            },],
         }
     },
     methods:{
+        handleClose(done){
+            done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.associatedColl=this.associatedCollshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+        },
         changeColumn() {
         this.columnData = this.columnData;
         console.log(this.columnData);
@@ -481,7 +702,7 @@ export default {
         console.log(e);
         this.sortSelected = e;
         },
-        initData() { // 获取列表
+        initData() { //--------------------获取列表
             let data = this.$qs.stringify({
                 subsite_id:3,
                 user_id:sessionStorage.user_id,
@@ -491,9 +712,17 @@ export default {
             getAssociatedcollectionList(data).then(res=>{
                 console.log(res.data)
                 if(res.errno == 0) {
-                    this.Data = res.data.orders
-                    this.total = Number(res.data.record_count)
-                    this.loading = false
+                    for(let i=0;i<res.data.orders.length;i++){
+                        res.data.orders[i].xiaoshou_money=res.data.orders[i].xiaoshou_money.replace(/^￥/,"");
+                        res.data.orders[i].supplier_money=res.data.orders[i].supplier_money.replace(/^￥/,"");
+                        res.data.orders[i].xiaoshou_shui=res.data.orders[i].xiaoshou_shui.replace(/^￥/,"");
+                        res.data.orders[i].supplier_shui_bili=res.data.orders[i].supplier_shui_bili.replace(/^￥/,"");
+                        res.data.orders[i].other_money=res.data.orders[i].other_money.replace(/^￥/,"");
+                        res.data.orders[i].real_pay_money=res.data.orders[i].real_pay_money.replace(/^￥/,"");
+                    };
+                    this.Data = res.data.orders;
+                    this.total = Number(res.data.record_count);
+                    this.loading = false;
                 }
             })
         },
@@ -504,7 +733,58 @@ export default {
                 this.$refs.form.resetFields();
             }
             this.dialogServeDetail = true;
-            },
+        },
+        dateConverter(str) { //-----------------------日期转秒数
+            var arr = str.split(/[- : \/]/);
+            var startDate = Date.parse(new Date(arr[0], arr[1]-1, arr[2]))/1000;
+            return startDate;
+        },
+        edit(row){//-------------------------修改
+            if(row.start_time!==""){
+                row.start_time=this.dateConverter(row.start_time);
+            }else{
+                row.start_time=new Date().getTime()/1000-86400;
+            }
+            if(row.end_time!==""){
+                row.end_time=this.dateConverter(row.end_time);
+            }else{
+                row.end_time=new Date().getTime()/1000-86400;
+            }
+            if(row.yingjie_time!==""){
+                row.yingjie_time=this.dateConverter(row.yingjie_time);
+            }else{
+                row.yingjie_time=new Date().getTime()/1000-86400;
+            }
+            if(row.add_time!==""){
+                row.add_time=this.dateConverter(row.add_time);
+            }else{
+                row.add_time=new Date().getTime()/1000-86400;
+            }
+            if(row.check_time!==""){
+                row.check_time=this.dateConverter(row.check_time);
+            }else{
+                row.check_time=new Date().getTime()/1000-86400;
+            }
+            row.status=="未审核"?row.status=0:row.status=1;
+            let data=this.$qs.stringify(row);
+            editAssociatedcollection(data).then(res=>{
+                if (res.errno == 0) {
+                    this.$message({
+                        type: "success",
+                        message: "修改成功!",
+                        duration: 1000
+                    });
+                    this.initData();
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.initData();
+                }
+            });
+        },
         editDone(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
@@ -569,7 +849,7 @@ export default {
                 }
             });
         },
-        search() {
+        /* search() {
             let data=this.$qs.stringify({
                 page:1,
                 page_size:10,
@@ -583,7 +863,7 @@ export default {
                     this.loading = false
                 }
             })
-        },         
+        },   */       
         reset() {
             this.initData()
         },
@@ -639,17 +919,26 @@ export default {
         }
     },
     created() {
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.associatedColl!==undefined){
+                this.associatedCollshow=erpTableSetting.associatedColl;
+            }
+        }else{
+            console.log("no");
+        };
         this.initData()
     }
 }
 </script>
 <style scoped>
 .associatedCollection{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
-  padding: 10px;
+  padding: 0.625rem;
   background: #fff;
 }
 .main-header .el-breadcrumb {
@@ -683,10 +972,10 @@ fieldset {
   width: 220px;
 }
 .content-r,
-.el-form {
+/* .el-form {
   display: flex;
   align-items: center;
-}
+} */
 .content-r .el-form {
   flex-wrap: wrap;
   flex: 1;
@@ -712,9 +1001,9 @@ fieldset {
 .el-date-editor {
   width: 100% !important;
 }
-.el-radio-group {
+/* .el-radio-group {
   display: flex;
-}
+} */
 .el-radio-group>div {
     flex: 1;
 }
@@ -764,7 +1053,10 @@ fieldset {
   padding: 0;
 }
 
-
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
+}
 
 /* 分页器 */
 .el-pagination {
@@ -799,8 +1091,9 @@ fieldset {
 .main-table >>> .el-dialog__body .el-input-number {
   width: 100%;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 
 </style>

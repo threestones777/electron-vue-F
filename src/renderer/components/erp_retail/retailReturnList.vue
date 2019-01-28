@@ -1,18 +1,89 @@
 <template>
     <div id="retailReturnList">
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item :to="{ path: '/' }">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>零售</el-breadcrumb-item>
                 <el-breadcrumb-item>零售退货单</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div>
+            </div>
         </div>
         <div style="margin:10px 0;text-align:center">
-            <el-input	size="small" v-model="orderDate" placeholder="请点击选择供应商" @focus="selectSupplier=true"></el-input>
-            <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+            <!-- <el-input	size="small" v-model="orderDate" placeholder="请点击选择供应商" @focus="selectSupplier=true"></el-input> -->
+            <!-- <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button> -->
             <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
-            <el-button type="primary" size="small" @click="reset">刷新</el-button>
+            <!-- <el-button type="primary" size="small" @click="reset">刷新</el-button> -->
         </div>   
         <!-- 按需选择列弹窗 -->
         <el-dialog
@@ -133,7 +204,8 @@
         :data="retailReturnData.filter(data =>  {
         return Object.keys(data).some(key => {
         return String(data[key]).toLowerCase().indexOf(search) > -1})})"
-        border
+        border stripe
+        show-summary
         :row-style="{height:0}"  
         :cell-style="{padding:0}"
         :header-row-style="{height:0}"  
@@ -147,10 +219,12 @@
                 label="退款单id">
             </el-table-column>
             <el-table-column
-                prop="order_id"
                 v-if="retailReturnshow.show2"
                 align="center"
                 label="退款单编号">
+                <template slot-scope="scope">
+                    <p v-html="scope.row.order_id"></p>
+                </template>
             </el-table-column>
             <el-table-column
                 prop="add_time"
@@ -172,22 +246,30 @@
                 label="实退金额">
             </el-table-column>        
             <el-table-column
-                prop="action_user"
                 v-if="retailReturnshow.show6"
                 align="center"
                 label="制单人">
+                <template slot-scope="scope">
+                    <p v-html="scope.row.action_user"></p>
+                </template> 
             </el-table-column>        
             <el-table-column
-                prop="user_name"
                 v-if="retailReturnshow.show7"
                 align="center"
                 label="客户名">
+                <template slot-scope="scope">
+                    <p v-html="scope.row.user_name"></p>
+                </template> 
             </el-table-column>        
             <el-table-column
                 prop="status_back_val"
                 v-if="retailReturnshow.show8"
                 align="center"
+                width="220"
                 label="退换状态">
+                <template slot-scope="scope">
+                    <p v-html="scope.row.status_back_val"></p>
+                </template>
             </el-table-column>
             <el-table-column
                 prop="status_name"
@@ -196,10 +278,12 @@
                 label="状态名">
             </el-table-column>
             <el-table-column
-                prop="postscript"
                 v-if="retailReturnshow.show10"
                 align="center"
                 label="备注信息">
+                <template slot-scope="scope">
+                    <p v-html="scope.row.postscript"></p>
+                </template> 
             </el-table-column>   
             <el-table-column
             fixed="right"
@@ -236,35 +320,35 @@
                     align="center"
                     label="数量">
                     <template slot-scope="scope">
-                        <el-input size="mini" style="width:80%" v-model="scope.row.back_goods_number"></el-input>
+                        <span>{{scope.row.back_goods_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                     align="center"
                     label="商品编码">
                     <template slot-scope="scope">
-                        <el-input size="mini" style="width:80%" v-model="scope.row.goods_sn"></el-input>
+                        <span>{{scope.row.goods_sn}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                     align="center"
                     label="属性">
                     <template slot-scope="scope">
-                        <el-input size="mini" style="width:80%" v-model="scope.row.goods_attr"></el-input>
+                        <span>{{scope.row.goods_attr}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                     align="center"
                     label="价格">
                     <template slot-scope="scope">
-                        <el-input size="mini" style="width:80%" v-model="scope.row.back_goods_price"></el-input>
+                        <span>{{scope.row.back_goods_price}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                     align="center"
                     label="库存">
                     <template slot-scope="scope">
-                        <el-input size="mini" style="width:80%" v-model="scope.row.goods_number"></el-input>
+                        <span>{{scope.row.goods_number}}</span>
                     </template>
                 </el-table-column>   
             </el-table>
@@ -284,7 +368,7 @@
 <style scope>
     #retailReturnList{
         text-align:center;
-        margin: 20px;
+        margin: 10px;
     }
     #retailReturnList .el-dialog .el-input{
        width:10%;
@@ -329,6 +413,50 @@
     #retailReturnList .detail .el-row{
         border-bottom: 1px dotted #DCDFE6;
     }
+.card-title {
+  text-align: center;
+}
+.card-title:focus {
+  outline: none;
+}
+.card {
+  transition: all 0.3s;
+  padding: 5px 0;
+}
+.card:hover {
+  border-radius:7px;
+  transform: translateY(-2px);
+  box-shadow: 0px 2px 5px 4px rgba(0, 0, 0,0.1)
+}
+.card:hover i,
+.card:hover div,
+.card:hover b {
+  color: #409EFF;
+}
+.operate-in {
+  display: flex;
+  margin-top: 12px;
+}
+.operate-in > div {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+.operate-in > div div {
+  font-size: 16px;
+}
+.operate-in i {
+  font-size: 30px;
+}
+.operate-in b {
+  font-size: 16px;
+  position: absolute;
+  top: 20%;
+  right: 5%;
+}
 </style>    
 <script>
 import {retailReturnList,supplier} from '../../api/api' ;
@@ -354,7 +482,7 @@ import {reretailReturnDe} from '../../api/apiW' ;
         goodsData:[],
         formDetail:{},
         retailReturnshow:{
-            show1:true,
+            show1:false,
             show2:true,
             show3:true,
             show4:true,
@@ -369,12 +497,19 @@ import {reretailReturnDe} from '../../api/apiW' ;
     },
     methods:{
         init(page){//-----------------初始化数据
+            this.data(page);
+        }, 
+        data(page){
             retailReturnList({params:{page:page,page_size:10}}).then(res=>{
                 this.record_count=Number(res.data.filter.record_count);
                 console.log(res.data);
+                for(let i=0;i<res.data.back.length;i++){
+                    res.data.back[i].refund_money_1=res.data.back[i].refund_money_1.replace(/^￥/,"");
+                    res.data.back[i].refund_money_2=res.data.back[i].refund_money_2.replace(/^￥/,"");
+                };
                 this.retailReturnData=res.data.back;
             })
-        }, 
+        },
         reset(){
             this.reload();
         },

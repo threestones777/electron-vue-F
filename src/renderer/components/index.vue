@@ -1,12 +1,124 @@
 <template>
     <div id="index">
-        <div id="indexH3">
+        <!-- <div id="indexH3">
            <h3>温州美联 管理中心</h3>
-        </div>        
+        </div>         -->
         <el-row type="flex" class="row-bg" justify="space-around">
+            <el-col :span="20">
+                <!--  -->
+                <el-row type="flex" class="row-bg" justify="space-around">
+                    <el-col :span="12">
+                        <p class="bigP">支付金额</p>
+                        <p class="littP">￥{{todayMoney}}</p>
+                        <span class="littSpan">昨日全天：￥{{yesterdayMoney}}</span>
+                        <div id="first" style="width:100%;;height:200px;margin:0 auto;"></div>
+                    </el-col>
+                    <el-col style="background:#F8F8F8;" :span="12">
+                        <el-row style="background:#F8F8F8;" type="flex" class="row-bg" justify="space-around">
+                            <el-col style="padding:25px" :span="12">
+                                <p class="bigP">访客数</p>
+                                <p class="littP">{{todayVisitor}}</p>
+                                <span class="littSpan">昨日全天：{{yesterdayVisitor}}</span>
+                            </el-col>
+                            <el-col style="padding:25px" :span="12">
+                                <p class="bigP">浏览量</p>
+                                <p class="littP">{{todayVisitor}}</p>
+                                <span class="littSpan">昨日全天：{{yesterdayVisitor}}</span>
+                            </el-col>
+                        </el-row>
+                        <el-row style="background:#F8F8F8;" type="flex" class="row-bg" justify="space-around">
+                            <el-col style="padding:25px" :span="12">
+                                <p class="bigP">支付订单数</p>
+                                <p class="littP">{{todayOrders}}</p>
+                                <span class="littSpan">昨日全天：{{yesterdayOrders}}</span>
+                            </el-col>
+                            <el-col style="padding:25px" :span="12">
+                                <p class="bigP">支付人数</p>
+                                <p class="littP">{{todayPaid}}</p>
+                                <span class="littSpan">昨日全天：{{yesterdayPaid}}</span>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                </el-row>
+                <!--  -->
+                <el-row style="background:#F5F7FA;padding:0;" type="flex" class="row-bg" justify="space-around">
+                    <el-tabs style="width:100%;margin:20px 10px 0 10px;" type="border-card" @tab-click="handleClick">
+                        <el-tab-pane label="运营视窗">
+                            <el-row type="flex" class="row-bg" justify="space-around">
+                                <el-col style="border:1px solid #F5F7FA;padding:10px" :span="6">
+                                    <p class="bigP">支付金额</p>
+                                    <p class="littP">￥{{todayMoney}}</p>
+                                    <p class="littSpan">前一日：￥{{yesterdayMoney}}</p>
+                                    <p class="littSpan">上一周：￥{{lastWeekMoney}}</p>
+                                </el-col>
+                                <el-col style="border:1px solid #F5F7FA;padding:10px" :span="6">
+                                    <p class="bigP">访问支付转化率</p>
+                                    <p class="littP">0%</p>
+                                    <p class="littSpan">前一日：0</p>
+                                    <p class="littSpan">上一周：0</p>
+                                </el-col>
+                                <el-col style="border:1px solid #F5F7FA;padding:10px" :span="6">
+                                    <p class="bigP">订单数</p>
+                                    <p class="littP">{{todayOrders}}</p>
+                                    <p class="littSpan">前一日：{{yesterdayOrders}}</p>
+                                    <p class="littSpan">上一周：{{lastWeekOrders}}</p>
+                                </el-col>
+                                <el-col style="border:1px solid #F5F7FA;padding:10px" :span="6">
+                                    <p class="bigP">支付人数</p>
+                                    <p class="littP">{{todayPaid}}</p>
+                                    <p class="littSpan">前一日：{{yesterdayPaid}}</p>
+                                    <p class="littSpan">上一周：{{lastWeekOrders}}</p>
+                                </el-col>
+                            </el-row>
+                            <el-row type="flex" class="row-bg" justify="space-around">
+                                <div id="three" style="width:100%;height:300px;margin:0 auto;"></div>
+                            </el-row>
+                        </el-tab-pane>
+                        <el-tab-pane label="管理视窗">
+                            <div id="two" style="width:100%;height:472px;margin:0 auto;"></div>
+                        </el-tab-pane>
+                    </el-tabs>
+                </el-row>
+            </el-col>
+            <el-col style="padding:3px;background:#F3F3F3" :span="4">
+                <div style="background:#fff;padding:7px;">
+                    <h1 class="bigP">待办事项</h1><br>
+                    <p style="font-size:16px;">1、..我司xxx,....</p>
+                    <p style="font-size:16px;">2、......</p>
+                    <p style="font-size:16px;">3、......</p>
+                    <p style="font-size:16px;">4、......</p>
+                </div>
+                <el-row style="margin-top:20px;" type="flex" class="row-bg" justify="space-around">
+                    <el-col style="text-align:center;" :span="6">
+                        <img style="width:90%;" src="../assets/images/phone.png">
+                    </el-col>
+                    <el-col :span="18">
+                        <p class="bigP">在线客服</p>
+                        <p style="font-size:16px;">电话：0571-86857988</p>
+                    </el-col>
+                </el-row>
+                <el-row style="margin-top:20px;" type="flex" class="row-bg" justify="space-around">
+                    <el-col style="text-align:center;" :span="6">
+                        <img style="width:90%;" src="../assets/images/desk.png">
+                    </el-col>
+                    <el-col :span="18">
+                        <p class="bigP">桌面在线客服</p>
+                        <a style="font-size:16px;" href="https://cn.bing.com/" target="_blank">网址</a>
+                    </el-col>
+                </el-row>
+                <div style="background:#fff;padding:7px;margin-top:20px;">
+                    <h1 class="bigP">产品动态</h1><br>
+                    <p style="font-size:16px;">1、..市长xxx,....</p>
+                    <p style="font-size:16px;">2、......</p>
+                    <p style="font-size:16px;">3、......</p>
+                    <p style="font-size:16px;">4、......</p>
+                </div>
+            </el-col>
+        </el-row>
+        <!-- <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="4" style="background:#F5F7FA;padding:7px">
                 <div>
-                    <p><b>购货总量(本月)：</b><span>{{totalPurchase.total_purchase_goods}}</span></p>
+                    <p><b>购货总量(本月)：</b><span>{{totalPurchase.total_purchase_goods===false?0:totalPurchase.total_purchase_goods}}</span></p>
 					<p><b>购货金额(本月)：</b><span>{{totalPurchase.total_purchase_money}}</span></p>
                 </div>
             </el-col>
@@ -24,7 +136,7 @@
             </el-col>
             <el-col :span="4" style="background:#F5F7FA;padding:7px">
                 <div>
-                    <p><b>库存预警(本月)：</b><span>{{totalPurchase.warn_goods_number}}</span></p>
+                    <p><b>库存预警(本月)：</b><span>{{totalPurchase.warn_goods_number===false?0:totalPurchase.warn_goods_number}}</span></p>
 					<p><b>默认阈值(本月)：</b><span>{{totalPurchase.kucun_goods_number}}</span></p>
                 </div>
             </el-col>
@@ -34,9 +146,9 @@
 					<p><b>供应商欠款(本月)：</b><span>{{totalPurchase.supplier_arrears}}</span></p>
                 </div>
             </el-col>
-        </el-row>
+        </el-row> -->
         <!--Tab标签切换-->
-        <el-tabs type="border-card" @tab-click="handleClick">
+        <!-- <el-tabs type="border-card" @tab-click="handleClick">
             <el-tab-pane label="用户数据趋势">
                 <div id="first" style="width:800px;height:600px;margin:0 auto;"></div>
             </el-tab-pane>
@@ -46,170 +158,14 @@
             <el-tab-pane label="月复购率">
                 <div id="three" style="width:800px;height:600px;margin:0 auto;"></div>
             </el-tab-pane>
-            <!-- <el-tab-pane label="零售">
-                <div style="height:600px;">
-                    <el-table
-                    :data="retailReturnData" border
-                    style="width: 100%">
-                        <el-table-column
-                            prop="back_id"
-                            align="center"
-                            label="商品信息">
-                        </el-table-column>
-                        <el-table-column
-                            prop="order_id"
-                            align="center"
-                            label="商品批次">
-                        </el-table-column>
-                        <el-table-column
-                            prop="add_time"
-                            align="center"
-                            label="商品串码">
-                        </el-table-column>        
-                        <el-table-column
-                            prop="pMsg"
-                            align="center"
-                            label="数量">
-                        </el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="退货单价">
-                        </el-table-column>
-                        <el-table-column
-                            prop="refund_money_2"
-                            align="center"
-                            label="退货金额">
-                        </el-table-column>
-                        <el-table-column
-                            prop="postscript"
-                            align="center"
-                            label="备注信息">
-                        </el-table-column>    
-                    </el-table>
-                    <el-pagination
-                        @current-change="handleCurrentChange4"
-                        layout="prev, pager, next,jumper" style="float:right;margin-top:10px;"
-                        :page-count="pages4">
-                    </el-pagination>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="服务">
-                <div style="height:600px;">
-                    <el-table
-                    :data="serveData" border
-                    style="width: 100%">
-                        <el-table-column
-                            prop="user_name"
-                            align="center"
-                            label="服务项目">
-                        </el-table-column>
-                        <el-table-column
-                            prop="discount"
-                            align="center"
-                            label="服务数量">
-                        </el-table-column>
-                        <el-table-column
-                            prop="goods_amount"
-                            align="center"
-                            label="服务价格">
-                        </el-table-column>
-                        <el-table-column
-                            prop="goods_amount"
-                            align="center"
-                            label="总金额">
-                        </el-table-column>                 
-                        <el-table-column
-                            prop="status_name"
-                            align="center"
-                            label="备注信息">
-                        </el-table-column>        
-                    </el-table>
-                    <el-pagination
-                        @current-change="handleCurrentChange5"
-                        layout="prev, pager, next,jumper" style="float:right;margin-top:10px;"
-                        :page-count="pages5">
-                    </el-pagination>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="仓库">
-                <div style="height:600px;">
-                    <el-table
-                    :data="repertoryMData"
-                    border
-                    style="width: 100%">
-                        <el-table-column
-                        prop="store_name"
-                        align="center"
-                        label="仓库名称">
-                        </el-table-column>
-                        <el-table-column
-                        prop="store_id"
-                        align="center"
-                        label="仓库编号"
-                        width="180">
-                        </el-table-column>
-                        <el-table-column
-                        prop="mianji"
-                        align="center"
-                        label="联系人"
-                        width="180">
-                        </el-table-column>
-                        <el-table-column
-                        prop="mianji"
-                        align="center"
-                        label="手机号"
-                        width="180">
-                        </el-table-column>
-                        <el-table-column
-                        prop="marks"
-                        align="center"
-                        label="备注信息">
-                        </el-table-column>
-                    </el-table>
-                    <el-pagination
-                        @current-change="handleCurrentChange6"
-                        layout="prev, pager, next,jumper" style="float:right;margin-top:10px;"
-                        :page-count="pages6">
-                    </el-pagination>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="资金">
-                <div style="height:600px;">
-                    <el-table
-                    :data="moneyInData" border
-                    style="width: 100%">
-                        <el-table-column
-                            prop="order_sn"
-                            align="center"
-                            label="结算账户">
-                        </el-table-column>
-                        <el-table-column
-                            prop="order_amount"
-                            align="center"
-                            label="结算金额">
-                        </el-table-column>
-                        <el-table-column
-                            prop="status_name"
-                            align="center"
-                            label="备注信息">
-                        </el-table-column>    
-                    </el-table>
-                    <el-pagination
-                    @current-change="handleCurrentChange7"
-                        layout="prev, pager, next,jumper" style="float:right;margin-top:10px;"
-                        :page-count="pages7">
-                    </el-pagination>
-                </div>
-            </el-tab-pane> -->
-        </el-tabs>
+        </el-tabs> -->
         <!--底部输入-->
         
     </div>
 </template>
-<style>
+<style scoped>
     #index{
-        margin:20px;
+        margin:10px;
     }
     #indexH3{
         background:#fff;
@@ -235,27 +191,42 @@
   .el-tabs{
       margin:20px;
   }
+    p{
+        margin-bottom:10px;
+    }
+    .bigP{
+        font-size:18px;
+        font-weight:bold;
+    }
+    .littP{
+        font-size:24px;
+        color:#409EFF;
+    }
+    .littSpan{
+        font-size:14px;
+        color:#D0C3C0;
+    }
+    .triangle{
+        width:0;height:0;
+        border:49px solid transparent;
+        border-top:49px solid #409EFF;
+        border-bottom:49px solid red;
+        border-radius: 50%;
+    }
+    .myCanvas:hover{
+        border:1px solid red;
+        transform:rotate3d(0,0,90,90deg) translate(-70px,0px) rotate(90deg);;
+        transition:2s linear;
+    };
 </style>
 <script>
 import axios from 'axios' ;
-import {userdatatrend,userfrom,repeatpurchase} from '../api/api';
+import {userdatatrend,userfrom,repeatpurchase,indexCounts} from '../api/api';
+import { setInterval, setTimeout } from 'timers';
 export default {
   data() {
     return {
         input: '',
-        options: [{
-          value: '选项1',
-          label: '选项1'
-        }, {
-          value: '选项2',
-          label: '选项2'
-        }, {
-          value: '选项3',
-          label: '选项3'
-        }, {
-          value: '选项4',
-          label: '选项4'
-        },],
         value: '',
         totalPurchase:{},
         shopBuyData:[],
@@ -277,27 +248,32 @@ export default {
         numberCustomers:[],
         userfrom:[],
         repeatpurchase:[],
+        todayMoney:0,
+        yesterdayMoney:0,
+        lastWeekMoney:0,
+        todayVisitor:0,
+        yesterdayVisitor:0,
+        todayOrders:0,
+        yesterdayOrders:0,
+        lastWeekOrders:0,
+        todayPaid:0,
+        yesterdayPaid:0,
     }
   },
     methods:{
         handleClick(tab, event) {
             if(tab.label=="用户数据趋势"){
-                //console.log("用户数据趋势");
             }else if(tab.label=="用户来源"){
                 userfrom().then(res=>{
                     console.log(res.data);
                     this.userfrom=res.data;
                     this.drawLine2();
                 });
-            }else if(tab.label=="月复购率"){
-                let data=this.$qs.stringify({
-                    type:"month",
-                    limit:7
-                });
-                repeatpurchase(data).then(res=>{
-                    console.log(res.data.data);
-                    this.repeatpurchase=res.data.data;
-                    this.drawLine3();
+            }else if(tab.label=="管理视窗"){
+                userfrom().then(res=>{
+                    console.log(res.data);
+                    this.userfrom=res.data;
+                    this.drawLine2();
                 });
             }else if(tab.label=="零售"){
                 axios.get('http://api.guimishuo1.com/erp/reretail/lists')
@@ -423,14 +399,14 @@ export default {
                     trigger: 'item',
                     formatter: '{a} <br/>{b} : {c}'
                 },
-                legend: {
-                    left: 'left',
-                    data: ['新增会员数', '微信访客数','消费顾客数']
-                },
+                // legend: {
+                //     left: 'left',
+                //     data: ['新增会员数', '微信访客数','消费顾客数']
+                // },
                 xAxis: {
                     type: 'category',
                     splitLine: {show: false},
-                    data: ['星期一', '星期二', '星期三', '星期四','星期五', '星期六', '星期日',]
+                    data: ['1', '2', '3', '4','5', '6', '7','8', '9', '10', '11','12', '13', '14','15', '16', '17', '18','19', '20', '21','22', '23',  '24','25', '26', '27','28','29']
                 },
                 grid: {
                     left: '3%',
@@ -443,20 +419,22 @@ export default {
                 },
                 series: [
                     {
-                        name: '新增会员数',
+                        name: '支付金额',
                         type: 'line',
-                        data: this.newMembers
+                        //data: this.newMembers,
+                        data: [98,49,35,21,56,7,21,77,42,28,84,91,14,63,70,77,105,112,56,7,21,77,42,28,84,91,49,35,77],
+                        smooth:true,
                     },
-                    {
-                        name: '微信访客数',
-                        type: 'line',
-                        data: this.wechatVisitors
-                    },
-                    {
-                        name: '消费顾客数',
-                        type: 'line',
-                        data: this.numberCustomers
-                    }
+                    // {
+                    //     name: '微信访客数',
+                    //     type: 'line',
+                    //     data: this.wechatVisitors
+                    // },
+                    // {
+                    //     name: '消费顾客数',
+                    //     type: 'line',
+                    //     data: this.numberCustomers
+                    // }
                 ]
             }); 
         },
@@ -505,23 +483,35 @@ export default {
                 },
                 xAxis: {
                     type: 'category',
-                    data: ['2018/6', '2018/7', '2018/8', '2018/9', '2018/10', '2018/11', '2018/12']
+                    data: ['2018/8', '2018/9', '2018/10', '2018/11', '2018/12', '2019/1', '2019/2']
                 },
                 yAxis: {
                     type: 'value',
                     name:"%"
                 },
                 series: [{
-                    name:"月复购率",
+                    name:"访问支付转化率",
                     data: this.repeatpurchase,
                     type: 'line',
                     smooth: true
                 }]
             }); 
         },
-
     },
     mounted: function () { 
+        indexCounts().then(res=>{
+            console.log(res.data);
+            this.todayMoney=res.data.today.money_paid;
+            this.todayVisitor=res.data.today.user_visit;
+            this.todayOrders=res.data.today.order_paid;
+            this.todayPaid=res.data.today.user_paid;
+            this.yesterdayMoney=res.data.yesterday.money_paid;
+            this.yesterdayVisitor=res.data.yesterday.user_visit;
+            this.yesterdayOrders=res.data.yesterday.order_paid;
+            this.yesterdayPaid=res.data.yesterday.user_paid;
+            this.lastWeekMoney=res.data.last_week.money_paid;
+            this.lastWeekOrders=res.data.last_week.order_paid;
+        });
         let data=this.$qs.stringify({
             type:"week",
             limit:7
@@ -532,7 +522,26 @@ export default {
             this.wechatVisitors=res.data[1].data;
             this.numberCustomers=res.data[2].data;
             this.drawLine();
-        })
+        });
+
+        let data1=this.$qs.stringify({
+            type:"week",
+            limit:7
+        });
+        // repeatpurchase(data1).then(res=>{
+        //     console.log(res.data.data);
+        //     this.repeatpurchase=res.data.data;
+        //     this.drawLine3();
+        // });
+        axios.post('http://api.guimishuo1.com/erp/datastatistics/repeatpurchase',data1).then((res)=>{
+            console.log(res.data.data.data);
+            this.repeatpurchase=res.data.data.data;
+            this.drawLine3();
+        }).catch((error)=>{
+            console.log(error);
+        });
+
+
         axios.post('http://api.guimishuo1.com/erp/index/index')
             .then((res) =>{
                 console.log(res.data.data);

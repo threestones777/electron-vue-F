@@ -9,9 +9,8 @@
                 <el-breadcrumb-item>客户费用</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-
         <!-- 搜索条件区域 -->
-        <div class="search-area">
+        <!-- <div class="search-area">
         <fieldset>
             <legend>查询条件</legend>
             <div class="out-box">
@@ -45,7 +44,7 @@
                         <el-input size="mini" v-model="formServe.user"></el-input>
                         </el-form-item>
                         <el-form-item label="费用描述">
-                        <el-select size="mini" v-model="formServe.staus">
+                        <el-select size="mini" v-model="formServe.status">
                             <el-option label="区域一" value="shanghai"></el-option>
                             <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
@@ -79,9 +78,88 @@
             </div>
             </div>
         </fieldset>
-        </div>
-
+        </div> -->
         <div class="main-table">
+            <fieldset style="margin:10px 0;border-color: #fff;">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="2">
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                            <el-radio label="add_time">修改日期</el-radio><br/>
+                            <el-radio label="check_time">审核日期</el-radio><br>
+                            <el-radio label="start_time">开始日期</el-radio><br>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                            <el-radio label="end_time">结束日期</el-radio><br>
+                            <el-radio label="5">不按日期</el-radio><br>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col :span="5">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-top:0px"
+                        type="daterange" @change="chose"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search2"  size="mini"  placeholder="单号"/>
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="客户"/>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search4"  size="mini"  placeholder="合同号"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="value3"  size="mini"  placeholder="费用描述"/>
+                    </el-col>
+                    <el-col :span="3">
+                       <!--  <el-select v-model="value1" size="small" placeholder="分公司">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select>  -->
+                        <el-select @change="chose" v-model="value2" size="small" placeholder="分店" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value2"
+                            :label="item.label"
+                            :value="item.value2">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                    <el-col :span="2"></el-col>
+                </el-row>
+            </fieldset>
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" class="chose" style="text-align:left"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="200px">
+                <el-checkbox v-model="customerChargeshow.show1">单号</el-checkbox><br>
+                <el-checkbox v-model="customerChargeshow.show2">店名</el-checkbox><br>
+                <el-checkbox v-model="customerChargeshow.show3">客户名称</el-checkbox><br>
+                <el-checkbox v-model="customerChargeshow.show4">费用描述</el-checkbox><br>
+                <el-checkbox v-model="customerChargeshow.show5">合同号</el-checkbox><br>
+                <el-checkbox v-model="customerChargeshow.show6">开始日期</el-checkbox><br>
+                <el-checkbox v-model="customerChargeshow.show7">结束日期</el-checkbox><br>
+                <el-checkbox v-model="customerChargeshow.show8">状态</el-checkbox><br>
+                <el-checkbox v-model="customerChargeshow.show9">修改日期</el-checkbox><br>
+                <el-checkbox v-model="customerChargeshow.show10">审核时间</el-checkbox><br>
+                <el-checkbox v-model="customerChargeshow.show11">备注</el-checkbox><br><br>
+            </el-dialog>
             <!-- 搜索 -->
             <!-- <el-form :inline="true" :model="formServe" class="demo-form-inline">
                 <el-form-item>
@@ -178,9 +256,8 @@
                     <el-button	size="small" @click="dialogServeDetail = false">取 消</el-button>
                     <el-button	size="small" type="primary" @click="editDone('form')">保存</el-button>
                 </div>
-            </el-dialog> -->
+            </el-dialog>-->
 
-            <!-- 显示列和排序模块 -->
             <div style="text-align:right">
                 <el-button @click="dialogColumnDiy=true" size="small" icon="el-icon-tickets">显示列</el-button>
                 <el-dropdown :hide-on-click="false" @command="handleCommand">
@@ -246,10 +323,12 @@
 
             <!-- 表格 -->
             <el-table
-            :data="Data"
-            border
+            :data="Data.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
+            border stripe
             :row-style="{height:0}"  
-            :cell-style="{padding:0}"
+            :cell-style="{padding:3}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             v-loading="loading"
@@ -257,65 +336,120 @@
                 <el-table-column
                 prop="bill_sn"
                 align="center"
+                width="135"
+                v-if="customerChargeshow.show1"
                 label="单号">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.bill_sn"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="subshop_name"
                 align="center"
+                width="110"
+                v-if="customerChargeshow.show2"
                 label="店名">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.subshop_name"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="user_name"
                 align="center"
+                width="110"
+                v-if="customerChargeshow.show3"
                 label="客户名称">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.user_name"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="fee_desc"
                 align="center"
+                width="110"
+                v-if="customerChargeshow.show4"
                 label="费用描述">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.fee_desc"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="hetong_sn"
                 align="center"
+                width="135"
+                v-if="customerChargeshow.show5"
                 label="合同号">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.hetong_sn"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="start_time"
                 align="center"
+                width="130"
+                v-if="customerChargeshow.show6"
                 label="开始日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.start_time"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="end_time"
                 align="center"
+                width="130"
+                v-if="customerChargeshow.show7"
                 label="结束日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.end_time"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="status"
                 align="center"
+                width="110"
+                v-if="customerChargeshow.show8"
                 label="状态">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.status"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="add_time"
                 align="center"
+                width="130"
+                v-if="customerChargeshow.show9"
                 label="修改日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.add_time"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="check_time"
                 align="center"
+                width="130"
+                v-if="customerChargeshow.show10"
                 label="审核时间">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.check_time"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="remark"
                 align="center"
+                width="120"
+                v-if="customerChargeshow.show11"
                 label="备注">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.remark"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
-                label="相关操作"
-                width="90">
+                width="120"
+                label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -323,8 +457,7 @@
             <!-- 分页器 -->
             <el-pagination
                 @current-change="handleCurrentChange"
-                layout="total,prev, pager, next,jumper"
-                :page_size="page_size"
+                layout="total,prev,pager,next,jumper"
                 :total="total">
             </el-pagination>
         </div>
@@ -338,6 +471,7 @@ import {
   editCustomercharge
 } from "../../api/api";
 export default {
+    inject:["reload"],
     data() {
         return {
             page:1,
@@ -347,7 +481,6 @@ export default {
             isEdit:false,
             sortSelected: 0, // 排序hover框上部份 默认按第一个排序
             defaultSort: 0, // 排序hover框下部份 默认顺序排序
-            radio: 0, // 筛选日期默认选项
             timeValue: "", // 起止时间
             dialogColumnDiy: false, // 自定义显示列弹窗
             columnData: [
@@ -375,6 +508,20 @@ export default {
             ],
             dialogServeAdd:false,
             dialogServeDetail:false,
+            dialogShow:false,
+            customerChargeshow:{
+                show1:true,
+                show2:true,
+                show3:true,
+                show4:true,
+                show5:true,
+                show6:true,
+                show7:true,
+                show8:true,
+                show9:true,
+                show10:true,
+                show11:true,
+            },
             keywords:'',
             formServe:{
                 name:"",
@@ -388,9 +535,48 @@ export default {
             },
             Data:[],
             rule: [{ required: true, message: "不能为空" }],
+            search:'',
+            search2:'',
+            search3:['2017-7-7','2019-9-9'],
+            search4:'',
+            search5:'',
+            radio:"5",
+            value: '' ,
+            value1: '' ,
+            value2: '' ,
+            value3: '' ,
+            value4: '' ,
+            value5: '' ,
+            options1: [{
+            value1: '0',
+            label: '分公司1'
+            }, {
+            value1: '1',
+            label: '分公司2'
+            },],
+            options2: [{
+            value2: '0',
+            label: '0分店'
+            }, {
+            value2: '1',
+            label: '1分店'
+            },],
+            options3: [{
+            value3: '0',
+            label: 'one'
+            }, {
+            value3: '1',
+            label: 'two'
+            },],
         }
     },
     methods:{
+        handleClose(done){
+            done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.customerCharge=this.customerChargeshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+        },
         changeColumn() {
         this.columnData = this.columnData;
         console.log(this.columnData);
@@ -402,10 +588,13 @@ export default {
         initData() { // 获取列表
             let data = this.$qs.stringify({
                 subsite_id:3,
-                //   user_id:sessionStorage.user_id,
+                //user_id:sessionStorage.user_id,
                 page:this.page,
                 page_size:this.page_size
             })
+            this.data(data);
+        },
+        data(data){
             getCustomerchargeList(data).then(res=>{
                 console.log(res.data)
                 if(res.errno == 0) {
@@ -415,7 +604,23 @@ export default {
                 }
             })
         },
-        add() {
+        chose(){//-----------------------选择查询
+            let data = this.$qs.stringify({
+                subsite_id:3,
+                //user_id:sessionStorage.user_id,
+                page:1,
+                page_size:10,
+                time_by:this.radio,
+                add_time1:this.search3[0],
+                add_time2:this.search3[1],
+                bill_sn:this.search2,
+                hetong_sn:this.search4,
+                fee_desc:this.value3,
+                subshop_id:this.value2,
+            })
+            this.data(data);
+        },
+        add() {//----------------------添加
             this.isEdit = false;
             this.formServeDetail = {};
             if (this.$refs.form) {
@@ -423,6 +628,53 @@ export default {
             }
             this.dialogServeDetail = true;
             },
+        dateConverter(str) { //-----------------------日期转秒数
+            var arr = str.split(/[- : \/]/);
+            var startDate = Date.parse(new Date(arr[0], arr[1]-1, arr[2]))/1000;
+            return startDate;
+        },
+        edit(row){
+            row.status=="未审核"?row.status="0":row.status="1";
+            row.check_user=""
+            if(row.start_time!==""){
+                row.start_time=this.dateConverter(row.start_time);
+            }else{
+                row.start_time=new Date().getTime()/1000-86400;
+            }
+            if(row.end_time!==""){
+                row.end_time=this.dateConverter(row.end_time);
+            }else{
+                row.end_time=new Date().getTime()/1000-86400;
+            }
+            if(row.add_time!==""){
+                row.add_time=this.dateConverter(row.add_time);
+            }else{
+                row.add_time=new Date().getTime()/1000-86400;
+            }
+            if(row.check_time!==""){
+                row.check_time=this.dateConverter(row.check_time);
+            }else{
+                row.check_time=new Date().getTime()/1000-86400;
+            }
+            let Data = this.$qs.stringify(row);
+            editCustomercharge(Data).then(res => {
+                if (res.errno == 0) {
+                    this.$message({
+                        type: "success",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.initData();
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.initData();
+                }
+            });
+        },
         editDone(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
@@ -481,7 +733,7 @@ export default {
                 }
             });
         },
-        search() {
+        /* search() {
             let data=this.$qs.stringify({
                 page:1,
                 page_size:10,
@@ -495,9 +747,9 @@ export default {
                     this.loading = false
                 }
             })
-        },        
+        },  */       
         reset() {
-            this.initData()
+            this.reload()
         },
         handleCurrentChange(val) {
             this.page = val
@@ -545,13 +797,22 @@ export default {
         }
     },
     created() {
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.customerCharge!==undefined){
+                this.customerChargeshow=erpTableSetting.customerCharge;
+            }
+        }else{
+            console.log("no");
+        }; 
         this.initData()
     }
 }
 </script>
 <style scoped>
 .customerCharge{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -576,16 +837,16 @@ fieldset {
   border-color: #fff;
   padding: 0 0 6px 6px;
 }
-.out-box {
+/* .out-box {
   display: flex;
   align-items: center;
-}
+} */
 .search-area {
   margin: 10px 0;
 }
-.date-radio {
+/* .date-radio {
   width: 220px;
-}
+} */
 .date-area {
   width: 220px;
 }
@@ -619,9 +880,9 @@ fieldset {
 .el-date-editor {
   width: 100% !important;
 }
-.el-radio-group {
+/* .el-radio-group {
   display: flex;
-}
+} */
 .date-radio .el-radio {
   margin-left: 0;
   line-height: 24px;
@@ -644,7 +905,10 @@ fieldset {
   overflow: auto;
   text-align: left;
 }
-
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
+}
 .aaa {
   width: 100%;
   position: absolute;
@@ -681,8 +945,8 @@ fieldset {
 .customerCharge >>>.el-dialog .el-form-item {
     float: right;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
-
 </style>

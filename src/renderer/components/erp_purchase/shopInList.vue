@@ -1,18 +1,92 @@
 <template>
     <div id='shopInList'>
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px"  separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item :to="{ path: '/' }">主页</el-breadcrumb-item>
-                <el-breadcrumb-item>购货</el-breadcrumb-item>
+                <el-breadcrumb-item>采购</el-breadcrumb-item>
                 <el-breadcrumb-item>采购入库单</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div>
+                <div @click="dialogAdd=true" class="card">
+                    <i class="el-icon-plus"></i>
+                    <div>添加订单</div>
+                </div>
+            </div>
         </div>
         <div style="margin:10px 0;text-align:center">
-            <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+            <!-- <el-button icon="el-icon-tickets"  style="float:right;margin-right:20px" type="primary" size="small" @click="dialogShow=true">显示列</el-button> -->
             <el-input  prefix-icon="el-icon-search" style="width:15%" v-model="search"  size="mini"  placeholder="输入关键字搜索"/>
-            <el-button type="primary" size="small" @click="dialogAdd=true" icon="el-icon-plus"></el-button>
-            <el-button type="primary" size="small" @click="reset">刷新</el-button>
+            <!-- <el-button type="primary" size="small" @click="reset">刷新</el-button> -->
         </div>
         <!-- 按需选择列弹窗 -->
         <el-dialog
@@ -38,7 +112,7 @@
         :row-style="{height:0}"  
         :cell-style="{padding:0}"
         :header-row-style="{height:0}"  
-        :header-cell-style="{padding:0}" 
+        :header-cell-style="tableRowStyle"
         :default-sort = "{prop: 'date', order: 'descending'}">
         style="width: 100%">
             <el-table-column
@@ -58,7 +132,7 @@
                 align="center"
                 label="提交货人">
                 <template slot-scope="scope">
-                    <input v-model="scope.row.takegoods_man">
+                    <el-input v-model="scope.row.takegoods_man" />
                 </template>
             </el-table-column>
             <el-table-column
@@ -72,8 +146,12 @@
             <el-table-column
                 prop="store_name"
                 align="center"
+                width="135"
                 v-if="shopInshow.show5"
                 label="仓库名">
+                    <template slot-scope="scope">
+                        <p v-html="scope.row.store_name"></p>
+                    </template>
             </el-table-column>
             <el-table-column
                 prop="admin_name"
@@ -169,11 +247,12 @@
             </div>
         </el-dialog>
         <!--详情弹窗-->        
-        <el-dialog width="770px" title="采购入库单详情" :visible.sync="dialogDetail">
+        <el-dialog width="770px" title="采购入库详情" :visible.sync="dialogDetail">
             <el-button size="small" type="primary" class="addGoods" @click="getGoods(),dialogAddGoods=true">添加商品</el-button>
             <el-table
             :data="shopDeData"
-            border
+            border stripe
+            show-summary
             :row-style="{height:0}"  
             :cell-style="{padding:0}"
             :header-row-style="{height:0}"  
@@ -194,35 +273,37 @@
                         <span :title="scope.row.goods_name">{{scope.row.goods_name.slice(0,7)+"..."}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                     prop="book_id"
                     align="center"
                     label="商品条目id">
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
                     align="center"
                     label="属性名">
                     <template slot-scope="scope">
-                        <el-input size="mini" style="width:100%" v-model="scope.row.attr_name"></el-input>
+                        <span>{{scope.row.attr_name}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                     prop="attr_value"
                     align="center"
                     label="属性值id">
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
+                    prop="number_yingshou"
                     align="center"
                     label="应收数量">
                     <template slot-scope="scope">
-                        <el-input size="mini" style="width:100%" v-model="scope.row.number_yingshou"></el-input>
+                        <span>{{scope.row.number_yingshou}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                     align="center"
+                    prop="number_shishou"
                     label="实收数量">
                     <template slot-scope="scope">
-                        <el-input size="mini" style="width:100%" v-model="scope.row.number_shishou"></el-input>
+                        <span>{{scope.row.number_shishou}}</span>
                     </template>
                 </el-table-column> 
                 <el-table-column
@@ -230,7 +311,7 @@
                 align="center"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="editGoods(scope.row)" icon="el-icon-edit"></el-button>
+                        <!-- <el-button type="text" size="small" @click="editGoods(scope.row)" icon="el-icon-edit"></el-button> -->
                         <el-button type="text" size="small" @click="deleteGoods(scope.row)" icon="el-icon-delete"></el-button>
                     </template>
                 </el-table-column>       
@@ -307,7 +388,7 @@
 <style scoped>
     #shopInList{
         text-align:center;
-        margin: 20px;
+        margin: 10px;
     }
     #shopInList .main-header{
         text-align:left;
@@ -317,9 +398,6 @@
     }
     #shopInList .main-header .el-breadcrumb {
         margin: 8px 0 0 10px;
-    }
-    #shopInList .el-input{
-        width:10%;
     }
     #shopInList .el-select{
         width:10%;
@@ -360,13 +438,54 @@
         position:relative;
         bottom:15px;
     }
-    .el-table input{
-        width:100%;
-        height:34px;
-        border:1px solid #DCDFE6;
-        border-radius:4px;
-        padding:2px;
+    .el-table .el-input >>> .el-input__inner{
+        border:none;
+        text-align:center;
     }
+.card-title {
+  text-align: center;
+}
+.card-title:focus {
+  outline: none;
+}
+.card {
+  transition: all 0.3s;
+  padding: 5px 0;
+}
+.card:hover {
+  border-radius:7px;
+  transform: translateY(-2px);
+  box-shadow: 0px 2px 5px 4px rgba(0, 0, 0,0.1)
+}
+.card:hover i,
+.card:hover div,
+.card:hover b {
+  color: #409EFF;
+}
+.operate-in {
+  display: flex;
+  margin-top: 12px;
+}
+.operate-in > div {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+.operate-in > div div {
+  font-size: 16px;
+}
+.operate-in i {
+  font-size: 30px;
+}
+.operate-in b {
+  font-size: 16px;
+  position: absolute;
+  top: 20%;
+  right: 5%;
+}
 </style>
 <script>
 import {shopInList,supplier,getGoodsList} from '../../api/api';
@@ -405,7 +524,7 @@ export default {
             multipleSelection:[],
             arr:[],
             shopInshow:{
-                show1:true,
+                show1:false,
                 show2:true,
                 show3:true,
                 show4:true,
@@ -640,7 +759,10 @@ export default {
                 console.log(res.data);
                 this.SupplierData.push(res.data);
             })
-        }
+        },
+        tableRowStyle({ row, rowIndex }) {
+            return 'background-color:#949494;color:#fff;'
+        },
     },
     created: function () { 
         if(localStorage.erpTableSetting!==undefined){

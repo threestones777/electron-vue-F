@@ -2,8 +2,8 @@
     <div class="sysMessage">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px;" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>系统消息</el-breadcrumb-item>
             </el-breadcrumb>
@@ -241,7 +241,7 @@ export default {
 
 <style scoped>
 .sysMessage {
-  margin: 20px;
+  margin: 10px;
   position: relative;
 }
 /* 头部面包屑 */

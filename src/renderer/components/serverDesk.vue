@@ -7,15 +7,15 @@
                 <el-input placeholder="     输入或扫描商品二维码" style="margin-right:50px"></el-input>
                 <el-input prefix-icon="el-icon-search" placeholder="商品名称/首拼字母/条形码"></el-input>
             </div> -->
-            <div style="margin:20px">
-                <h1 style="font-size:22px;font-weight:bold;">服务列表</h1>
+            <div style="margin:0px;background:#fff">
+                <!-- <h1 style="font-size:22px;font-weight:bold;">服务列表</h1> -->
                 <el-card @click.native="addServer
                 (index)" shadow="hover" style="width:19%;margin:20px 20px 0 20px;display:inline-block" v-for="(server,index) in serverForms" :key="index">
                     <img src="../assets/images/goods.png" style="width:100%;margin-bottom:10px;" :title="server.goods_id"  class="getId"/>
-                    <span style="font-weight:bold;display:block;height:20px;overflow:hidden" :title="server.goods_name">{{server.goods_name}}</span>
-                    <span style="color:#FF7815;display:block;margin-top:10px;">￥{{server.addprice}}</span>
-                    <p style="color:#999999;margin-top:10px;">库存：{{server.goods_id}}</p>
-                    <p style="color:#999999;margin-top:10px;">位置：{{server.goods_id}}</p>
+                    <span style="font-size:16px;font-weight:bold;display:block;height:31px;overflow:hidden" :title="server.goods_name">{{server.goods_name}}</span>
+                    <span style="font-size:16px;color:#FF7815;display:block;margin-top:10px;">￥{{server.shop_price}}</span>
+                    <p style="font-size:16px;color:#999999;margin-top:10px;">库存：{{server.goods_id}}</p>
+                    <!-- <p style="font-size:16px;color:#999999;margin-top:10px;">位置：{{server.goods_id}}</p> -->
                 </el-card>
             </div>            
         </div>
@@ -23,8 +23,8 @@
 </template>
 <style>
     #serverDesk{
-        border:1px solid #f4f4f4;
-        height:770px;
+        background:#fff;
+        height:800px;
     }
     #serverDesk .el-row{
         margin-top:20px;

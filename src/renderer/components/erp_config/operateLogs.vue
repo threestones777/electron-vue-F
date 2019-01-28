@@ -1,12 +1,87 @@
 <template>
   <div id="operateLogs">
     <div class="main-header">
-      <h3>温州美联 管理中心</h3>
-      <el-breadcrumb separator-class="el-icon-arrow-right">
+      <!-- <h3>温州美联 管理中心</h3> -->
+      <el-breadcrumb style="font-size:18px"  separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/' }">主页</el-breadcrumb-item>
         <el-breadcrumb-item>报表</el-breadcrumb-item>
         <el-breadcrumb-item>操作日志</el-breadcrumb-item>
-      </el-breadcrumb>
+      </el-breadcrumb>  
+      <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <!-- <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div> -->
+                <div @click="deleteRow" class="card">
+                    <i class="el-icon-plus"></i>
+                    <div>批量删除</div>
+                </div>
+            </div>
     </div>
     <el-select size="small" clearable v-model="formsearch.admin_ip" placeholder="请选择ip">
       <el-option v-for="item in options2" :key="item" :label="item" :value="item"></el-option>
@@ -33,8 +108,8 @@
     <el-input placeholder="请输入管理员id" @input="search" v-model="keywords" style="width:20%;margin-right:10px" size="small">
         <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
     </el-input>
-    <el-button size="small" @click="deleteRow" type="primary">批量删除</el-button>
-    <el-button size="small" type="primary" @click="reset">刷新</el-button>
+    <!-- <el-button size="small" @click="deleteRow" type="primary">批量删除</el-button>
+    <el-button size="small" type="primary" @click="reset">刷新</el-button> -->
     <el-table
       :data="logData"
       border
@@ -65,6 +140,7 @@
 <script>
 import { getLogList,delLogs } from "../../api/api";
 export default {
+  inject:['reload'],
   data() {
     return {
       page: 1,
@@ -124,10 +200,7 @@ export default {
       this.initData(this.formsearch);
     }, */
     reset() {
-      this.time = "";
-      this.admin_ip = "";
-      this.user_id = "";
-      this.initData();
+      this.reload();
     },
     handleCurrentChange(val) {
       this.page = val;
@@ -136,9 +209,13 @@ export default {
       this.initData(this.formsearch);
     },
     handleSelectionChange(val) {
-      val.forEach((v,i)=>{
-          this.selecteLog.push(v.log_id)
-      })
+      this.selecteLog=[];
+      //console.log(val);
+      for(let i=0;i<val.length;i++){
+            this.selecteLog.push(val[i].log_id);
+            console.log(val[i].log_id);
+      };
+      console.log(this.selecteLog);
     },
     deleteRow() { // 批量删除
             this.$confirm("即将执行删除操作, 确认删除吗?", "提示", {
@@ -177,14 +254,17 @@ export default {
 <style>
 #operateLogs {
   text-align: center;
-  margin: 20px;
+  margin: 10px;
 }
 #operateLogs .el-dialog .el-input {
   width: 10%;
 }
 #operateLogs .main-header {
-  text-align: left;
-  margin-bottom: 10px;
+  padding: 10px;
+  background: #fff;
+}
+.main-header .el-breadcrumb {
+  margin: 8px 0 0 10px;
 }
 #operateLogs .el-input {
   width: 160px;

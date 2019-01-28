@@ -2,12 +2,83 @@
     <div class="allocatingQuery">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>调拨</el-breadcrumb-item>
                 <el-breadcrumb-item>调拨查询</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                <i class="el-icon-loading"></i>
+                <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                <i class="el-icon-tickets"></i>
+                <div>显示列</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
@@ -49,14 +120,14 @@
                             :value="item.value5">
                             </el-option>
                         </el-select>
-                        <el-select @change="chose" style="margin-bottom:5px" v-model="value6" size="small" placeholder="标签">
+                        <!-- <el-select @change="chose" style="margin-bottom:5px" v-model="value6" size="small" placeholder="标签">
                             <el-option
                             v-for="item in options6"
                             :key="item.value6"
                             :label="item.label"
                             :value="item.value6">
                             </el-option>
-                        </el-select>
+                        </el-select> -->
                     </el-col>
                     <el-col :span="4">
                     <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search5"  size="mini"  placeholder="条形码"/>
@@ -100,8 +171,8 @@
                         <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search10"  size="mini"  placeholder="检验员"/>
                     </el-col>
                     <el-col :span="3">
-                        <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
-                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                        <!-- <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button> -->
                     </el-col>
                 </el-row>
 			</fieldset>
@@ -143,10 +214,10 @@
             :data="allocatData.filter(data =>  {
             return Object.keys(data).some(key => {
             return String(data[key]).toLowerCase().indexOf(search) > -1})})"
-            border
+            border stripe
             show-summary
             :row-style="{height:0}"
-            :cell-style="{padding:0}"
+            :cell-style="{padding:3}"
             :header-row-style="{height:0}"
             :header-cell-style="{padding:0}"
             style="width: 100%">
@@ -168,10 +239,11 @@
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="110"
                 v-if="allocatingQueryshow.show3"
                 label="调出店名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.from_subshop_name"/>
+                        <el-input v-model="scope.row.from_subshop_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -179,39 +251,43 @@
                 v-if="allocatingQueryshow.show4"
                 label="收货店号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.to_subshop_id"/>
+                        <span>{{scope.row.to_subshop_id}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="110"
                 v-if="allocatingQueryshow.show5"
                 label="收货店名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.to_subshop_name"/>
+                        <el-input v-model="scope.row.to_subshop_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="150"
                 v-if="allocatingQueryshow.show6"
                 label="条码">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.serial_code"/>
+                        <el-input v-model="scope.row.serial_code"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="150"
                 v-if="allocatingQueryshow.show7"
                 label="货号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.product_sn"/>
+                        <el-input v-model="scope.row.product_sn"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="150"
                 v-if="allocatingQueryshow.show8"
                 label="商品名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.goods_name"/>
+                        <el-input v-model="scope.row.goods_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -219,15 +295,16 @@
                 v-if="allocatingQueryshow.show9"
                 label="品牌id">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.brand_id"/>
+                        <el-input v-model="scope.row.brand_id"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="150"
                 v-if="allocatingQueryshow.show10"
                 label="品牌名">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.brand_name"/>
+                        <el-input v-model="scope.row.brand_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -235,7 +312,7 @@
                 v-if="allocatingQueryshow.show11"
                 label="分类id">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.cat_id"/>
+                        <el-input v-model="scope.row.cat_id"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -243,15 +320,16 @@
                 v-if="allocatingQueryshow.show12"
                 label="分类名">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.cat_name"/>
+                        <el-input v-model="scope.row.cat_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="150"
                 v-if="allocatingQueryshow.show13"
                 label="规格">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.attr_value"/>
+                        <el-input v-model="scope.row.attr_value"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -260,25 +338,27 @@
                 v-if="allocatingQueryshow.show14"
                 label="申请数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.apply_num"/>
+                        <el-input v-model="scope.row.apply_num"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="apply_money"
                 align="center"
+                width="100"
                 v-if="allocatingQueryshow.show15"
                 label="申请金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.apply_money"/>
+                        <el-input v-model="scope.row.apply_money"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="apply_shop_price"
                 align="center"
+                width="100"
                 v-if="allocatingQueryshow.show16"
                 label="申请售价金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.apply_shop_price"/>
+                        <el-input v-model="scope.row.apply_shop_price"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -287,25 +367,27 @@
                 v-if="allocatingQueryshow.show17"
                 label="发货数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fahuo_num"/>
+                        <el-input v-model="scope.row.fahuo_num"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="fahuo_shop_price"
                 align="center"
+                width="100"
                 v-if="allocatingQueryshow.show18"
                 label="发货金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fahuo_money"/>
+                        <el-input v-model="scope.row.fahuo_money"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="fahuo_shop_price"
                 align="center"
+                width="100"
                 v-if="allocatingQueryshow.show25"
                 label="发货售价金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fahuo_shop_price"/>
+                        <el-input v-model="scope.row.fahuo_shop_price"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -314,25 +396,27 @@
                 v-if="allocatingQueryshow.show19"
                 label="收货数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shouhuo_num"/>
+                        <el-input v-model="scope.row.shouhuo_num"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="shouhuo_money"
                 align="center"
+                width="100"
                 v-if="allocatingQueryshow.show20"
                 label="收货金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shouhuo_money"/>
+                        <el-input v-model="scope.row.shouhuo_money"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="shouhuo_shop_price"
                 align="center"
+                width="100"
                 v-if="allocatingQueryshow.show21"
                 label="收货售价金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shouhuo_shop_price"/>
+                        <el-input v-model="scope.row.shouhuo_shop_price"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -340,7 +424,7 @@
                 v-if="allocatingQueryshow.show22"
                 label="供应商id">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.supplier_id"/>
+                        <el-input v-model="scope.row.supplier_id"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -348,20 +432,22 @@
                 v-if="allocatingQueryshow.show23"
                 label="调出店号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.from_subshop_id"/>
+                        <el-input v-model="scope.row.from_subshop_id"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="140"
                 v-if="allocatingQueryshow.show24"
                 label="供应商名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.supplier_name"/>
+                        <el-input v-model="scope.row.supplier_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
+                width="120"
                 label="相关操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
@@ -421,16 +507,16 @@ export default {
             allocatData:[],
             allocatingQueryshow:{
                 show1:false,
-                show2:true,
+                show2:false,
                 show3:true,
-                show4:true,
+                show4:false,
                 show5:true,
                 show6:true,
                 show7:true,
                 show8:true,
-                show9:true,
+                show9:false,
                 show10:true,
-                show11:true,
+                show11:false,
                 show12:true,
                 show13:true,
                 show14:true,
@@ -442,7 +528,7 @@ export default {
                 show20:true,
                 show21:true,
                 show22:true,
-                show23:true,
+                show23:false,
                 show24:true,
                 show25:true,
             },
@@ -641,7 +727,7 @@ export default {
 </script>
 <style scoped>
 .allocatingQuery{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -663,12 +749,9 @@ export default {
 .el-form .el-form-item .el-input {
   width: 80%;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
 }
 /* 分页器 */
 .el-pagination {

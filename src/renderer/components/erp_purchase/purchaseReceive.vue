@@ -2,12 +2,22 @@
     <div class="purchaseReceive">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>购货</el-breadcrumb-item>
                 <el-breadcrumb-item>采购收货</el-breadcrumb-item>  
             </el-breadcrumb>
+            <div class="operate-in">
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div>
+            </div>
         </div>
         <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
             <legend>查询条件</legend>
@@ -67,9 +77,9 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <el-col :span="7">
+                <el-col :span="4">
                     <el-row type="flex" justify="space-around" :gutter="5">
-                        <el-col :span="12">
+                        <el-col :span="24">
                             <el-date-picker
                             v-model="search9" size="small" @change="chose"
                             type="date" style="width:100%"
@@ -78,25 +88,23 @@
                             </el-date-picker>
                             <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-top:5px" v-model="search5"  size="mini"  placeholder="对方单号"/> 
                         </el-col>
-                        <el-col :span="12">
-                        </el-col>
                     </el-row>
                 </el-col>
-                <el-col :span="3" style="padding-left:30px;">
+                <!-- <el-col :span="3" style="padding-left:30px;">
                     <el-button style="margin-top:10px;" type="primary" size="small" @click="reset">刷新</el-button><br>
                     <el-button icon="el-icon-tickets"  style="margin-top:10px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
-                </el-col>
+                </el-col> -->
+                <el-col :span="6"></el-col>
             </el-row>            
         </fieldset>
- 
-    <div  style="text-align:left;margin-top:10px">
+        <!-- <div  style="text-align:left;margin-top:10px">
             <el-input size="small" style="width:15%;" placeholder="请输入商品主条码"  v-model="formServeAdd.main_tm" autofocus/>
             <el-input size="small" v-model="formServeAdd.sh_goods_number"  style="width:15%;" placeholder="请输入数量"></el-input>
             <el-button type="primary" size="small" @click="add">添加</el-button>
-            <el-button type="primary" size="small" @click="saveData" id="save" :disabled="save">保存</el-button>
-            <el-button type="primary" size="small" @click="check">审核</el-button>
-            <!-- <el-button type="primary" size="small" @click="edit">修改</el-button> -->
-        </div>
+             <el-button type="primary" size="small" @click="saveData" id="save" :disabled="save">保存</el-button> 
+           <el-button type="primary" size="small" @click="check">审核</el-button>
+            <el-button type="primary" size="small" @click="edit">修改</el-button>
+        </div> -->
             
         <div class="main-table" style="margin-top:10px">
             <!-- 按需选择列弹窗 -->
@@ -107,6 +115,7 @@
             width="300px">
                 <!-- <el-checkbox v-model="purchaseReceiveshow.show1">采购收货id</el-checkbox><br> -->
                 <el-checkbox v-model="purchaseReceiveshow.show2">促销</el-checkbox><br>
+                <el-checkbox v-model="purchaseReceiveshow.show1">单据编号</el-checkbox><br>
                 <el-checkbox v-model="purchaseReceiveshow.show3">主条码</el-checkbox><br>
                 <el-checkbox v-model="purchaseReceiveshow.show4">标配</el-checkbox><br>
                 <el-checkbox v-model="purchaseReceiveshow.show5">ABC</el-checkbox><br>
@@ -141,23 +150,32 @@
             :data="purchaseReData.filter(data =>{
             return Object.keys(data).some(key => {
             return String(data[key]).toLowerCase().indexOf(search) > -1})})"
-            border
-            :row-style="{height:0}"  
+            border stripe
+            :row-style="{height:0}" 
             :cell-style="{padding:0}"
-            :header-row-style="{height:0}"  
-            :header-cell-style="{padding:7}"
+            :header-row-style="{padding:0}"  
+            :header-cell-style="tableRowStyle"
             show-summary
             style="width: 100%">
                 <el-table-column
                 v-if="purchaseReceiveshow.show2"
                 prop="is_primot"
                 align="center"
-                width="50"
+                width="80"
                 :filters="[{text:'促销',value:'0'},{text:'非促销',value:'1'}]"
                 :filter-method="filterHandler"
                 label="促销">
                     <template slot-scope="scope">
-                       <el-checkbox v-model="scope.row.is_primot" true-label="0" false-label="1"/>
+                       <span>{{scope.row.is_primot==1?"非促销":"促销"}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                align="center"
+                width="150"
+                v-if="purchaseReceiveshow.show1"
+                label="单据编号">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.bill_sn}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -166,7 +184,7 @@
                 v-if="purchaseReceiveshow.show3"
                 label="主条码">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.main_tm">
+                        <span>{{scope.row.main_tm}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -174,7 +192,7 @@
                 align="center"
                 label="标配">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.standard">
+                        <span>{{scope.row.standard}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -182,7 +200,7 @@
                 align="center"
                 label="ABC">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.ABC">
+                        <span>{{scope.row.ABC}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -190,7 +208,7 @@
                 align="center"
                 label="货号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.product_id">
+                        <span>{{scope.row.product_id}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -199,7 +217,7 @@
                 width="250"
                 label="名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.goods_name">
+                        <span>{{scope.row.goods_name}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -207,178 +225,195 @@
                 align="center"
                 label="规格">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.attr_value">
+                        <span>{{scope.row.attr_value===false?"":""}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 prop="shop_price"
                 v-if="purchaseReceiveshow.show9"
                 label="售价">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shop_price">
+                        <span style="color:#B58900">{{scope.row.shop_price}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show10"
                 align="center"
-                width="50"
+                width="70"
                 label="进货折扣">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.discount">
+                        <span>{{scope.row.discount}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show11"
                 align="center"
+                prop="sh_jinjia"
+                width="100"
                 label="收货进价">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_jinjia">
+                        <span>{{scope.row.sh_jinjia}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="sh_box_number"
                 v-if="purchaseReceiveshow.show12"
                 align="center"
-                width="50"
+                width="70"
                 label="箱数">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_box_number">
+                        <span>{{scope.row.sh_box_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show13"
                 align="center"
                 prop="sh_goods_number"
-                width="50"
+                width="70"
                 label="数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_goods_number">
+                        <span>{{scope.row.sh_goods_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show14"
                 prop="sh_give_number"
                 align="center"
-                width="50"
+                width="70"
                 label="赠送数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_give_number">
+                        <span>{{scope.row.sh_give_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show15"
                 prop="sh_money"
                 align="center"
+                width="100"
                 label="收货金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_money">
+                        <span>{{scope.row.sh_money}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show16"
+                prop="sh_give_money"
                 align="center"
+                width="100"
                 label="收货赠送金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_give_money">
+                        <span>{{scope.row.sh_give_money}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show17"
+                prop="sh_shoujia"
                 align="center"
+                width="100"
                 label="收货售价金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_shoujia">
+                        <span>{{scope.row.sh_shoujia}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show18"
                 align="center"
                 prop="dh_box_number"
-                width="50"
+                width="70"
                 label="订货箱数">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.dh_box_number">
+                        <span>{{scope.row.dh_box_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show19"
                 align="center"
-                width="50"
+                width="70"
                 prop="dh_goods_number"
                 label="订货数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.dh_goods_number">
+                        <span>{{scope.row.dh_goods_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
                 prop="dh_give_number"
                 v-if="purchaseReceiveshow.show20"
-                width="50"
+                width="70"
                 label="订货赠送数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.dh_give_number">
+                        <span>{{scope.row.dh_give_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show21"
+                prop="dh_give_money"
                 align="center"
+                width="100"
                 label="订货赠送金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.dh_give_money">
+                        <span>{{scope.row.dh_give_money}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show22"
+                prop="dh_money"
                 align="center"
+                width="100"
                 label="订货金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.dh_money">
+                        <span>{{scope.row.dh_money}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show23"
                 align="center"
                 prop="box_in_number"
-                width="50"
+                width="70"
                 label="箱装数">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.box_in_number">
+                        <span>{{scope.row.box_in_number}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show24"
+                prop="gross_profit"
                 align="center"
+                width="100"
                 label="毛利额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.gross_profit">
+                        <span>{{scope.row.gross_profit}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show25"
                 align="center"
+                width="70"
                 prop="gross_interest_rate"
                 label="毛利率">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.gross_interest_rate">
+                        <span>{{scope.row.gross_interest_rate}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show26"
+                prop="wholesale_price"
                 align="center"
+                width="100"
                 label="批发价">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.wholesale_price">
+                        <span>{{scope.row.wholesale_price}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="purchaseReceiveshow.show27"
                 align="center"
-                width="50"
+                width="70"
                 label="单位">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.supplier_id">
+                        <span>{{scope.row.supplier_id}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -387,7 +422,7 @@
                 width="100"
                 label="生产日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.production_date">
+                        <span>{{scope.row.production_date}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -396,18 +431,19 @@
                 width="100"
                 label="失效日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.expiry_date">
+                        <span>{{scope.row.expiry_date}}</span>
                     </template>
                 </el-table-column>
-                <!-- <el-table-column
+                <el-table-column
                 fixed="right"
+                width="100"
                 align="center"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
+                        <!-- <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button> -->
                         <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
                     </template>
-                </el-table-column> -->
+                </el-table-column>
             </el-table>
             <!-- 分页器 -->
             <el-pagination
@@ -450,7 +486,7 @@ export default {
             formDetail:{},
             purchaseReData:[],
             purchaseReceiveshow:{
-                show1:false,
+                show1:true,
                 show2:true,
                 show3:true,
                 show4:true,
@@ -509,6 +545,17 @@ export default {
             purchaseReceive(data).then(res=>{
                 this.record_count=Number(res.data.filter.record_count);
                 console.log(res.data);
+                for(let i=0;i<res.data.orders.length;i++){
+                    res.data.orders[i].shop_price=res.data.orders[i].shop_price.replace(/^￥/,"");
+                    res.data.orders[i].sh_jinjia=res.data.orders[i].sh_jinjia.replace(/^￥/,"");
+                    res.data.orders[i].sh_money=res.data.orders[i].sh_money.replace(/^￥/,"");
+                    res.data.orders[i].sh_give_money=res.data.orders[i].sh_give_money.replace(/^￥/,"");
+                    res.data.orders[i].sh_shoujia=res.data.orders[i].sh_shoujia.replace(/^￥/,"");
+                    res.data.orders[i].dh_give_money=res.data.orders[i].dh_give_money.replace(/^￥/,"");
+                    res.data.orders[i].dh_money=res.data.orders[i].dh_money.replace(/^￥/,"");
+                    res.data.orders[i].gross_profit=res.data.orders[i].gross_profit.replace(/^￥/,"");
+                    res.data.orders[i].wholesale_price=res.data.orders[i].wholesale_price.replace(/^￥/,"");
+                };
                 this.purchaseReData=res.data.orders;
             }) 
         },
@@ -521,11 +568,10 @@ export default {
                 sh_money:this.search1,
                 sh_user:this.search2,
                 purchase_date:this.search6,
-               real_arrive_time:this.search8,
-               expect_arrive_time:this.search9,
-               salesman:this.search4,
-               duifang_sn:this.search5
-
+                real_arrive_time:this.search8,
+                expect_arrive_time:this.search9,
+                salesman:this.search4,
+                duifang_sn:this.search5
             });
             console.log(this.value);
             this.data(data);
@@ -633,7 +679,26 @@ export default {
                 } 
             })
         },
-        edit(){//--------------修改
+        edit(row){
+            let data=this.$qs.stringify(row);
+            purchaseReEd(data).then(res=>{
+                if (res.errno == 0) {
+                    this.$message({
+                        type: "success",
+                        message: "修改成功!",
+                        duration: 1000
+                    });
+                    this.initData();
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                }
+            });
+        },
+        /* edit(){//--------------修改
             //this.save==true?this.save=false:this.save=true;
             if(this.save==true){
                 this.save=false;
@@ -650,9 +715,9 @@ export default {
                     input[i].disabled="true";
                 };
             }
-        },
+        }, */
         deleteRow(row) {//---------------删除
-                let data=this.$qs.stringify({
+                /* let data=this.$qs.stringify({
                     id:row.id,
                     is_delete:1
                 }); 
@@ -663,8 +728,8 @@ export default {
                     }else{
                        // this.$alert("删除失败")
                     }
-                });  
-            /* let Message=confirm("确定删除此行数据？");
+                });  */ 
+            let Message=confirm("确定删除此行数据？");
             if(Message){
                 console.log(row.id);
                 let data=this.$qs.stringify({
@@ -681,8 +746,11 @@ export default {
                 });   
             }else{
                 alert("用户取消操作");
-            } */
-        }
+            }
+        },
+        tableRowStyle({ row, rowIndex }) {
+            return 'background-color:#949494;color:#fff;'
+        },
     },
     created: function () {  
         if(localStorage.erpTableSetting!==undefined){
@@ -700,7 +768,7 @@ export default {
 </script>
 <style scoped>
 .purchaseReceive{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -721,12 +789,9 @@ export default {
 .el-form .el-form-item .el-input {
   width: 80%;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
 }
 /* 分页器 */
 .el-pagination {
@@ -744,5 +809,53 @@ export default {
 .el-row{
     background:#F3F3F3;
     width:100%;
+}
+.card-title {
+  text-align: center;
+}
+.card-title:focus {
+  outline: none;
+}
+.card {
+  transition: all 0.3s;
+  padding: 5px 0;
+}
+.card:hover {
+  border-radius:7px;
+  transform: translateY(-2px);
+  box-shadow: 0px 2px 5px 4px rgba(0, 0, 0,0.1)
+}
+.card:hover i,
+.card:hover div,
+.card:hover b {
+  color: #409EFF;
+}
+.operate-in {
+  display: flex;
+  margin-top: 12px;
+}
+.operate-in > div {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+.operate-in > div div {
+  font-size: 16px;
+}
+.operate-in i {
+  font-size: 30px;
+}
+.operate-in b {
+  font-size: 16px;
+  position: absolute;
+  top: 20%;
+  right: 5%;
+}
+.el-table thead {
+    background-color: #17B3A3;
+    color: black;
 }
 </style>

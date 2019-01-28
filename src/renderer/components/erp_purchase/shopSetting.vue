@@ -2,19 +2,29 @@
     <div class="shopSetting">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>购货</el-breadcrumb-item>
                 <el-breadcrumb-item>采购设置</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <div @click="savEdit" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>保存修改</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
-            <el-form ref="form" :model="shopSetData">
+            <el-form ref="form" :model="shopSetData" style="background:#fff;margin-top:10px;">
                <el-form-item style="text-align:left">
                    <p style="margin-left:10%">
                        采购订单有效天数:
-                       <el-input-number size="small" v-model="shopSetData.valid_days" controls-position="right" :min="1" :max="60"></el-input-number>天（注:最大60天）
+                       <el-input-number size="small" v-model="shopSetData.valid_days" controls-position="right" :min="1" :max="60"></el-input-number>&nbsp;&nbsp;天（注:最大60天）
                    </p>
                     <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.is_accord_order" true-label="0" false-label="1">必须按照订单采购</el-checkbox><br>
                     <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.not_show_abnormal" true-label="0" false-label="1">进货价格异常时不显示</el-checkbox><br>
@@ -31,10 +41,10 @@
                     <!-- <h1  style="float:left;margin-left:40%">进货价格确定</h1><br>  -->
                     <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.by_goods_price" true-label="0" false-label="1">进货价格以商品资料进价为准</el-checkbox><br>
                     <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.default_ling" true-label="0" false-label="1">进货时默认进价为0，手工输入进价</el-checkbox><br>
-                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.by_hand" true-label="0" false-label="1">进货时手工输入进价</el-checkbox><br>
+                    <el-checkbox style="float:left;margin-left:10%;" v-model="shopSetData.by_hand" true-label="0" false-label="1">进货时手工输入进价</el-checkbox><br><br>
+            <!-- <el-button type="primary" style="float:right;margin:10px  43%" @click="savEdit">保存修改</el-button> -->
                 </el-form-item> 
             </el-form>
-            <el-button type="primary" style="float:right;margin-right:50%" @click="savEdit">保存修改</el-button>
         </div>
     </div>
 </template>
@@ -199,7 +209,7 @@ export default {
     margin-bottom:10px;
 }
 .shopSetting{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -221,13 +231,6 @@ export default {
 .el-form .el-form-item .el-input {
   width: 80%;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
-}
 /* 分页器 */
 .el-pagination {
   padding: 20px 0;
@@ -243,5 +246,49 @@ export default {
 }
 .el-row {
   border-top: 1px dashed #ccc;
+}
+.card-title {
+  text-align: center;
+}
+.card-title:focus {
+  outline: none;
+}
+.card {
+  transition: all 0.3s;
+  padding: 5px 0;
+}
+.card:hover {
+  border-radius:7px;
+  transform: translateY(-2px);
+  box-shadow: 0px 2px 5px 4px rgba(0, 0, 0,0.1)
+}
+.card:hover i,
+.card:hover div,
+.card:hover b {
+  color: #409EFF;
+}
+.operate-in {
+  display: flex;
+  margin-top: 12px;
+}
+.operate-in > div {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+.operate-in > div div {
+  font-size: 16px;
+}
+.operate-in i {
+  font-size: 30px;
+}
+.operate-in b {
+  font-size: 16px;
+  position: absolute;
+  top: 20%;
+  right: 5%;
 }
 </style>

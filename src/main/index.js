@@ -21,7 +21,7 @@ function createWindow () {
     height:770,//window.screen.availHeight,
     width:1350,//window.screen.availWidth,               
     useContentSize: true,
-    frame: true,                     //有无边框                
+    frame: true,                    //有无边框                
     webPreferences: {webSecurity: false},  //解决跨域 
   });
   
@@ -30,7 +30,8 @@ function createWindow () {
   mainWindow.on('closed', () => {     
     mainWindow = null
   });
-  // Open the DevTools.
+  // mainWindow.webContents.openDevTools()
+  //--Open the DevTools.
   // if (process.env.NODE_ENV === 'development') {
   //   BrowserWindow.addDevToolsExtension("C:/Users/litid/AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/4.1.5_0");
   // }

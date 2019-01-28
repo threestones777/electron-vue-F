@@ -79,9 +79,9 @@
             <el-table
                 :data="Data"
                 v-loading="loading"
-                border
+                border stripe
                 :row-style="{height:0}"  
-                :cell-style="{padding:0}"
+                :cell-style="{padding:7}"
                 :header-row-style="{height:0}"  
                 :header-cell-style="{padding:0}"
                 style="width: 100%">
@@ -100,16 +100,31 @@
                     prop="money"
                     align="center"
                     label="单据金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.money"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                    align="center"
+                    label="账户">
+                    <template slot-scope="scope">
+                        <el-select size="small" v-model="scope.row.jiesuan_account" placeholder="请选择">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.zijin_account_id"
+                            :label="item.account_name"
+                            :value="item.zijin_account_id">
+                            </el-option>
+                        </el-select>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="remark"
                     align="center"
-                    label="单据备注">
-                </el-table-column>
-                <el-table-column
-                    prop="jiesuan_account"
-                    align="center"
-                    label="账户">
+                    label="备注">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.remark"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="admin_name"
@@ -119,10 +134,10 @@
                 <el-table-column
                 fixed="right"
                 align="center"
-                width="90"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
+                        <!-- <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button> -->
                         <el-button type="text" size="small" @click="deleteRow( scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -146,11 +161,12 @@ import {
   delOtgather
 } from "../../api/api";
 export default {
+    inject:['reload'],
     data() {
       return {
         dialogServeDetail:false,
         keywords:'',
-        options: [],
+        options:[],
         formServe:{},
         formServeDetail: {},
         page: 1,
@@ -178,8 +194,7 @@ export default {
                 }
             });
         }, 
-        initData() {
-        // 获取列表
+        initData() {//----------- 获取列表
             let data = {
                 subsite_id: 3,
                 user_id: sessionStorage.user_id,
@@ -203,6 +218,33 @@ export default {
                 this.$refs.form.resetFields();
             }
             this.dialogServeDetail = true;
+        },
+        edit(row){//---------------------修改
+            if(!Number(row.jiesuan_account)) {
+                this.options.forEach((v,i)=>{
+                    if(v.account_name == row.jiesuan_account) {
+                        row.jiesuan_account = v.zijin_account_id
+                    }
+                })
+            }
+            let data=this.$qs.stringify(row);
+            editOtgather(data).then(res=>{
+                if (res.errno == 0) {
+                    this.$message({
+                        type: "success",
+                        message: "修改成功!",
+                        duration: 1000
+                    });
+                    this.initData();
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.initData();
+                }
+            });
         },
         editDone(formName) { // 添加/编辑 单据
             this.$refs[formName].validate(valid => {
@@ -293,7 +335,7 @@ export default {
             });
         },
         reset() {
-            this.initData()
+            this.reload()
         },
         handleCurrentChange(val) {
             this.page = val;
@@ -307,7 +349,7 @@ export default {
 </script>
 <style scoped>
 .otherInList {
-  margin: 20px;
+  margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -359,7 +401,10 @@ export default {
 .el-row {
   border-top: 1px dashed #ccc;
 }
-
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
+}
 .footer {
     text-align: center;
 }

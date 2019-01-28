@@ -1,8 +1,8 @@
 <template>
     <div id="systemParameter">
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>设置</el-breadcrumb-item>
                 <el-breadcrumb-item>系统参数</el-breadcrumb-item>
@@ -456,7 +456,7 @@ export default {
 </script>
 <style scoped>
 #systemParameter{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {

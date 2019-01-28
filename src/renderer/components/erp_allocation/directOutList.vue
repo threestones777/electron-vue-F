@@ -2,12 +2,83 @@
     <div class="directOutList">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>调拨</el-breadcrumb-item>
                 <el-breadcrumb-item>直调出库单</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                <i class="el-icon-loading"></i>
+                <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                <i class="el-icon-tickets"></i>
+                <div>显示列</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
@@ -46,11 +117,12 @@
                         </el-select>
                     </el-col>
                     <el-col :span="3">
-                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search2"  size="mini"  placeholder="收货店区域">
-                        </el-input>
+                        <!-- <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search2"  size="mini"  placeholder="收货店区域"> -->
                         <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search10"  size="mini"  placeholder="商品货号"/>
                         <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search4"  size="mini"  placeholder="商品名称"/>
-                        <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%;margin-bottom:0px;" v-model="search5"  size="mini"  placeholder="备注"/>
+                        <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search5"  size="mini"  placeholder="备注"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:0px;" v-model="search9"  size="mini"  placeholder="发货人">
+                        </el-input>
                     </el-col>
                     <el-col :span="3">
                         <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search6"  size="mini"  placeholder="申请人">
@@ -58,8 +130,6 @@
                         <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search7"  size="mini"  placeholder="检验员">
                         </el-input>
                         <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search8"  size="mini"  placeholder="拣货人">
-                        </el-input>
-                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:0px;" v-model="search9"  size="mini"  placeholder="发货人">
                         </el-input>
                     </el-col>
                     <el-col :span="3">
@@ -71,14 +141,14 @@
                             :value="item.value2">
                             </el-option>
                         </el-select> 
-                        <el-select @change="chose" style="margin-bottom:5px" v-model="value3" size="small" placeholder="发货分公司">
+                        <!-- <el-select @change="chose" style="margin-bottom:5px" v-model="value3" size="small" placeholder="发货分公司">
                             <el-option
                             v-for="item in options3"
                             :key="item.value3"
                             :label="item.label"
                             :value="item.value3">
                             </el-option>
-                        </el-select> 
+                        </el-select>  -->
                         <el-select @change="chose" style="margin-bottom:5px" v-model="value6" size="small" placeholder="发货店类型">
                             <el-option
                             v-for="item in options6"
@@ -105,14 +175,14 @@
                             :value="item.value8">
                             </el-option>
                         </el-select> 
-                        <el-select @change="chose" style="margin-bottom:5px" v-model="value9" size="small" placeholder="收货分公司">
+                        <!-- <el-select @change="chose" style="margin-bottom:5px" v-model="value9" size="small" placeholder="收货分公司">
                             <el-option
                             v-for="item in options9"
                             :key="item.value9"
                             :label="item.label"
                             :value="item.value9">
                             </el-option>
-                        </el-select> 
+                        </el-select>  -->
                         <el-select @change="chose" style="margin-bottom:5px" v-model="value10" size="small" placeholder="收货店类型">
                             <el-option
                             v-for="item in options10"
@@ -131,8 +201,8 @@
                         </el-select> 
                     </el-col>
                     <el-col :span="3">
-                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
-                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                        <!-- <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button> -->
                     </el-col>
                 </el-row>				
 			</fieldset>
@@ -166,7 +236,7 @@
             :data="directOutData.filter(data =>  {
             return Object.keys(data).some(key => {
             return String(data[key]).toLowerCase().indexOf(search) > -1})})"
-            border
+            border stripe
             show-summary
             :row-style="{height:0}"  
             :cell-style="{padding:0}"
@@ -191,138 +261,155 @@
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directOutListshow.show3"
                 label="收货店名">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.to_subshop_name"/>
+                        <el-input v-model="scope.row.to_subshop_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directOutListshow.show4"
                 label="单号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.bill_sn"/>
+                        <el-input v-model="scope.row.bill_sn"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directOutListshow.show5"
                 label="单据类型">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.type"/>
+                        <el-input v-model="scope.row.type"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="directOutListshow.show6"
                 label="要求到货日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.require_daohuo_time"/>
+                        <el-input v-model="scope.row.require_daohuo_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="money"
                 align="center"
+                width="100"
                 v-if="directOutListshow.show7"
                 label="金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.money"/>
+                        <el-input v-model="scope.row.money"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="chengben_price"
                 align="center"
+                width="100"
                 v-if="directOutListshow.show8"
                 label="成本金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.chengben_price"/>
+                        <el-input v-model="scope.row.chengben_price"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="number"
                 align="center"
+                width="100"
                 v-if="directOutListshow.show9"
                 label="数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.number"/>
+                        <el-input v-model="scope.row.number"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directOutListshow.show10"
                 label="申请人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.apply_user"/>
+                        <el-input v-model="scope.row.apply_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="directOutListshow.show11"
                 label="申请时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.apply_time"/>
+                        <el-input v-model="scope.row.apply_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directOutListshow.show12"
                 label="发货人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fahuo_user"/>
+                        <el-input v-model="scope.row.fahuo_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="directOutListshow.show13"
                 label="发货时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fahuo_time"/>
+                        <el-input v-model="scope.row.fahuo_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directOutListshow.show14"
                 label="收货人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shouhuo_user"/>
+                        <el-input v-model="scope.row.shouhuo_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="directOutListshow.show15"
                 label="收货时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shouhuo_time"/>
+                        <el-input v-model="scope.row.shouhuo_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directOutListshow.show16"
                 label="拣货人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.jianhuo_user"/>
+                        <el-input v-model="scope.row.jianhuo_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directOutListshow.show17"
                 label="状态">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.status"/>
+                        <el-input v-model="scope.row.status"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="directOutListshow.show18"
                 label="备注">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.remark"/>
+                        <el-input v-model="scope.row.remark"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
+                width="100"
                 label="相关操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
@@ -410,8 +497,8 @@ export default {
                 show13:true,
                 show14:true,
                 show15:true,
-                show16:true,
-                show17:true,
+                show16:false,
+                show17:false,
                 show18:true,
             },
             value: '' ,
@@ -708,7 +795,7 @@ export default {
 <style scoped>
 .directOutList{
     text-align: center;
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -731,12 +818,9 @@ export default {
 .el-form .el-form-item .el-input {
   width: 80%;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
 }
 /* 分页器 */
 .el-pagination {

@@ -2,18 +2,93 @@
     <div class="transferApplication">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>调拨</el-breadcrumb-item>
                 <el-breadcrumb-item>调货申请</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                <i class="el-icon-loading"></i>
+                <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div>
+                <div @click="add" class="card">
+                    <i class="el-icon-plus"></i>
+                    <div>新增</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
                 <legend>查询条件</legend>
                 <el-row type="flex" justify="space-around" :gutter="10">
-                    <el-col style="text-align:left" :span="3">
+                    <el-col style="text-align:left" :span="2">
                         <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
                             <el-radio label="apply_time">申请日期</el-radio><br>
                             <el-radio label="fahuo_time">发货日期</el-radio><br>
@@ -25,37 +100,6 @@
                         <el-radio label="require_arrival_time">要求到货日期</el-radio><br>
                         <el-radio label="5">不按日期</el-radio>
                     </el-radio-group>    
-                    </el-col>
-                    <el-col :span="4">
-                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="订单号"/>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-select @change="chose" v-model="value" size="small" placeholder="申请状态" style="margin-bottom:5px;">
-                            <el-option
-                            v-for="item in options"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-select @change="chose" v-model="value1" size="small" placeholder="发货状态">
-                            <el-option
-                            v-for="item in options1"
-                            :key="item.value1"
-                            :label="item.label"
-                            :value="item.value1">
-                            </el-option>
-                        </el-select> 
-                        <el-select @change="chose" v-model="value4" size="small" placeholder="收货状态" style="margin-top:5px">
-                            <el-option
-                            v-for="item in options4"
-                            :key="item.value4"
-                            :label="item.label"
-                            :value="item.value4">
-                            </el-option>
-                        </el-select> 
                     </el-col>
                     <el-col :span="5">
                         <el-date-picker
@@ -69,14 +113,45 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期">
                         </el-date-picker>
+                       <el-select @change="chose" v-model="value4" size="small" placeholder="收货状态" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options4"
+                            :key="item.value4"
+                            :label="item.label"
+                            :value="item.value4">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                     
+                    
+                    <el-col :span="3">
+                        <el-select @change="chose" v-model="value" size="small" placeholder="申请状态" style="margin-bottom:5px;">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <el-select @change="chose" v-model="value1" size="small" placeholder="发货状态">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select> 
                     </el-col>
                     <el-col :span="3">
-                        <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
-                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="订单号"/>
                     </el-col>
+                    <el-col :span="3">
+                        <!-- <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button> -->
+                    </el-col>
+                    <el-col :span="5"></el-col>
                 </el-row>				
 			</fieldset>
-
             <!-- 按需选择列弹窗 -->
             <el-dialog
             title="按需选择列" class="chose" style="text-align:left"
@@ -155,7 +230,7 @@
                     align="center"
                     label="相关操作">
                         <template slot-scope="scope">
-                            <el-button type="text" size="small" @click="editGoods(scope.row)" icon="el-icon-edit"></el-button>
+                            <!-- <el-button type="text" size="small" @click="editGoods(scope.row)" icon="el-icon-edit"></el-button> -->
                             <el-button type="text" size="small" @click="deleteGoods(scope.row)" icon="el-icon-delete"></el-button>
                         </template>
                     </el-table-column>       
@@ -166,7 +241,7 @@
             :data="transferAppData.filter(data =>  {
             return Object.keys(data).some(key => {
             return String(data[key]).toLowerCase().indexOf(search) > -1})})"
-            border
+            border stripe
             show-summary
             :row-style="{height:0}"  
             :cell-style="{padding:0}"
@@ -210,7 +285,7 @@
                 v-if="transferApplicationshow.show5"
                 label="收货店号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.to_subshop_id"/>
+                        <el-input v-model="scope.row.to_subshop_id"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -218,15 +293,16 @@
                 v-if="transferApplicationshow.show6"
                 label="收货店名">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.to_subshop_name"/>
+                        <el-input v-model="scope.row.to_subshop_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="transferApplicationshow.show7"
                 label="单据编号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.bill_sn"/>
+                        <el-input v-model="scope.row.bill_sn"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -234,24 +310,26 @@
                 v-if="transferApplicationshow.show8"
                 label="单据类型">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.type"/>
+                        <el-input v-model="scope.row.type"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="transferApplicationshow.show9"
                 label="要求到货日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.require_arrival_time"/>
+                        <el-input v-model="scope.row.require_arrival_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="money"
                 align="center"
+                width="110"
                 v-if="transferApplicationshow.show10"
-                label="金额">
+                label="金额">   
                     <template slot-scope="scope">
-                        <input v-model="scope.row.money"/>
+                        <el-input v-model="scope.row.money"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -259,15 +337,16 @@
                 v-if="transferApplicationshow.show11"
                 label="申请人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.apply_user"/>
+                        <el-input v-model="scope.row.apply_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="transferApplicationshow.show12"
                 label="申请日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.apply_time"/>
+                        <el-input v-model="scope.row.apply_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -275,15 +354,16 @@
                 v-if="transferApplicationshow.show13"
                 label="发货人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fahuo_user"/>
+                        <el-input v-model="scope.row.fahuo_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="transferApplicationshow.show14"
                 label="发货时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fahuo_time"/>
+                        <el-input v-model="scope.row.fahuo_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -291,33 +371,36 @@
                 v-if="transferApplicationshow.show15"
                 label="收货人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shouhuo_user"/>
+                        <el-input v-model="scope.row.shouhuo_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="160"
                 v-if="transferApplicationshow.show16"
                 label="收货时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shouhuo_time"/>
+                        <el-input v-model="scope.row.shouhuo_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="110"
                 v-if="transferApplicationshow.show17"
                 label="备注">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.remark"/>
+                        <el-input v-model="scope.row.remark"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
+                width="100"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
+                        <el-button type="text" :disabled="scope.row.status!=='未审核'" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">商品详情</el-button>
-                        <el-button type="text" size="small" @click="getId(scope.row),dialogCheck = true">审核</el-button>
+                        <el-button type="text" :disabled="scope.row.status!=='未审核'" size="small" @click="getId(scope.row),dialogCheck = true">审核</el-button>
                         <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -326,8 +409,8 @@
             <el-dialog width="30%" title="订单审核" :visible.sync="dialogCheck">
                 <el-radio-group v-model="status">
                     <el-radio :label="0">未审核</el-radio>
-                    <el-radio :label="1">已审核</el-radio>
-                    <el-radio :label="2">审核驳回</el-radio>
+                    <el-radio :label="1">已通过</el-radio>
+                    <el-radio :label="2">未通过</el-radio>
                 </el-radio-group>              
                 <div slot="footer" class="dialog-footer">
                     <el-button size="small" @click="dialogCheck = false">取 消</el-button>
@@ -438,14 +521,14 @@ export default {
                 from_subshop_name:"",
                 to_subshop_id:0,
                 to_subshop_name:"",
-                require_arrival_time:new Date().getTime()/1000-86400,
+                require_arrival_time:new Date().getTime()/1000,
                 money:0,
                 apply_user:0,
-                apply_time:new Date().getTime()/1000-86400,
+                apply_time:new Date().getTime()/1000,
                 fahuo_user:0,
-                fahuo_time:new Date().getTime()/1000-86400,
+                fahuo_time:new Date().getTime()/1000,
                 shouhuo_user:0,
-                shouhuo_time:new Date().getTime()/1000-86400,
+                shouhuo_time:new Date().getTime()/1000,
             },
             formServeDetail:{},
             goodsData:[],
@@ -475,10 +558,10 @@ export default {
             label: '未审核'
             }, {
             value: '1',
-            label: '已审核'
+            label: '已通过'
             },{
             value: '2',
-            label: '审核驳回'
+            label: '未通过'
             }],  
             options1: [{
             value1: '0',
@@ -769,7 +852,7 @@ export default {
 <style scoped>
 .transferApplication{
     text-align:center;
-    margin: 20px;
+    margin: 10px;
 }
 .transferApplication .addGoods{
         float:right;
@@ -803,12 +886,9 @@ export default {
   padding: 20px 0;
   text-align: right;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
 }
 /* 新增弹出框 & 详情弹出框*/
 .main-table>>>.el-dialog__body {

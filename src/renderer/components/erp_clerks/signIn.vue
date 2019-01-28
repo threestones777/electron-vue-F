@@ -13,18 +13,24 @@
             <!-- 搜索 -->
             <el-form :inline="true" :model="formServe" class="demo-form-inline">
                 <el-form-item label="">
-                    <el-input v-model="formServe.name" placeholder="名称"></el-input>
+                    <el-input @input="chose" size="small" v-model="formServe.name" placeholder="人" prefix-icon="el-icon-search"></el-input>
                 </el-form-item>
                 <el-form-item label="">
-                    <el-input type="tel" v-model="formServe.marks" placeholder="编号"></el-input>
+                    <el-date-picker
+                    v-model="formServe.date"
+                    type="date" @change="chose" size="small"
+                    placeholder="选择日期"
+                    format="yyyy 年 MM 月 dd 日"
+                    value-format="yyyy-MM-dd">
+                    </el-date-picker>
                 </el-form-item>
-                <el-form-item label="">
-                    <el-input type="tel" v-model="formServe.marks" placeholder="备注信息"></el-input>
-                </el-form-item>
+                <!-- <el-form-item label="">
+                    <el-input size="small" type="tel" v-model="formServe.marks" placeholder="备注信息" prefix-icon="el-icon-search"></el-input>
+                </el-form-item> -->
                 <el-form-item>
-                    <el-button type="success" size="small" @click="serveSearch">搜索</el-button>
-                    <el-button type="success" size="small" @click="dialogServeAdd = true">新增</el-button>
-                    <el-button type="success" size="small" @click="reset">刷新</el-button>
+                    <!-- <el-button type="primary" size="small" @click="serveSearch">搜索</el-button> -->
+                    <el-button type="primary" size="small" @click="add">签到</el-button>
+                    <el-button type="primary" size="small" @click="reset">刷新</el-button>
                 </el-form-item>
             </el-form>
             <!-- 新增弹出框 -->
@@ -72,27 +78,31 @@
             border
             style="width: 100%">
                 <el-table-column
-                prop="name"
+                prop="sign_in"
                 align="center"
-                label="名称1">
+                label="签到日期">
                 </el-table-column>
                 <el-table-column
-                prop="name"
+                prop="format_sign_in"
                 align="center"
-                label="名称2">
+                label="签到时间">
                 </el-table-column>
                 <el-table-column
-                prop="name"
+                prop="sign_back"
                 align="center"
-                label="名称3"
-                width="180">
+                label="签退日期">
                 </el-table-column>
                 <el-table-column
-                prop="name"
+                prop="format_sign_back"
                 align="center"
-                label="备注信息">
+                label="签退时间">
                 </el-table-column>
                 <el-table-column
+                prop="clerk_name"
+                align="center"
+                label="签到人">
+                </el-table-column>
+                <!-- <el-table-column
                 fixed="right"
                 align="center"
                 label="相关操作">
@@ -100,28 +110,30 @@
                         <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
                         <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, Data)">删除</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <!-- 分页器 -->
             <el-pagination
                 @current-change="handleCurrentChange"
-                layout="prev, pager, next,jumper"
-                :page-count="pages">
+                layout="total,prev, pager, next,jumper"
+                :total="total">
             </el-pagination>
         </div>
     </div>
 </template>
 <script>
-import axios from 'axios' ;
+import {signIn,signList} from '../../api/api' ;
 export default {
+    inject:['reload'],
     data() {
         return {
-            pages:1,
+            page:1,
+            total:1,
             dialogServeAdd:false,
             dialogServeDetail:false,
             formServe:{
                 name:"",
-                marks:""
+                date:""
             },
             formServeAdd:{
                 name:""
@@ -129,17 +141,55 @@ export default {
             formServeDetail:{
                 name:""
             },
-            Data:[{
-                name:'text'
-            }],
+            Data:[],
         }
     },
     methods:{
+        init(page){
+            let data=this.$qs.stringify({
+                page:page,
+                page_size:10,
+            });
+            this.data(data);
+        },
+        data(data){
+            signList(data).then(res=>{
+                this.total = Number(res.data.record_count);
+                for(let i=0;i<res.data.sign_list.length;i++){
+                    res.data.sign_list[i].sign_in=new Date(res.data.sign_list[i].sign_in*1000).toLocaleDateString().replace(/\//g,'-');
+                    res.data.sign_list[i].sign_back=new Date(res.data.sign_list[i].sign_back*1000).toLocaleDateString().replace(/\//g,'-');
+                    console.log(res.data.sign_list[i].sign_in);
+                };
+                this.Data=res.data.sign_list;
+            });  
+        },
+        chose(){
+            let data=this.$qs.stringify({
+                page:1,
+                page_size:10,
+                clerk_name:this.formServe.name,
+                sign_in:this.formServe.date,
+            });
+            this.data(data);
+        },
+        add(){//--------------------签到
+            signIn().then(res=>{
+                console.log(res.data);
+                if(res.errno==0){
+                    this.$message({
+                        type: "success",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.init(1);
+                }
+            });
+        },
         serveSearch() {
             console.log("开启搜索");
         },        
         reset() {
-            console.log("刷新");
+            this.reload();
         },
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);          
@@ -152,7 +202,7 @@ export default {
         }
     },
     mounted: function () {  
-        console.log("加载成功");     
+           this.init(1);
     }
 }
 </script>

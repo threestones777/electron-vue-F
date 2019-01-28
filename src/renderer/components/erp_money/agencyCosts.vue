@@ -12,7 +12,7 @@
 
 
         <!-- 搜索条件区域 -->
-        <div class="search-area">
+        <!-- <div class="search-area">
         <fieldset>
             <legend>查询条件</legend>
             <div class="out-box">
@@ -80,10 +80,104 @@
             </div>
             </div>
         </fieldset>
-        </div>
+        </div> -->
 
 
         <div class="main-table">
+            <fieldset style="margin:10px 0;border-color: #fff;">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group v-model="radio" style="margin-top:5px;">
+                            <el-radio :label="1">修改日期</el-radio><br>
+                            <el-radio :label="2">审核日期</el-radio><br>
+                            <el-radio :label="3">开始日期</el-radio>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group v-model="radio" style="margin-top:5px;">
+                            <el-radio :label="4">结束日期</el-radio><br>
+                            <el-radio :label="5">不按日期</el-radio><br>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col :span="5">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-bottom:5px"
+                        type="daterange"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                        <el-select v-model="value1" size="small" placeholder="状态">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="3">
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="单号"/>
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="合同号"/>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-select v-model="value" size="small" placeholder="费用描述">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select> 
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-top:5px;" v-model="search"  size="mini"  placeholder="机构"/>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-select v-model="value3" size="small" placeholder="分公司">
+                            <el-option
+                            v-for="item in options3"
+                            :key="item.value3"
+                            :label="item.label"
+                            :value="item.value3">
+                            </el-option>
+                        </el-select> 
+                        <el-select v-model="value2" size="small" placeholder="分店" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value2"
+                            :label="item.label"
+                            :value="item.value2">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                </el-row>
+            </fieldset>
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" class="chose" style="text-align:left"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="200px">
+                <el-checkbox v-model="agencyCostshow.show1">单号</el-checkbox><br>
+                <el-checkbox v-model="agencyCostshow.show2">店名</el-checkbox><br>
+                <el-checkbox v-model="agencyCostshow.show3">费用描述</el-checkbox><br>
+                <el-checkbox v-model="agencyCostshow.show4">合同号</el-checkbox><br>
+                <el-checkbox v-model="agencyCostshow.show5">开始日期</el-checkbox><br>
+                <el-checkbox v-model="agencyCostshow.show6">结束日期</el-checkbox><br>
+                <el-checkbox v-model="agencyCostshow.show7">状态</el-checkbox><br>
+                <el-checkbox v-model="agencyCostshow.show8">修改日期</el-checkbox><br>
+                <el-checkbox v-model="agencyCostshow.show9">修改人</el-checkbox><br>
+                <el-checkbox v-model="agencyCostshow.show10">审核时间</el-checkbox><br>
+                <el-checkbox v-model="agencyCostshow.show11">备注</el-checkbox><br><br>
+            </el-dialog>
             <!-- 搜索 -->
             <!-- <el-form :inline="true" :model="formServe" class="demo-form-inline">
                 <el-form-item>
@@ -110,7 +204,7 @@
                 </div>
             </el-dialog>
             <!-- 详情弹出框 -->
-            <!-- <el-dialog width="810px" title="机构费用" :visible.sync="dialogServeDetail">
+            <el-dialog width="810px" title="机构费用" :visible.sync="dialogServeDetail">
                 <el-form :disabled="formServeDetail.status=='已审核'" label-position="left" ref="form" :model="formServeDetail">
                     <el-row>
                         <el-col :span="8">
@@ -183,7 +277,7 @@
                     <el-button	size="small" @click="dialogServeDetail = false">取 消</el-button>
                     <el-button	size="small" type="primary" @click="editDone('form')">保存</el-button>
                 </div>
-            </el-dialog> -->
+            </el-dialog>
 
 
             <!-- 显示列和排序模块 -->
@@ -263,56 +357,67 @@
                 <el-table-column
                 prop="bill_sn"
                 align="center"
+                v-if="agencyCostshow.show1"
                 label="单号">
                 </el-table-column>
                 <el-table-column
                 prop="subshop_name"
                 align="center"
+                v-if="agencyCostshow.show2"
                 label="店名">
                 </el-table-column>
                 <el-table-column
                 prop="fee_desc"
                 align="center"
+                v-if="agencyCostshow.show3"
                 label="费用描述">
                 </el-table-column>
                 <el-table-column
                 prop="hetong_sn"
                 align="center"
+                v-if="agencyCostshow.show4"
                 label="合同号">
                 </el-table-column>
                 <el-table-column
                 prop="start_time"
                 align="center"
+                v-if="agencyCostshow.show5"
                 label="开始日期">
                 </el-table-column>
                 <el-table-column
                 prop="end_time"
                 align="center"
+                v-if="agencyCostshow.show6"
                 label="结束日期">
                 </el-table-column>
                 <el-table-column
                 prop="status"
                 align="center"
+                v-if="agencyCostshow.show7"
                 label="状态">
                 </el-table-column>
                 <el-table-column
                 prop="add_time"
                 align="center"
+                v-if="agencyCostshow.show8"
                 label="修改日期">
                 </el-table-column>
                 <el-table-column
                 prop="admin_name"
                 align="center"
+                v-if="agencyCostshow.show9"
                 label="修改人">
                 </el-table-column>
                 <el-table-column
                 prop="check_time"
                 align="center"
+                v-if="agencyCostshow.show10"
                 label="审核时间">
                 </el-table-column>
                 <el-table-column
                 prop="remark"
                 align="center"
+                v-if="agencyCostshow.show11"
                 label="备注">
                 </el-table-column>
                 <el-table-column
@@ -321,9 +426,9 @@
                 label="相关操作"
                 width="90">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button  :disabled="scope.row.status=='已审核'" type="text" size="small" @click="showDetails(scope.row),dialogServeDetail=true">保存修改</el-button>
                         <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
-                        <el-button v-show="scope.row.status!='已审核'" type="text" size="small" @click.native.prevent="checkRow(scope.row)">审核</el-button>
+                        <el-button :disabled="scope.row.status=='已审核'" type="text" size="small" @click.native.prevent="checkRow(scope.row)">审核</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -383,6 +488,20 @@ export default {
             ],
             dialogServeAdd:false,
             dialogServeDetail:false,
+            dialogShow:false,
+            agencyCostshow:{
+                show1:true,
+                show2:true,
+                show3:true,
+                show4:true,
+                show5:true,
+                show6:true,
+                show7:true,
+                show8:true,
+                show9:true,
+                show10:true,
+                show11:true,
+            },
             keywords:'',
             formServe:{
                 name:"",
@@ -396,9 +515,51 @@ export default {
             },
             Data:[],
             rule: [{ required: true, message: "不能为空" }],
+            search:'',
+            search3:['2017-7-7','2019-9-9'],
+            radio:4,
+            value: '' ,
+            value1: '' ,
+            value2: '' ,
+            value3: '' ,
+            value4: '' ,
+            options: [{
+            value: '选项1',
+            label: '未审核'
+            }, {
+            value: '选项2',
+            label: '已审核'
+            },],
+            options1: [{
+            value1: '选项1',
+            label: '未审核'
+            }, {
+            value1: '选项2',
+            label: '已审核'
+            },],
+            options2: [{
+            value2: '选项1',
+            label: '0分店'
+            }, {
+            value2: '选项2',
+            label: '1分店'
+            },],
+            options3: [{
+            value3: '选项1',
+            label: '分公司1'
+            }, {
+            value3: '选项2',
+            label: '分公司2'
+            },],
         }
     },
     methods:{
+        handleClose(done){
+            done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.agencyCost=this.agencyCostshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+        },
         changeColumn() {
         this.columnData = this.columnData;
         console.log(this.columnData);
@@ -430,7 +591,26 @@ export default {
                 this.$refs.form.resetFields();
             }
             this.dialogServeDetail = true;
-            },
+        },
+        edit(row){
+            let data=this.$qs.stringify(row);
+            editAgencycosts(data).then(res=>{
+                if (res.errno == 0) {
+                    this.$message({
+                        type: "success",
+                        message: "修改成功!",
+                        duration: 1000
+                    });
+                    this.initData();
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                }
+            });
+        },
         editDone(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
@@ -488,7 +668,7 @@ export default {
                 }
             });
         },
-        search() {
+        /* search() {
             let data=this.$qs.stringify({
                 page:1,
                 page_size:10,
@@ -502,7 +682,7 @@ export default {
                     this.loading = false
                 }
             })
-        },        
+        },  */       
         reset() {
             this.initData()
         },
@@ -582,6 +762,15 @@ export default {
         }
     },
     created() {
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.agencyCost!==undefined){
+                this.agencyCostshow=erpTableSetting.agencyCost;
+            }
+        }else{
+            console.log("no");
+        };
         this.initData()
     }
 }
@@ -626,10 +815,10 @@ fieldset {
   width: 220px;
 }
 .content-r,
-.el-form {
+/* .el-form {
   display: flex;
   align-items: center;
-}
+} */
 .content-r .el-form {
   flex-wrap: wrap;
   flex: 1;
@@ -655,9 +844,9 @@ fieldset {
 .el-date-editor {
   width: 100% !important;
 }
-.el-radio-group {
+/* .el-radio-group {
   display: flex;
-}
+} */
 .date-radio .el-radio {
   margin-left: 0;
   line-height: 24px;
@@ -738,8 +927,9 @@ fieldset {
 .main-table >>> .el-dialog__body .el-input-number {
   width: 100%;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 
 </style>

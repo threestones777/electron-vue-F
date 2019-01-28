@@ -2,12 +2,87 @@
   <div class="barCodeManage">
     <!-- 头部面包屑 -->
     <div class="main-header">
-      <h3>温州美联 管理中心</h3>
-      <el-breadcrumb separator-class="el-icon-arrow-right">
+      <!-- <h3>温州美联 管理中心</h3> -->
+      <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
         <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
         <el-breadcrumb-item>设置</el-breadcrumb-item>
         <el-breadcrumb-item>条码管理</el-breadcrumb-item>
       </el-breadcrumb>
+      <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <!-- <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div> -->
+                <div @click="add" class="card">
+                    <i class="el-icon-plus"></i>
+                    <div>新增</div>
+                </div>
+      </div>
     </div>
     <div class="main-table">
       <!-- 账户搜索 -->
@@ -19,13 +94,13 @@
           <el-input size="small" clearable v-model="formServe.taypes" placeholder="条码类型"></el-input>
         </el-form-item> -->
         <el-form-item>
-          <el-input placeholder="请输入条码内容" @input="search" v-model="keywords" style="width:50%;margin-right:10px" size="small">
+          <el-input placeholder="请输入商品名称" @input="search" v-model="keywords" style="width:70%;margin-right:10px" size="small">
             <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
         </el-input>
-          <el-button type="primary" size="small" @click="add">新增</el-button>
+          <!-- <el-button type="primary" size="small" @click="add">新增</el-button> -->
           <!-- <el-button type="primary" size="small">导入</el-button>
           <el-button type="primary" size="small">导出</el-button> -->
-          <el-button type="primary" size="small" @click="reset">刷新</el-button>
+          <!-- <el-button type="primary" size="small" @click="reset">刷新</el-button> -->
         </el-form-item>
       </el-form>
       <!-- 新增条码弹出框 -->
@@ -48,7 +123,7 @@
       </el-dialog>
       <!-- 图像弹出框 -->
       <el-dialog id="dialog" width="250px" title="条码图像" :visible.sync="dialogPic">
-        <div id="qrcode" ref="qrcode"></div>
+        <div id="qrcode" ref="qrcode"></div><br><br>
       </el-dialog>
       <!-- 服务详情弹出框 -->
       <el-dialog width="450px" title="分类详情" :visible.sync="dialogServeDetail">
@@ -114,31 +189,40 @@
             </el-pagination>
             <el-button style="float:right;margin-bottom:5px;" type="primary" @click="getDone" size="small">确认</el-button>
       </el-dialog>
-
-
       <!-- 条码管理表格 -->
       <el-table
         :data="barCodeData"
-        border
+        border stripe
         :row-style="{height:0}"
-        :cell-style="{padding:0}"
+        :cell-style="{padding:7}"
         :header-row-style="{height:0}"
         :header-cell-style="{padding:0}"
         v-loading="loading"
-        style="width: 100%"
-      >
-        <el-table-column prop="goods_name" align="center" show-overflow-tooltip label="商品名"></el-table-column>
-        <el-table-column prop="bar_code" align="center" label="条码内容"></el-table-column>
-        <el-table-column prop="taypes" align="center" label="条码属性值"></el-table-column>
-        <el-table-column prop="goods_id" align="center" label="备注信息"></el-table-column>
-        <el-table-column fixed="right" align="center" label="相关操作" width="240">
+        style="width: 100%">
+        <el-table-column 
+        prop="goods_name" 
+        align="center" 
+        show-overflow-tooltip 
+        label="商品名">
+        </el-table-column>
+        <el-table-column 
+        prop="bar_code" 
+        align="center" 
+        label="条码内容">
+        </el-table-column>
+        <el-table-column 
+        prop="taypes" 
+        align="center" 
+        label="条码属性值">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="showCode(scope.row)">图像</el-button>
-            <el-button
-              type="text"
-              size="small"
-              @click="emitDetail(scope.row),dialogServeDetail = true"
-            >详情</el-button>
+            <el-input v-model="scope.row.taypes" />
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" align="center" label="相关操作">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="showCode(scope.row)">图像</el-button><!-- 
+            <el-button type="text" size="small" @click="emitDetail(scope.row),dialogServeDetail = true">详情</el-button> -->
+            <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
             <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -148,7 +232,6 @@
         @current-change="handleCurrentChange"
         layout="total, prev, pager, next,jumper"
         :total="total"
-        :page-size="page_size"
       ></el-pagination>
     </div>
   </div>
@@ -263,6 +346,26 @@ export default {
             this.$refs.form.resetFields();
         }
         this.dialogServeDetail = true;
+    },
+    edit(row){//----------------------保存修改
+      let data=this.$qs.stringify(row);
+      editCode(data).then(res=>{
+        if (res.errno == 0) {
+          this.$message({
+            type: "success",
+            message: "修改成功!",
+            duration: 1000
+          });
+          this.initData();
+        } else {
+          this.$message({
+            type: "error",
+            message: res.errmsg,
+            duration: 1000
+          });
+          this.initData();
+        }
+      });
     },
     editDone(formName) { // 添加/编辑 单据
         this.$refs[formName].validate(valid => {
@@ -387,7 +490,7 @@ export default {
 </script>
 <style scoped>
 .barCodeManage {
-  margin: 20px;
+  margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -411,7 +514,10 @@ export default {
   padding: 10px 0;
   text-align: right;
 }
-
+.el-table .el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
+}
 .main-table >>> .el-dialog #qrcode img {
   margin: 10px auto;
 }

@@ -2,12 +2,87 @@
   <div class="assistAttribute">
     <!-- 头部面包屑 -->
     <div class="main-header">
-      <h3>温州美联 管理中心</h3>
-      <el-breadcrumb separator-class="el-icon-arrow-right">
+      <!-- <h3>温州美联 管理中心</h3> -->
+      <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
         <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
         <el-breadcrumb-item>设置</el-breadcrumb-item>
         <el-breadcrumb-item>辅助属性</el-breadcrumb-item>
       </el-breadcrumb>
+      <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <!-- <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div> -->
+                <div @click="add" class="card">
+                    <i class="el-icon-plus"></i>
+                    <div>新增</div>
+                </div>
+      </div>
     </div>
     <div class="main-table">
       <!-- 属性搜索 -->
@@ -20,8 +95,8 @@
         </el-form-item>
         <el-form-item>
           <!-- <el-button type="primary" size="small" @click="serveSearch">搜索</el-button> -->
-          <el-button type="primary" size="small" @click="add">新增</el-button>
-          <el-button type="primary" size="small" @click="reset">刷新</el-button>
+          <!-- <el-button type="primary" size="small" @click="add">新增</el-button>
+          <el-button type="primary" size="small" @click="reset">刷新</el-button> -->
         </el-form-item>
       </el-form>
       <!-- 新增属性弹出框 -->
@@ -149,35 +224,85 @@
       <!-- 属性管理表格 -->
       <el-table
         :data="AttributeData"
-        border
+        border stripe
         :row-style="{height:0}"
-        :cell-style="{padding:0}"
+        :cell-style="{padding:7}"
         :header-row-style="{height:0}"
         :header-cell-style="{padding:0}"
         v-loading="loading"
-        style="width: 100%"
-      >
-        <el-table-column prop="attr_name" align="center" label="属性名称"></el-table-column>
-        <el-table-column prop="cat_name" align="center" label="分类名称"></el-table-column>
-        <el-table-column prop="attr_type" align="center" label="是否多选">
-          <template slot-scope="scope">{{scope.row.attr_type==0?'否':'是'}}</template>
+        style="width: 100%">
+        <el-table-column 
+        prop="attr_name" 
+        align="center" 
+        label="属性名称">
         </el-table-column>
-        <el-table-column prop="attr_index" align="center" :formatter="formatter" label="是否可检索"></el-table-column>
-        <el-table-column prop="is_linked" align="center" label="是否关联">
-          <template slot-scope="scope">{{scope.row.is_linked==0?'不关联':'关联'}}</template>
+        <el-table-column 
+        prop="cat_name" 
+        align="center" 
+        label="分类名称">
         </el-table-column>
-        <el-table-column prop="attr_input_type_desc" align="center" label="录入方式"></el-table-column>
-        <el-table-column fixed="right" align="center" label="相关操作" width="90">
+        <el-table-column 
+        prop="attr_type" 
+        align="center" 
+        label="是否多选">
           <template slot-scope="scope">
-            <el-button
-              type="text"
-              size="small"
-              @click="showDetails(scope.row),dialogServeDetail = true"
-            >详情</el-button>
-            <el-button
-              type="text"
-              size="small"
-              @click.native.prevent="deleteRow(scope.$index, AttributeData)"
+            <el-checkbox v-model="scope.row.attr_type" true-label="1" false-label="0"/>
+          </template>
+        </el-table-column>
+        <el-table-column 
+        prop="attr_index" 
+        align="center" 
+        label="是否可检索">
+          <template slot-scope="scope">
+            <el-select v-model="scope.row.attr_index" placeholder="请选择">
+            <el-option
+              v-for="item in options2"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column 
+        prop="is_linked" 
+        align="center" 
+        label="是否关联">
+          <template slot-scope="scope">
+            <el-checkbox v-model="scope.row.is_linked" true-label="1" false-label="0"/>
+          </template>
+        </el-table-column>
+        <el-table-column 
+        prop="sort_order" 
+        align="center" 
+        label="排序">
+          <template slot-scope="scope">
+            <el-checkbox v-model="scope.row.sort_order" true-label="1" false-label="0"/>
+          </template>
+        </el-table-column>
+        <el-table-column 
+        prop="attr_input_type" 
+        align="center" 
+        label="录入方式">
+          <template slot-scope="scope">
+            <el-select v-model="scope.row.attr_input_type" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+          </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column 
+        fixed="right" 
+        align="center" 
+        label="相关操作">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
+            <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+            <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, AttributeData)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -187,7 +312,6 @@
         @current-change="handleCurrentChange"
         layout="total, prev, pager, next,jumper"
         :total="total"
-        :page-size="page_size"
       ></el-pagination>
     </div>
   </div>
@@ -214,6 +338,8 @@ export default {
       dialogServeDetail: false,
       attr_name: "",
       cat_name: "",
+      value:"",
+      value2:"",
       formServe: {},
       dataTree:[], // 分类树状图
       formServeAdd: {},
@@ -238,8 +364,7 @@ export default {
           label: "多行文本输入"
         }
       ],
-      options2: [
-        // 检索方式
+      options2: [//-------------- 检索方式
         {
           value: "0",
           label: "无需检索"
@@ -308,6 +433,25 @@ export default {
             this.$refs.form.resetFields();
         }
         this.dialogServeDetail = true;
+    },
+    edit(row){//-----------------------保存修改
+      let data=this.$qs.stringify(row);
+      editAssistAttribute(data).then(res=>{
+        if (res.errno == 0) {
+          this.$message({
+            type: "success",
+            message: "修改成功!",
+            duration: 1000
+          });
+          this.initData();
+        } else {
+          this.$message({
+            type: "error",
+            message: res.errmsg,
+            duration: 1000
+          });
+        }
+      });
     },
     editDone(formName) {
         this.$refs[formName].validate(valid => {
@@ -443,7 +587,7 @@ export default {
 </script>
 <style scoped>
 .assistAttribute {
-  margin: 20px;
+  margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {

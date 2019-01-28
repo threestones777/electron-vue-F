@@ -2,21 +2,96 @@
     <div class="customerManage">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>设置</el-breadcrumb-item>
                 <el-breadcrumb-item>客户管理</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <!-- <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div> -->
+                <div @click="dialogCustomerAdd = true" class="card">
+                    <i class="el-icon-plus"></i>
+                    <div>新增</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <el-form :inline="true" :model="formCustomer" class="demo-form-inline">
                 <el-form-item>
                     <!-- <el-button type="primary" size="small" @click="customerSearch">搜索</el-button> -->
-                    <el-button type="primary" size="small" @click="dialogCustomerAdd = true">新增</el-button>
+                    <!-- <el-button type="primary" size="small" @click="dialogCustomerAdd = true">新增</el-button> -->
                     <!-- <el-button type="primary" size="small">导入</el-button>
                     <el-button type="primary" size="small">导出</el-button> -->
-                    <el-button type="primary" size="small" @click="reset">刷 新</el-button>
+                    <!-- <el-button type="primary" size="small" @click="reset">刷 新</el-button> -->
                 </el-form-item>
             </el-form>
             <!-- 新增客户弹出框 -->
@@ -29,18 +104,6 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
-                            <el-form-item label="联系人">
-                                <el-input v-model="formCustomerAdd.contacts" autocomplete="off"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-form-item label="客户编号">
-                                <el-input v-model="formCustomerAdd.user_id" autocomplete="off"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="8">
                             <el-form-item label="手机号">
                                 <el-input v-model="formCustomerAdd.mobile_phone" autocomplete="off"></el-input>
                             </el-form-item>
@@ -50,18 +113,25 @@
                                 <el-input v-model="formCustomerAdd.birthday" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
+                    </el-row>
+                    <el-row>
                         <el-col :span="8">
                             <el-form-item label="客户地址">
                                 <el-input v-model="formCustomerAdd.address" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
-                    </el-row>
-                    <el-row>
                         <el-col :span="8">
                             <el-form-item label="客户积分">
-                                <el-input v-model="formCustomerAdd.rank_points" autocomplete="off"></el-input>
+                                <el-input v-model="formCustomerAdd.pay_points" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="邮箱地址">
+                                <el-input v-model="formCustomerAdd.email" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
                         <el-col :span="8">
                             <el-form-item label="开户名">
                                 <el-input v-model="formCustomerAdd.bank_username" autocomplete="off"></el-input>
@@ -72,13 +142,13 @@
                                 <el-input v-model="formCustomerAdd.bank_name" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
-                    </el-row>
-                    <el-row>
                         <el-col :span="8">
                             <el-form-item label="银行账户">
                                 <el-input v-model="formCustomerAdd.bank_cardnum" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
+                    </el-row>
+                    <el-row>
                         <el-col :span="8">
                             <el-form-item label="税号">
                                 <el-input v-model="formCustomerAdd.duty_number" autocomplete="off"></el-input>
@@ -89,19 +159,13 @@
                                 <el-input v-model="formCustomerAdd.social" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
-                    </el-row>
-                    <el-row>
                         <el-col :span="8">
-                            <el-form-item label="邮箱地址">
-                                <el-input v-model="formCustomerAdd.email" autocomplete="off"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="16">
                             <el-form-item label="备注信息">
                                 <el-input v-model="formCustomerAdd.remark" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
+                    <el-row></el-row>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button	size="small" @click="dialogCustomerAdd = false">取 消</el-button>
@@ -109,7 +173,7 @@
                 </div>
             </el-dialog>
             <!-- 客户详情弹出框 -->
-            <el-dialog width="760px" title="客户信息编辑" :visible.sync="dialogCustomerDetail">
+            <el-dialog width="770px" title="客户信息编辑" :visible.sync="dialogCustomerDetail">
                 <el-form label-position="right" :model="formCustomerDetail" :inline="true" class="demo-form-inline">
                     <el-row>
                         <el-col :span="8">
@@ -117,18 +181,6 @@
                                 <el-input v-model="formCustomerDetail.user_name" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="8">
-                            <el-form-item label="联系人">
-                                <el-input v-model="formCustomerDetail.contacts" autocomplete="off"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-form-item label="客户编号">
-                                <el-input v-model="formCustomerDetail.user_id" autocomplete="off"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
                         <el-col :span="8">
                             <el-form-item label="手机号">
                                 <el-input v-model="formCustomerDetail.mobile_phone" autocomplete="off"></el-input>
@@ -139,6 +191,18 @@
                                 <el-input v-model="formCustomerDetail.birthday" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="8">
+                            <el-form-item label="邮箱地址">
+                                <el-input v-model="formCustomerDetail.email" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="客户积分">
+                                <el-input v-model="formCustomerDetail.pay_points" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </el-col>
                         <el-col :span="8">
                             <el-form-item label="客户地址">
                                 <el-input v-model="formCustomerDetail.address" autocomplete="off"></el-input>
@@ -146,11 +210,6 @@
                         </el-col>
                     </el-row>
                     <el-row>
-                        <el-col :span="8">
-                            <el-form-item label="客户积分">
-                                <el-input v-model="formCustomerDetail.rank_points" autocomplete="off"></el-input>
-                            </el-form-item>
-                        </el-col>
                         <el-col :span="8">
                             <el-form-item label="开户名">
                                 <el-input v-model="formCustomerDetail.bank_username" autocomplete="off"></el-input>
@@ -161,13 +220,13 @@
                                 <el-input v-model="formCustomerDetail.bank_name" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
-                    </el-row>
-                    <el-row>
                         <el-col :span="8">
                             <el-form-item label="银行账户">
                                 <el-input v-model="formCustomerDetail.bank_cardnum" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
+                    </el-row>
+                    <el-row>
                         <el-col :span="8">
                             <el-form-item label="税号">
                                 <el-input v-model="formCustomerDetail.duty_number" autocomplete="off"></el-input>
@@ -178,19 +237,13 @@
                                 <el-input v-model="formCustomerDetail.social" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
-                    </el-row>
-                    <el-row>
                         <el-col :span="8">
-                            <el-form-item label="邮箱地址">
-                                <el-input v-model="formCustomerDetail.email" autocomplete="off"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="16">
                             <el-form-item label="备注信息">
-                                <el-input v-model="formCustomerDetail.remark" autocomplete="off"></el-input>
+                                <el-input v-model="formCustomerAdd.remark" autocomplete="off"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
+                    <el-row></el-row>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button	size="small" @click="dialogCustomerDetail = false">取 消</el-button>
@@ -302,7 +355,13 @@
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             v-loading="loading"
+            @row-click="getRow"
             style="width: 100%">
+                <el-table-column
+                prop="subsite_name"
+                align="center"
+                label="分站">
+                </el-table-column>
                 <el-table-column
                 prop="user_name"
                 align="center"
@@ -311,14 +370,51 @@
                 <el-table-column
                 prop="user_id"
                 align="center"
-                label="客户编号"
-                width="180">
+                label="客户编号">
+                </el-table-column>
+                <el-table-column
+                prop="real_name"
+                align="center"
+                label="真实姓名">
+                </el-table-column>
+                <el-table-column
+                prop="consignee"
+                align="center"
+                label="收件人">
+                </el-table-column>
+                <el-table-column
+                prop="user_money"
+                align="center"
+                label="客户余额">
+                </el-table-column>
+                <el-table-column
+                prop="frozen_money"
+                align="center"
+                label="冻结余额">
+                </el-table-column>
+                <el-table-column
+                prop="rank_points"
+                align="center"
+                label="等级积分">
+                </el-table-column>
+                <el-table-column
+                prop="pay_points"
+                align="center"
+                label="使用积分">
+                </el-table-column>
+                <el-table-column
+                prop="reg_time"
+                align="center"
+                label="注册时间">
                 </el-table-column>
                 <el-table-column
                 prop="mobile_phone"
                 align="center"
-                label="手机号"
-                width="180">
+                width="100"
+                label="手机号">
+                    <template slot-scope="scope">
+                        <el-button @click="openSendMsg" type="text" size="small">{{scope.row.mobile_phone}}</el-button>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="email"
@@ -328,8 +424,8 @@
                 <el-table-column
                 fixed="right"
                 align="center"
-                label="相关操作"
-                width="240">
+                wihth="120"
+                label="相关操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="showCustomerDetails(scope.row.user_id),dialogCustomerDetail = true">客户详情</el-button>
                         <!-- <el-button type="text" size="small" @click="dialogIntegralDetail = true">积分详情</el-button>
@@ -338,6 +434,18 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <!-- 发送短信弹窗 -->
+            <el-dialog
+            title="Send Message"
+            :visible.sync="dialogSendMsg"
+            width="430px">
+            将向<span style="color:red">{{mobilePhone}}</span>发送短信，短信内容如下：<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您有新订单，收货人：<span style="color:green">{{user_name}}</span>,联系方式：<span style="color:green">{{mobile_number}}</span>,请您及时查收！
+            <span slot="footer" class="dialog-footer">
+                <el-button size="small" @click="dialogSendMsg = false">取 消</el-button>
+                <el-button size="small" type="primary" @click="sendMsg">发 送</el-button>
+            </span>
+            </el-dialog>
             <!-- 分页器 -->
             <el-pagination
                 @current-change="handleCurrentChange"
@@ -350,13 +458,18 @@
 </template>
 <script>
 import { getcustomerList, getcustomerDetail,getcustomerEd,getcustomerRmv,getcustomerAdd} from "../../api/api";
+import { sendMsg} from "../../api/apiW";
 export default {
+    inject: ['reload'],
   data() {
     return {
       page: 1,
       page_size: 10,
       total: 0,
       loading: true,
+      user_id:"",
+      user_name:"",
+      mobile_number:"",
       customerTableData: [],
       integralTableData: [
         // 积分详情内表格数据
@@ -381,6 +494,9 @@ export default {
       dialogCustomerDetail: false, // 客户详情弹出框
       dialogIntegralDetail: false, //积分详情弹出框
       dialogIntegralOperate: false, // 积分操作弹出框
+      dialogSendMsg:false,
+      mobilePhone:"",
+      msgContent:'',
       formLabelWidth: "120px",
       formCustomer: {
         // 客户搜索模块表单数据
@@ -440,6 +556,36 @@ export default {
     };
   },
   methods: {
+        getRow(row){/* 
+            console.log(row.user_id);
+            console.log(row.user_name);
+            console.log(row.mobile_phone); */
+            this.user_id=row.user_id;
+            this.user_name=row.user_name;
+            this.mobile_number=row.mobile_phone;
+        },
+        openSendMsg(e){//-----------------------打开发送短信弹窗
+            console.log(e);
+            console.log(e.toElement.innerText);
+            if(e.toElement.innerText==""){
+                alert("手机号不能为空");
+            }else{
+                this.dialogSendMsg=true;
+                this.mobilePhone=e.toElement.innerText;
+            };
+        },
+        sendMsg(){//-----------------发送短信
+            this.dialogSendMsg = false;
+            let data=this.$qs.stringify({
+                user_id:this.user_id,
+                user_name:this.user_name,
+                mobile_number:this.mobile_number,
+            });
+            sendMsg(data).then(res=>{
+                console.log(res);
+            });
+            //console.log("发送成功");
+        },
         add(){
             let data =this.$qs.stringify(this.formCustomerAdd)
             getcustomerAdd(data).then(res=>{
@@ -447,13 +593,13 @@ export default {
                 if(res.errno==0){
                     this.$alert(res.errmsg,{
                         callback:action=>{
-                            this.formCustomerAdd={};
+                            //this.formCustomerAdd={};
                             this.reload();  
                         }
                     })
                 }else{
                     this.$alert(res.errmsg)
-                    this.formCustomerAdd={};
+                    //this.formCustomerAdd={};
                 }
             });
         },
@@ -462,18 +608,23 @@ export default {
             getcustomerEd(data).then(res=>{
                 console.log(res);
                 if(res.errno==0){
-                    this.$alert(res.errmsg,{
-                        callback:action=>{
-                            this.initData()
-                        }
-                    })
+                    this.$message({
+                        type: "success",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
+                    this.initData()
                 }else{
-                    this.$alert(res.errmsg)
+                    this.$message({
+                        type: "error",
+                        message: res.errmsg,
+                        duration: 1000
+                    });
                 }
             });
       },
       del(row){
-            let Message=confirm("确定删除此行商品？");
+            let Message=confirm("确定删除此行数据？");
             if(Message){
                 let data =this.$qs.stringify({
                     id:row.user_id,
@@ -496,13 +647,13 @@ export default {
       },
     initData() {
       // 获取客户列表
-      let data = {
-        subsite_id: 3,
-        user_id: sessionStorage.user_id,
-        page: this.page,
-        page_size: this.page_size
-      };
-      getcustomerList({ params: data }).then(res => {
+      let data =this.$qs.stringify({
+        //subsite_id: 3,
+        //user_id: sessionStorage.user_id,
+            page: this.page,
+            page_size: this.page_size
+        }) ;
+      getcustomerList(data).then(res => {
         console.log(res);
         if (res.errno == 0) {
           this.customerTableData = res.data.user_list;
@@ -539,7 +690,7 @@ export default {
 </script>
 <style scoped>
 .customerManage {
-  margin: 20px;
+  margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {

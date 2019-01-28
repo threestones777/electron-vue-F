@@ -2,35 +2,110 @@
     <div class="giftManagement">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>会员</el-breadcrumb-item>
                 <el-breadcrumb-item>礼品管理</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div>
+                <div @click="add" class="card">
+                    <i class="el-icon-plus"></i>
+                    <div>新增</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
                 <legend>查询条件</legend>
                 <el-row type="flex" justify="space-around" :gutter="10">
                     <el-col style="text-align:left" :span="2">
-                        <el-radio-group v-model="radio" style="margin-top:5px;">
-                            <el-radio :label="1">开始日期</el-radio><br>
-                            <el-radio :label="2">审核日期</el-radio><br>
-                            <el-radio :label="3">结束日期</el-radio>
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                            <el-radio label="start_time">开始日期</el-radio><br>
+                            <el-radio label="end_time">审核日期</el-radio><br>
+                            <el-radio label="check_time">结束日期</el-radio>
                         </el-radio-group>    
                     </el-col>
                     <el-col style="text-align:left" :span="3">
-                        <el-radio-group v-model="radio" style="margin-top:5px;">
-                        <el-radio :label="4">今日有效</el-radio><br>
-                        <el-radio :label="5">不按日期</el-radio>
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                        <el-radio label="4">今日有效</el-radio><br>
+                        <el-radio label="5">不按日期</el-radio>
                     </el-radio-group>    
                     </el-col>
                     <el-col :span="5">
                         <el-date-picker
                         v-model="search3" size="small"
                         style="width:100%;margin-top:0px"
-                        type="daterange"
+                        type="daterange" @change="chose"
                         align="right"
                         unlink-panels
                         value-format="yyyy-MM-dd"
@@ -40,12 +115,12 @@
                         </el-date-picker>
                     </el-col>
                     <el-col :span="4">
-                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="value"  size="mini"  placeholder="货号"/>
-                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="单号"/>
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="属性"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="value"  size="mini"  placeholder="单号"/>
                     </el-col>
                     <el-col :span="4">
-                      <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search1"  size="mini"  placeholder="商品名称"/>
-                        <el-select v-model="value1" size="small" placeholder="分店">
+                      <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search1"  size="mini"  placeholder="商品名称"/>
+                        <el-select @change="chose" v-model="value1" size="small" placeholder="分店">
                             <el-option
                             v-for="item in options1"
                             :key="item.value1"
@@ -55,7 +130,7 @@
                         </el-select> 
                     </el-col>
                     <el-col :span="4">
-                      <el-select v-model="value2" size="small" placeholder="状态" >
+                      <el-select @change="chose" v-model="value2" size="small" placeholder="状态" >
                             <el-option
                             v-for="item in options2"
                             :key="item.value2"
@@ -63,7 +138,7 @@
                             :value="item.value2">
                             </el-option>
                         </el-select> 
-                        <el-select v-model="value4" size="small" placeholder="礼品属性" style="margin-top:5px">
+                        <el-select @change="chose" v-model="value4" size="small" placeholder="礼品属性" style="margin-top:5px">
                             <el-option
                             v-for="item in options4"
                             :key="item.value4"
@@ -73,9 +148,9 @@
                         </el-select> 
                     </el-col>
                     <el-col :span="3">
-                        <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
+                        <!-- <el-button type="primary" size="small" @click="reset">刷 新</el-button><br>
                         <el-button type="primary" size="small" style="margin-top:5px" @click="add">新增</el-button><br>
-                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button> -->
                     </el-col>
                 </el-row>      
             </fieldset>
@@ -212,21 +287,24 @@
             </el-dialog>
             <!-- 表格 -->
             <el-table
-            :data="Data"
-            border
+            :data="Data.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
+            border stripe
             show-summary
             :row-style="{height:0}"  
-            :cell-style="{padding:7}"
+            :cell-style="{padding:3}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             v-loading="loading"
             style="width: 100%">
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="giftMashow.show1"
                 label="单号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.bill_sn"/>
+                        <el-input v-model="scope.row.bill_sn"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -234,74 +312,82 @@
                 v-if="giftMashow.show2"
                 label="等级">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.user_rank"/>
+                        <el-input v-model="scope.row.user_rank"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="giftMashow.show3"
                 label="商品名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.goods_name"/>
+                        <el-input v-model="scope.row.goods_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="giftMashow.show4"
                 label="状态">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.status"/>
+                        <el-input v-model="scope.row.status"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="100"
                 v-if="giftMashow.show5"
                 label="礼品属性">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.attr_value"/>
+                        <el-input v-model="scope.row.attr_value"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="floor_integral"
                 align="center"
+                width="100"
                 v-if="giftMashow.show6"
                 label="积分下限">
                    <template slot-scope="scope">
-                        <input v-model="scope.row.floor_integral"/>
+                        <el-input v-model="scope.row.floor_integral"/>
                     </template> 
                 </el-table-column>
                 <el-table-column
                 prop="pay_points"
                 align="center"
+                width="100"
                 v-if="giftMashow.show7"
                 label="兑换积分">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.pay_points"/>
+                        <el-input v-model="scope.row.pay_points"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="130"
                 v-if="giftMashow.show8"
                 label="开始日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.start_time"/>
+                        <el-input v-model="scope.row.start_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="130"
                 v-if="giftMashow.show9"
                 label="结束日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.end_time"/>
+                        <el-input v-model="scope.row.end_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="shop_price"
                 align="center"
+                width="100"
                 v-if="giftMashow.show10"
                 label="售价">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shop_price"/>
+                        <el-input v-model="scope.row.shop_price"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -310,23 +396,24 @@
                 v-if="giftMashow.show11"
                 label="每人限量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.per_num"/>
+                        <el-input v-model="scope.row.per_num"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="sun_num"
                 align="center"
+                width="100"
                 v-if="giftMashow.show12"
                 label="总限量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sun_num"/>
+                        <el-input v-model="scope.row.sun_num"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
                 label="相关操作"
-                width="90">
+                width="120">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
@@ -351,6 +438,7 @@ import {
   editGiftmanagement
 } from "../../api/api";
 export default {
+    inject:['reload'],
   data() {
     return {
         page: 1,
@@ -378,7 +466,7 @@ export default {
       search:'',
       search1:'',
       search3:['2017-7-7','2019-9-9'],
-      radio:3,
+      radio:"5",
       value: '' ,
       value1: '' ,
       value2: '' ,
@@ -402,31 +490,24 @@ export default {
       label: '未审核'
       },],  
       options1: [{
-      value1: '选项1',
+      value1: '0',
       label: '0分店'
       }, {
-      value1: '选项2',
+      value1: '1',
       label: '1分店'
       },],
       options2: [{
-      value2: '选项1',
+      value2: '0',
       label: '未审核'
       }, {
-      value2: '选项2',
+      value2: '1',
       label: '已审核'
       },],
-      options3: [{
-      value3: '选项1',
-      label: '发货分店1'
-      }, {
-      value3: '选项2',
-      label: '发货分店2'
-      },],
       options4: [{
-      value4: '选项1',
+      value4: '0',
       label: '属性1'
       }, {
-      value4: '选项2',
+      value4: '1',
       label: '属性2'
       },],
     };
@@ -443,25 +524,44 @@ export default {
         var startDate = Date.parse(new Date(arr[0], arr[1]-1, arr[2]))/1000;
         return startDate;
     },
-    initData() {
-      // 获取列表
-      let data = this.$qs.stringify({
-        subsite_id: 3,
-        user_id: sessionStorage.user_id,
-        page: this.page,
-        page_size: this.page_size
-      });
-      getGiftmanagementList(data).then(res => {
-        console.log(res.data);
-        if (res.errno == 0) {
-            this.total = Number(res.data.record_count);
-            for(let i=0;i<res.data.orders.length;i++){
-                res.data.orders[i].shop_price=res.data.orders[i].shop_price.replace(/^￥/,"");
+    initData() {// ---------------获取列表
+        let data = this.$qs.stringify({
+            subsite_id: 3,
+            user_id: sessionStorage.user_id,
+            page: this.page,
+            page_size: this.page_size
+        });
+        this.data(data);
+    },
+    data(data){
+        getGiftmanagementList(data).then(res => {
+            console.log(res.data);
+            if (res.errno == 0) {
+                this.total = Number(res.data.record_count);
+                for(let i=0;i<res.data.orders.length;i++){
+                    res.data.orders[i].shop_price=res.data.orders[i].shop_price.replace(/^￥/,"");
+                }
+                this.Data = res.data.orders;
+                this.loading = false;
             }
-            this.Data = res.data.orders;
-            this.loading = false;
-        }
-      });
+        });
+    },
+    chose(){//-------------------选择查询
+        let data = this.$qs.stringify({
+            subsite_id: 3,
+            user_id: sessionStorage.user_id,
+            page: 1,
+            page_size: 10,
+            time_by:this.radio,
+            add_time1:this.search3[0],
+            add_time2:this.search3[1],
+            bill_sn:this.value,
+            goods_name:this.search1,
+            subshop_id:this.value1,
+            status:this.value2,
+            attr_value:this.value4,
+        });
+        this.data(data);
     },
     add() {
       this.isEdit = false;
@@ -569,7 +669,7 @@ export default {
       });
   },  */
     reset() {
-      this.initData();
+      this.reload();
     },
     handleCurrentChange(val) {
       this.page = val;
@@ -633,7 +733,7 @@ export default {
 </script>
 <style scoped>
 .giftManagement {
-  margin: 20px;
+  margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -689,11 +789,8 @@ export default {
     background:#F3F3F3;
     width:100%;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
 }
 </style>

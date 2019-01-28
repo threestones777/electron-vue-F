@@ -2,12 +2,22 @@
     <div class="shippingSetting">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
+            <!-- <h3>温州美联 管理中心</h3> -->
             <el-breadcrumb separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>调拨</el-breadcrumb-item>
                 <el-breadcrumb-item>配送设置</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <div @click="edit" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>保存修改</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <el-form ref="form" :model="shippingSetData">
@@ -122,14 +132,14 @@
                         <el-col :span="6"></el-col>
                         <el-col :span="3"></el-col>
                     </el-row>
-                    <el-row type="flex" justify="center" :gutter="10">
+                    <!-- <el-row type="flex" justify="center" :gutter="10">
                         <el-col :span="3"></el-col>
                         <el-col :span="12"></el-col>
                         <el-col :span="6">
                             <el-button type="primary" style="float:right;" @click="edit">保存修改</el-button>
                         </el-col>
                         <el-col :span="3"></el-col>
-                    </el-row>
+                    </el-row> -->
                 </el-form-item> 
             </el-form>
             <!-- <div style="margin:10px 0;text-align:center">
@@ -538,7 +548,7 @@ export default {
 </script>
 <style scoped>
 .shippingSetting{
-    margin: 20px;
+    margin:10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -579,5 +589,49 @@ export default {
 }
 .chose .el-checkbox{
     margin-bottom:10px;
+}
+.card-title {
+  text-align: center;
+}
+.card-title:focus {
+  outline: none;
+}
+.card {
+  transition: all 0.3s;
+  padding: 5px 0;
+}
+.card:hover {
+  border-radius:7px;
+  transform: translateY(-2px);
+  box-shadow: 0px 2px 5px 4px rgba(0, 0, 0,0.1)
+}
+.card:hover i,
+.card:hover div,
+.card:hover b {
+  color: #409EFF;
+}
+.operate-in {
+  display: flex;
+  margin-top: 12px;
+}
+.operate-in > div {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+.operate-in > div div {
+  font-size: 16px;
+}
+.operate-in i {
+  font-size: 30px;
+}
+.operate-in b {
+  font-size: 16px;
+  position: absolute;
+  top: 20%;
+  right: 5%;
 }
 </style>

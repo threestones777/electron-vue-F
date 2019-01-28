@@ -2,12 +2,22 @@
     <div class="warehouseSetting">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>仓库</el-breadcrumb-item>
                 <el-breadcrumb-item>仓库设置</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <div @click="editDone" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>保存修改</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <el-form ref="form" :model="Data">
@@ -68,7 +78,7 @@
                         <el-col :span="3"></el-col>
                         <el-col :span="12"></el-col>
                         <el-col :span="6">
-                            <el-button type="primary" style="float:right;" @click="editDone">保存修改</el-button>
+                            <!-- <el-button type="primary" style="float:right;" @click="editDone">保存修改</el-button> -->
                         </el-col>
                         <el-col :span="3"></el-col>
                     </el-row>
@@ -375,7 +385,7 @@ export default {
 </script>
 <style scoped>
 .warehouseSetting {
-  margin: 20px;
+  margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {

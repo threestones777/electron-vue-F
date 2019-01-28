@@ -2,12 +2,83 @@
     <div class="tradingInquiry">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>零售</el-breadcrumb-item>
                 <el-breadcrumb-item> 流水查询</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                <i class="el-icon-loading"></i>
+                <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                <i class="el-icon-tickets"></i>
+                <div>显示列</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
@@ -25,6 +96,7 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期">
                         </el-date-picker>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-top:5px;" v-model="search8"  size="mini"  placeholder="条码"></el-input>
                         <!-- <el-checkbox v-model="check1">显示营业员列表</el-checkbox> -->
                     </el-col>
                     <el-col :span="3">
@@ -47,44 +119,43 @@
                         <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-top:5px;margin-bottom:10px;" v-model="search7"  size="mini"  placeholder="商品名称"></el-input>
                     </el-col>
                     <el-col :span="3">
-                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="单号"/>
-                        <el-select  @change="chose" v-model="value5" size="small" placeholder="销售方式" style="margin-top:0px;width:100%">
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search"  size="mini"  placeholder="单号"/>
+                        <!-- <el-select  @change="chose" v-model="value5" size="small" placeholder="销售方式" style="margin-top:0px;width:100%">
                             <el-option
                             v-for="item in options5"
                             :key="item.value5"
                             :label="item.label"
                             :value="item.value5">
                             </el-option>
-                        </el-select> 
-                        <el-select @change="chose" v-model="value4" size="small" placeholder="标签" style="margin-top:5px">
+                        </el-select>  -->
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-top:5px;" v-model="search3"  size="mini"  placeholder="会员卡号">
+                        </el-input>
+                        <!-- <el-select @change="chose" v-model="value4" size="small" placeholder="标签" style="margin-top:5px">
                             <el-option
                             v-for="item in options4"
                             :key="item.value4"
                             :label="item.label"
                             :value="item.value4">
                             </el-option>
-                        </el-select> 
-                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-top:5px;" v-model="search8"  size="mini"  placeholder="条码"></el-input>
+                        </el-select>  -->
+                        
                     </el-col>
                     <el-col :span="3">
                         <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search1"  size="mini"  placeholder="收银员">
                         </el-input>
                         <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search2"  size="mini"  placeholder="营业员">
                         </el-input>
-                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search3"  size="mini"  placeholder="会员卡号">
-                        </el-input>
-                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search4"  size="mini"  placeholder="品牌">
-                        </el-input>
+                        
+                        
                     </el-col>
                     <el-col :span="3">
                         <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search6"  size="mini"  placeholder="商品货号">
                         </el-input>
-                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search5"  size="mini"  placeholder="分店区域">
-                        </el-input>
+                        <!-- <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search5"  size="mini"  placeholder="分店区域">
+                        </el-input> -->
                         <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search9"  size="mini"  placeholder="类别">
                         </el-input>
-                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search10"  size="mini"  placeholder="供应商">
-                        </el-input>
+                        
                     </el-col>
                     <el-col :span="3">
                     <!--  <el-select style="margin-bottom:5px" v-model="value2" size="small" placeholder="销售门店">
@@ -103,14 +174,18 @@
                             :value="item.value3">
                             </el-option>
                         </el-select>  -->
-                        <el-select @change="chose" style="margin-bottom:5px" v-model="value6" size="small" placeholder="分公司">
+                        <!-- <el-select @change="chose" style="margin-bottom:5px" v-model="value6" size="small" placeholder="分公司">
                             <el-option
                             v-for="item in options6"
                             :key="item.value6"
                             :label="item.label"
                             :value="item.value6">
                             </el-option>
-                        </el-select> 
+                        </el-select>  -->
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search4"  size="mini"  placeholder="品牌">
+                        </el-input>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search10"  size="mini"  placeholder="供应商">
+                        </el-input>
                     <!--  <el-select v-model="value8" size="small" placeholder="分店标签">
                             <el-option
                             v-for="item in options8"
@@ -121,8 +196,8 @@
                         </el-select>  -->
                     </el-col>
                     <el-col :span="3">
-                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
-                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                        <!-- <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button> -->
                     </el-col>
                 </el-row>				
 			</fieldset>
@@ -397,9 +472,10 @@
                 <el-table-column
                 fixed="right"
                 align="center"
+                width="120"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="test(scope.$index,scope.row)">保存修改</el-button>
+                        <!-- <el-button type="text" size="small" @click="test(scope.$index,scope.row)">保存修改</el-button> -->
                         <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -700,7 +776,7 @@ export default {
 </script>
 <style scoped>
 .tradingInquiry{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {

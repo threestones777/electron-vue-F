@@ -2,35 +2,111 @@
     <div class="storeDirectApplications">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>调拨</el-breadcrumb-item>
                 <el-breadcrumb-item>店间直调申请</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div>
+                <div @click="dialogServeAdd=true" class="card">
+                    <i class="el-icon-plus"></i>
+                    <div>新增</div>
+                </div>
+            </div>
+
         </div>
         <div class="main-table">
             <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
                 <legend>查询条件</legend>
                 <el-row type="flex" justify="space-around" :gutter="10">
                     <el-col style="text-align:left" :span="3">
-                        <el-radio-group v-model="radio" style="margin-top:5px;">
-                            <el-radio :label="1">申请日期</el-radio><br>
-                            <el-radio :label="2">发货日期</el-radio><br>
-                            <el-radio :label="3">收货日期</el-radio>
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                            <el-radio label="apply_time">申请日期</el-radio><br>
+                            <el-radio label="fahuo_time">发货日期</el-radio><br>
+                            <el-radio label="shouhuo_time">收货日期</el-radio>
                         </el-radio-group>    
                     </el-col>
                     <el-col style="text-align:left" :span="3">
-                        <el-radio-group v-model="radio" style="margin-top:5px;">
-                        <el-radio :label="4">要求到货日期</el-radio><br>
-                        <el-radio :label="5">不按日期</el-radio>
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                        <el-radio label="arrival_time">要求到货日期</el-radio><br>
+                        <el-radio label="5">不按日期</el-radio>
                     </el-radio-group>    
                     </el-col>
                     <el-col :span="5">
                         <el-date-picker
                         v-model="search3" size="small"
                         style="width:100%;margin-top:0px"
-                        type="daterange"
+                        type="daterange" @change="chose"
                         align="right"
                         unlink-panels
                         value-format="yyyy-MM-dd"
@@ -39,9 +115,9 @@
                         end-placeholder="结束日期">
                         </el-date-picker>
                     </el-col>
-                    <el-col :span="4">
+                    <el-col :span="3">
                         <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="订单号"/>
-                        <el-select v-model="value" size="small" placeholder="申请状态" style="margin-bottom:5px;">
+                        <el-select @change="chose" v-model="value" size="small" placeholder="申请状态" style="margin-bottom:5px;">
                             <el-option
                             v-for="item in options"
                             :key="item.value"
@@ -50,8 +126,8 @@
                             </el-option>
                         </el-select>
                     </el-col>
-                    <el-col :span="4">
-                        <el-select v-model="value1" size="small" placeholder="发货状态">
+                    <el-col :span="3">
+                        <el-select @change="chose" v-model="value1" size="small" placeholder="发货状态">
                             <el-option
                             v-for="item in options1"
                             :key="item.value1"
@@ -59,7 +135,7 @@
                             :value="item.value1">
                             </el-option>
                         </el-select> 
-                        <el-select v-model="value2" size="small" placeholder="收货状态" style="margin-top:5px">
+                        <el-select @change="chose" v-model="value2" size="small" placeholder="收货状态" style="margin-top:5px">
                             <el-option
                             v-for="item in options2"
                             :key="item.value2"
@@ -68,8 +144,8 @@
                             </el-option>
                         </el-select> 
                     </el-col>
-                    <el-col :span="4">
-                        <el-select v-model="value3" size="small" placeholder="发货分店">
+                    <el-col :span="3">
+                        <el-select @change="chose" v-model="value3" size="small" placeholder="发货分店">
                             <el-option
                             v-for="item in options3"
                             :key="item.value3"
@@ -77,7 +153,7 @@
                             :value="item.value3">
                             </el-option>
                         </el-select> 
-                        <el-select v-model="value4" size="small" placeholder="收货分店" style="margin-top:5px">
+                        <el-select @change="chose" v-model="value4" size="small" placeholder="收货分店" style="margin-top:5px">
                             <el-option
                             v-for="item in options4"
                             :key="item.value4"
@@ -86,10 +162,10 @@
                             </el-option>
                         </el-select> 
                     </el-col>
-                    <el-col :span="3">
-                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
-                        <!-- <el-button type="primary"  style="margin-top:5px" size="small" @click="dialogServeAdd=true">新增</el-button><br> -->
-                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    <el-col :span="4">
+                        <!-- <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button type="primary"  style="margin-top:5px" size="small" @click="dialogServeAdd=true">新增</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button> -->
                     </el-col>
                 </el-row>				
 			</fieldset>
@@ -220,10 +296,10 @@
             :data="storeDirectData.filter(data =>  {
             return Object.keys(data).some(key => {
             return String(data[key]).toLowerCase().indexOf(search) > -1})})"
-            border
+            border stripe
             show-summary
             :row-style="{height:0}"  
-            :cell-style="{padding:0}"
+            :cell-style="{padding:3}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             style="width: 100%">
@@ -238,9 +314,9 @@
                 <el-table-column
                 align="center"
                 v-if="storeDirectApplicationsshow.show2"
-                label="状态">
+                label="申请状态">
                     <template slot-scope="scope">
-                        <span>{{scope.row.status}}</span>
+                        <span>{{scope.row.apply_status}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -253,18 +329,20 @@
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="130"
                 v-if="storeDirectApplicationsshow.show4"
                 label="发货店名">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.from_subshop_name"/>
+                        <el-input v-model="scope.row.from_subshop_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 v-if="storeDirectApplicationsshow.show5"
                 align="center"
+                width="150"
                 label="单据编号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.bill_sn"/>
+                        <el-input v-model="scope.row.bill_sn"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -272,31 +350,34 @@
                 v-if="storeDirectApplicationsshow.show6"
                 label="单据类型">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.type"/>
+                        <el-input v-model="scope.row.type"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="125"
                 v-if="storeDirectApplicationsshow.show7"
                 label="要求到货日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.arrival_time"/>
+                        <el-input v-model="scope.row.arrival_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="110"
                 v-if="storeDirectApplicationsshow.show8"
                 label="申请人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.apply_user"/>
+                        <el-input v-model="scope.row.apply_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="125"
                 v-if="storeDirectApplicationsshow.show9"
                 label="申请时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.apply_time"/>
+                        <el-input v-model="scope.row.apply_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -304,15 +385,16 @@
                 v-if="storeDirectApplicationsshow.show10"
                 label="发货人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fahuo_user"/>
+                        <el-input v-model="scope.row.fahuo_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="125"
                 v-if="storeDirectApplicationsshow.show11"
                 label="发货时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fahuo_time"/>
+                        <el-input v-model="scope.row.fahuo_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -320,15 +402,16 @@
                 v-if="storeDirectApplicationsshow.show12"
                 label="收货人">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shouhuo_user"/>
+                        <el-input v-model="scope.row.shouhuo_user"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="125"
                 v-if="storeDirectApplicationsshow.show13"
                 label="收货时间">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.shouhuo_time"/>
+                        <el-input v-model="scope.row.shouhuo_time"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -336,12 +419,13 @@
                 v-if="storeDirectApplicationsshow.show14"
                 label="备注">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.remark"/>
+                        <el-input v-model="scope.row.remark"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
+                width="120"
                 label="相关操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
@@ -371,8 +455,8 @@ export default {
             record_count:0,
             keywords:'',
             search:'',
-            search3:'',
-            radio:3,
+            search3:['2017-7-7','2019-9-9'],
+            radio:"5",
             value: '' ,
             value1: '' ,
             value2: '' ,
@@ -406,53 +490,71 @@ export default {
             },
             storeDirectData:[],
             options: [{
-            value: '选项1',
-            label: '审核'
+            value: '0',
+            label: '已审核'
             }, {
-            value: '选项2',
+            value: '0',
             label: '未审核'
             },],  
             options1: [{
-            value1: '选项1',
+            value1: '0',
             label: '未发货'
             }, {
-            value1: '选项2',
+            value1: '1',
             label: '已发货'
             },],
             options2: [{
-            value2: '选项1',
+            value2: '0',
             label: '未收货'
             }, {
-            value2: '选项2',
+            value2: '1',
             label: '已收货'
             },],
             options3: [{
-            value3: '选项1',
+            value3: '0',
             label: '发货分店1'
             }, {
-            value3: '选项2',
+            value3: '1',
             label: '发货分店2'
             },],
             options4: [{
-            value4: '选项1',
+            value4: '0',
             label: '收货分店1'
             }, {
-            value4: '选项2',
+            value4: '1',
             label: '收货分店2'
             },],
         }
     },
     methods:{
         init(page){
-             let data=this.$qs.stringify({
+            let data=this.$qs.stringify({
                 page:page,
                 page_size:10,
             }); 
+            this.data(data);
+        },
+        data(data){
             storeDirect(data).then(res=>{
                 console.log(res.data);
                 this.record_count=Number(res.data.filter.record_count);
                 this.storeDirectData=res.data.storedirect_list;
             }); 
+        },
+        chose(){
+            let data=this.$qs.stringify({
+                page:1,
+                page_size:10,
+                time_by:this.radio,
+                add_time1:this.search3[0],
+                add_time2:this.search3[1],
+                apply_status:this.value,
+                fahuo_status:this.value1,
+                shouhuo_status:this.value2,
+                from_subshop_id:this.value3,
+                to_subshop_id:this.value4,
+            }); 
+            this.data(data);
         },
         handleClose(done){
             done();
@@ -491,7 +593,7 @@ export default {
             row.apply_time=this.dateConverter(row.apply_time);
             row.fahuo_time=this.dateConverter(row.fahuo_time);
             row.shouhuo_time=this.dateConverter(row.shouhuo_time);
-            row.status=row.status=="未审核"?0:1;
+            row.status=="未审核"?row.status=0:row.status=1;
             let dataE=this.$qs.stringify(row);
             storeDirectEd(dataE).then(res=>{
                 console.log(res.errno);
@@ -557,13 +659,13 @@ export default {
         }else{
             console.log("no");
         };    
-       this.init(1);    
+        this.init(1);
     }
 }
 </script>
 <style scoped>
 .storeDirectApplications{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -600,11 +702,8 @@ export default {
     background:#F3F3F3;
     width:100%;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
+.el-table .el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
 }
 </style>

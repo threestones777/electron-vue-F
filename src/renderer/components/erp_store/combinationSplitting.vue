@@ -14,16 +14,16 @@
                 <legend>查询条件</legend>
                 <el-row type="flex" justify="space-around" :gutter="10">
                     <el-col style="text-align:left" :span="2">
-                        <el-radio-group v-model="radio" style="margin-top:5px;">
-                            <el-radio :label="1">新建日期</el-radio><br>
-                            <el-radio :label="2" style="margin-top:20px;">审核日期</el-radio>
+                        <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                            <el-radio label="add_time">新建日期</el-radio><br>
+                            <el-radio label="check_time" style="margin-top:20px;">审核日期</el-radio>
                         </el-radio-group>    
                     </el-col>
                     <el-col :span="5">
                         <el-date-picker
                         v-model="search3" size="small"
                         style="width:100%;margin-top:0px"
-                        type="daterange"
+                        type="daterange" @change="chose"
                         align="right"
                         unlink-panels
                         value-format="yyyy-MM-dd"
@@ -33,19 +33,19 @@
                         </el-date-picker>
                     </el-col>
                     <el-col :span="4">
-                            <el-input  prefix-icon="el-icon-search" style="margin-bottom:5px;" v-model="value"  size="mini"  placeholder="单号"/>
-                            <el-input  prefix-icon="el-icon-search" v-model="value"  size="mini"  placeholder="货号"/>
+                            <el-input  prefix-icon="el-icon-search" style="margin-bottom:5px;" v-model="search"  size="mini"  placeholder="单号"/>
+                            <el-input @input="chose"  prefix-icon="el-icon-search" v-model="search1"  size="mini"  placeholder="货号"/>
                     </el-col>
                     <el-col :span="4">
-                        <el-select v-model="value" size="small" placeholder="方式">
+                        <el-select @change="chose" v-model="value" size="small" placeholder="方式">
                             <el-option
                             v-for="item in options"
-                            :key="item.value1"
+                            :key="item.value"
                             :label="item.label"
                             :value="item.value">
                             </el-option>
                         </el-select> 
-                        <el-select v-model="value1" size="small" placeholder="状态" style="margin-top:5px;">
+                        <el-select @change="chose" v-model="value1" size="small" placeholder="状态" style="margin-top:5px;">
                             <el-option
                             v-for="item in options1"
                             :key="item.value1"
@@ -53,7 +53,7 @@
                             :value="item.value1">
                             </el-option>
                         </el-select> 
-                        <el-select v-model="value2" size="small" placeholder="分店类型" style="margin-top:5px;">
+                        <el-select @change="chose" v-model="value2" size="small" placeholder="分店类型" style="margin-top:5px;">
                             <el-option
                             v-for="item in options2"
                             :key="item.value2"
@@ -63,15 +63,15 @@
                         </el-select> 
                     </el-col>
                     <el-col :span="4">
-                        <el-select v-model="value3" size="small" placeholder="分店" style="margin-top:5px">
+                        <el-select @change="chose" v-model="value3" size="small" placeholder="分店" style="margin-top:5px">
                             <el-option
                             v-for="item in options3"
-                            :key="item.value4"
+                            :key="item.value3"
                             :label="item.label"
                             :value="item.value3">
                             </el-option>
                         </el-select> 
-                        <el-select v-model="value4" size="small" placeholder="分公司" style="margin-top:5px">
+                        <el-select @change="chose" v-model="value4" size="small" placeholder="分公司" style="margin-top:5px">
                             <el-option
                             v-for="item in options4"
                             :key="item.value4"
@@ -87,7 +87,28 @@
                     </el-col>
                 </el-row>				
 			</fieldset>
-
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" class="chose" style="text-align:left"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="200px">
+                <el-checkbox v-model="Splitshow.show1">分店名称</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show2">单号</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show3">状态</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show4">条码</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show5">货号</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show6">商品名称</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show7">单位</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show8">数量</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show9">进价</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show10">进价金额</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show11">成本金额</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show12">成本价</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show13">制单日期</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show14">审核日期</el-checkbox><br>
+                <el-checkbox v-model="Splitshow.show15">制单人</el-checkbox><br><br>
+            </el-dialog>
             <!-- <el-form :inline="true" :model="formServe" class="demo-form-inline">
                 <el-form-item>
                     <el-input placeholder="请输入单号" @input="search" v-model="keywords" style="width:50%;margin-right:10px" size="small">
@@ -114,7 +135,8 @@
             </el-dialog>
             <!-- 详情弹出框 -->
             <el-dialog width="860px" title="组合拆分" :visible.sync="dialogServeDetail">
-                <el-form label-position="right" ref="form" :model="formServeDetail" :inline="true" class="demo-form-inline">
+                <el-form label-position="right" ref="form" :
+                ="formServeDetail" :inline="true" class="demo-form-inline">
                     <el-row>
                         <el-col :span="8">
                             <el-form-item label="状态">
@@ -214,8 +236,11 @@
             </el-dialog>
             <!-- 表格 -->
             <el-table
-            :data="Data"
-            border
+            :data="Data.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
+            border stripe
+            show-summary
             :row-style="{height:0}"  
             :cell-style="{padding:0}"
             :header-row-style="{height:0}"  
@@ -225,77 +250,132 @@
                 <el-table-column
                 prop="subshop_name"
                 align="center"
+                v-if="Splitshow.show1"
                 label="分店名称">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.subshop_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="bill_sn"
                 align="center"
+                v-if="Splitshow.show2"
                 label="单号">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.bill_sn"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="status"
                 align="center"
+                v-if="Splitshow.show3"
                 label="状态">
                 </el-table-column>
                 <el-table-column
                 prop="serial_code"
                 align="center"
+                v-if="Splitshow.show4"
                 label="条码">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.serial_code"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="product_sn"
                 align="center"
+                v-if="Splitshow.show5"
                 label="货号">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.product_sn"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="goods_name"
                 align="center"
+                v-if="Splitshow.show6"
                 label="商品名称">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.goods_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="unit"
                 align="center"
+                v-if="Splitshow.show7"
                 label="单位">
+                    <template slot-scope="scope">
+                        <input v-model="scope.row.unit">
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="goods_number"
                 align="center"
+                v-if="Splitshow.show8"
                 label="数量">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.goods_number"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="jinhuo_price"
                 align="center"
+                v-if="Splitshow.show9"
                 label="进价">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.jinhuo_price"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="jinhuo_money"
                 align="center"
+                v-if="Splitshow.show10"
                 label="进价金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.jinhuo_money"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="chengben_money"
                 align="center"
+                v-if="Splitshow.show11"
                 label="成本金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.chengben_money"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="chengben_prict"
                 align="center"
+                v-if="Splitshow.show12"
                 label="成本价">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.chengben_prict"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="add_time"
                 align="center"
+                v-if="Splitshow.show13"
                 label="制单日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.add_time"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="check_time"
                 align="center"
+                v-if="Splitshow.show14"
                 label="审核日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.check_time"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="admin_name"
                 align="center"
+                v-if="Splitshow.show15"
                 label="制单人">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.admin_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
@@ -303,7 +383,7 @@
                 width="90"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -326,20 +406,39 @@ import {
   editCombinationsplitting
 } from "../../api/api";
 export default {
+    inject: ['reload'],
   data() {
     return {
-      page: 1,
-      page_size: 10,
-      loading: true,
-      total: 0,
-      isEdit: false,
-      dialogServeAdd: false,
-      dialogServeDetail: false,
+        page: 1,
+        page_size: 10,
+        loading: true,
+        total: 0,
+        isEdit: false,
+        dialogServeAdd: false,
+        dialogServeDetail: false,
+        dialogShow:false,
+        Splitshow:{
+            show1:false,
+            show2:true,
+            show3:true,
+            show4:true,
+            show5:true,
+            show6:true,
+            show7:false,
+            show8:true,
+            show9:true,
+            show10:true,
+            show11:true,
+            show12:true,
+            show13:true,
+            show14:true,
+            show15:true,
+        },
       keywords:'',
       search:'',
       search1:'',
       search3:['2017-7-7','2019-9-9'],
-      radio:1,
+      radio:"add_time",
       value: '' ,
       value1: '' ,
       value2: '' ,
@@ -358,59 +457,96 @@ export default {
       Data: [],
       rule: [{ required: true, message: "不能为空" }],
       options: [{
-      value: '选项1',
+      value: '0',
       label: '方式1'
       }, {
-      value: '选项2',
+      value: '1',
       label: '方式2'
       },],  
       options1: [{
-      value1: '选项1',
+      value1: '0',
       label: '未审核'
       }, {
-      value1: '选项2',
+      value1: '1',
       label: '已审核'
       },],
       options2: [{
-      value2: '选项1',
+      value2: '0',
       label: '0号分店'
       }, {
-      value2: '选项2',
+      value2: '1',
       label: '1号分店'
       },],
       options3: [{
-      value3: '选项1',
+      value3: '0',
       label: '发卡店1'
       }, {
-      value3: '选项2',
+      value3: '1',
       label: '发卡店2'
       },],
       options4: [{
-      value4: '选项1',
+      value4: '0',
       label: '分1'
       }, {
-      value4: '选项2',
+      value4: '0',
       label: '分2'
       },],
     };
   },
   methods: {
-    initData() {
-      // 获取列表
-      let data = this.$qs.stringify({
-        subsite_id: 3,
-        user_id: sessionStorage.user_id,
-        page: this.page,
-        page_size: this.page_size
-      });
-      getCombinationsplittingList(data).then(res => {
-        console.log(res.data);
-        if (res.errno == 0) {
-          this.Data = res.data.orders;
-          this.total = Number(res.data.record_count);
-          this.loading = false;
-        }
-      });
+    dateConverter(str) { //-----------------------日期转秒数
+        var arr = str.split(/[- : \/]/);
+        var startDate = Date.parse(new Date(arr[0], arr[1]-1, arr[2]))/1000;
+        return startDate;
+    },
+    handleClose(done){
+        done();
+        let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+        erpTableSetting.Split=this.Splitshow;
+        localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+    },
+    initData() {//----------------------- 获取列表
+        let data = this.$qs.stringify({
+            subsite_id: 3,
+            user_id: sessionStorage.user_id,
+            page: this.page,
+            page_size: this.page_size
+        });
+        this.data(data);
+    },
+    data(data){
+        getCombinationsplittingList(data).then(res => {
+            console.log(res.data);
+            if (res.errno == 0) {
+                for(let i=0;i<res.data.orders.length;i++){
+                    res.data.orders[i].jinhuo_price=res.data.orders[i].jinhuo_price.replace(/^￥/,"");
+                    res.data.orders[i].jinhuo_money=res.data.orders[i].jinhuo_money.replace(/^￥/,"");
+                    res.data.orders[i].chengben_money=res.data.orders[i].chengben_money.replace(/^￥/,"");
+                    res.data.orders[i].chengben_prict=res.data.orders[i].chengben_prict.replace(/^￥/,"");
+                };
+            this.Data = res.data.orders;
+            this.total = Number(res.data.record_count);
+            this.loading = false;
+            }
+        });
+    },
+    chose(){//---------------------选择查询
+        let data = this.$qs.stringify({
+            subsite_id: 3,
+            user_id: sessionStorage.user_id,
+            page: 1,
+            page_size: 10,
+            time_by:this.radio,
+            add_time1:this.search3[0],
+            add_time2:this.search3[1],
+            product_sn:this.search1,
+            mode:this.value,
+            status:this.value1,
+            subshop_type:this.value2,
+            subshop_id:this.value3,
+            son_company:this.value4,
+        });
+        this.data(data);
     },
     add() {
       this.isEdit = false;
@@ -420,7 +556,39 @@ export default {
       }
       this.dialogServeDetail = true;
     },
-    editDone(formName) {
+    edit(row){//----------------------保存修改
+        row.status=="未审核"?row.status=0:row.status=1;
+        if(row.add_time!==""){
+            row.add_time=this.dateConverter(row.add_time);
+        }else{
+            row.add_time=new Date().getTime()/1000-86400;
+        }
+        if(row.check_time!==""){
+            row.check_time=this.dateConverter(row.check_time);
+        }else{
+            row.check_time=new Date().getTime()/1000-86400;
+        }
+        let Data = this.$qs.stringify(row);
+        editCombinationsplitting(Data).then(res=>{
+            console.log(res);
+            if (res.errno == 0) {
+                this.$message({
+                  type: "success",
+                  message: "修改成功!",
+                  duration: 1000
+                });
+                this.initData();
+              } else {
+                this.$message({
+                  type: "error",
+                  message: res.errmsg,
+                  duration: 1000
+                });
+                this.initData();
+            }
+        });
+    },
+    /* editDone(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.isEdit) {
@@ -472,7 +640,7 @@ export default {
           }
         }
       });
-    },
+    }, */
     /* search() {
         let data=this.$qs.stringify({
             bill_sn:this.keywords
@@ -487,7 +655,7 @@ export default {
         });
     }, */
     reset() {
-      this.initData();
+      this.reload();
     },
     handleCurrentChange(val) {
       this.page = val;
@@ -539,6 +707,15 @@ export default {
     }
   },
   created() {
+      if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.Split!==undefined){
+                this.Splitshow=erpTableSetting.Split;
+            }
+        }else{
+            console.log("no");
+        }; 
     this.initData();
   }
 };
@@ -563,14 +740,15 @@ export default {
 .el-form .el-form-item {
   margin-bottom: 10px;
 }
-
+.el-input >>> .el-input__inner{
+    border:none;
+}
 
 /* 分页器 */
 .el-pagination {
   padding: 20px 0;
   text-align: right;
 }
-
 /* 新增弹出框 & 详情弹出框*/
 .main-table >>> .el-dialog__body {
   padding: 0 20px;

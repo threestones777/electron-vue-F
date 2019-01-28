@@ -96,7 +96,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="pandian_yingkui" align="center" label="盘点盈亏"></el-table-column>
-      <el-table-column align="center" label="操作" width="100px">
+      <el-table-column align="center" label="相关操作" width="100px">
         <template slot-scope="scope">
           <el-button
             size="small"
@@ -124,6 +124,11 @@
     #repertoryCheck .main-header{
         text-align:left;
         margin-bottom: 10px;
+        padding: 10px;
+        background: #fff;
+    }
+    #repertoryCheck .main-header .el-breadcrumb {
+        margin: 8px 0 0 10px;
     }
     #repertoryCheck .el-input{
         width:10%;

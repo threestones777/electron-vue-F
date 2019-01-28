@@ -17,18 +17,18 @@
                 <el-button type="primary" size="small" @click="reset">刷新</el-button>
             </div>
             <!-- 按需选择列弹窗 -->
-        <el-dialog
-        title="按需选择列" style="text-align:left"
-        :visible.sync="dialogShow"
-        :before-close="handleClose"
-        width="200px">
-            <el-checkbox v-model="shopAssistantshow.show1">员工id</el-checkbox><br>
-            <el-checkbox v-model="shopAssistantshow.show2">昵称</el-checkbox><br>
-            <el-checkbox v-model="shopAssistantshow.show3">职员名</el-checkbox><br>
-            <el-checkbox v-model="shopAssistantshow.show4">手机号码</el-checkbox><br>
-            <el-checkbox v-model="shopAssistantshow.show5">密码</el-checkbox><br>
-            <el-checkbox v-model="shopAssistantshow.show6">备注信息</el-checkbox><br><br>
-        </el-dialog>   
+            <el-dialog
+            title="按需选择列" style="text-align:left"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="200px">
+                <el-checkbox v-model="shopAssistantshow.show1">员工id</el-checkbox><br>
+                <el-checkbox v-model="shopAssistantshow.show2">昵称</el-checkbox><br>
+                <el-checkbox v-model="shopAssistantshow.show3">职员名</el-checkbox><br>
+                <el-checkbox v-model="shopAssistantshow.show4">手机号码</el-checkbox><br>
+                <el-checkbox v-model="shopAssistantshow.show5">密码</el-checkbox><br>
+                <el-checkbox v-model="shopAssistantshow.show6">备注信息</el-checkbox><br><br>
+            </el-dialog>   
             <!-- 新增弹出框 -->
             <el-dialog width="450px" title="新增" :visible.sync="dialogServeAdd">
                 <el-form :model="formServeAdd">
@@ -51,7 +51,7 @@
             return String(data[key]).toLowerCase().indexOf(search) > -1})})"
             border
             :row-style="{height:0}"  
-            :cell-style="{padding:0}"
+            :cell-style="{padding:3}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             style="width: 100%">
@@ -72,7 +72,7 @@
                 v-if="shopAssistantshow.show3"
                 label="职员名">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.name">
+                        <el-input v-model="scope.row.name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -80,7 +80,7 @@
                 v-if="shopAssistantshow.show4"
                 label="手机号码">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.mobile">
+                        <el-input v-model="scope.row.mobile"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -88,8 +88,8 @@
                 v-if="shopAssistantshow.show5"
                 label="密码">
                     <template slot-scope="scope">
-                        <input type="password" v-model="scope.row.password">
-                        <el-button type="text" icon="el-icon-view" style="position:absolute;bottom:0px;left:80%;" @click="showPwd"></el-button>
+                        <input type="password" v-model="scope.row.password"/>
+                        <el-button type="text" icon="el-icon-view" style="position:absolute;bottom:15%;left:70%;" @click="showPwd"></el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -97,7 +97,7 @@
                 v-if="shopAssistantshow.show6"
                 label="备注信息">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.remark">
+                        <el-input v-model="scope.row.remark"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -125,6 +125,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            recordPage:1,
             pages:1,
             dialogServeAdd:false,
             dialogServeDetail:false,
@@ -182,12 +183,13 @@ export default {
             this.reload();
         },
         handleCurrentChange(val) {
-            this.init(val);          
+            this.init(val);  
+            this.recordPage=val;    
         },
-        showDetails(row){//--------------详情
+        showDetails(row){//------------------------详情
             console.log(row.id);
             let dataD = this.$qs.stringify({
-                id:row.id
+                id:row.id,
             });
             shopassistantDe(dataD).then(res=>{
                 if(res.errno==0){
@@ -210,18 +212,18 @@ export default {
                         message: res.errmsg,
                         duration: 1000
                     });
-                    this.reload();
+                    this.init(this.recordPage);
                 }else{
                     this.$message({
                         type: "error",
                         message: res.errmsg,
                         duration: 1000
                     });
+                    this.init(this.recordPage);
                 }
             })
         },
         add(){//--------------添加
-            console.log("add");
             let dataA=this.$qs.stringify(this.formServeAdd);
             shopassistantAdd(dataA).then(res=>{
                 if(res.errno==0){
@@ -271,7 +273,7 @@ export default {
         }else{
             console.log("no");
         };
-        this.init(1);       
+        this.init(this.recordPage);       
     }
 }
 </script>
@@ -299,19 +301,21 @@ export default {
 .el-form .el-form-item .el-input {
   width: 80%;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
+.el-table .el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
 }
 /* 分页器 */
 .el-pagination {
   padding: 20px 0;
   text-align: right;
 }
-
+.el-table input{
+    width:100%;
+    height:34px;
+    border-radius:4px;
+    padding:2px;
+}
 /* 新增弹出框 & 详情弹出框*/
 .main-table>>>.el-dialog__body {
   padding: 0 20px;

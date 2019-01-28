@@ -2,63 +2,73 @@
     <div class="replyAnalysis">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>购货</el-breadcrumb-item>
                 <el-breadcrumb-item>补货分析</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div>
+            </div>
         </div>
         <fieldset style="margin:10px 0;border-color:#fff;text-align:left">
             <legend>查询条件</legend>
             <el-row type="flex" justify="space-around" :gutter="10">
                 <el-col style="text-align:left" :span="3">
                 <!--  <h3 >日期类型</h3> -->
-                    <el-radio-group v-model="radio" style="margin-top:5px;">
-                    <el-radio :label="3">订货日期</el-radio><br>
-                    <el-radio :label="6">要求到货日期</el-radio><br>
-                    <el-radio :label="9">不按日期</el-radio>
-                </el-radio-group>    
-                </el-col>
-                <el-col :span="4">
-                    <el-input  prefix-icon="el-icon-search" style="width:100%;margin-top:30px;" v-model="search"  size="mini"  placeholder="输入订单号"/>
-                </el-col>
-                <el-col :span="4">
-                    <el-select style="margin-top:30px;" v-model="value1" size="small" placeholder="分店">
-                        <el-option
-                        v-for="item in options1"
-                        :key="item.value1"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>    
+                    <el-radio-group @change="chose" v-model="radio" style="margin-top:5px;">
+                        <el-radio label="add_time">订货日期</el-radio><br>
+                        <el-radio label="check_time">审核日期</el-radio><br>
+                        <el-radio label="require_time">要求到货日期</el-radio><br>
+                        <el-radio label="9">不按日期</el-radio>
+                    </el-radio-group>    
                 </el-col>
                 <el-col :span="5">
                     <el-date-picker
                     v-model="search3" size="small"
                     style="width:100%;margin-top:30px"
-                    type="daterange"
+                    type="daterange" @change="chose"
                     align="right"
                     unlink-panels
                     range-separator="至"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期">
                     </el-date-picker>
-                    <!-- <el-input  prefix-icon="el-icon-search" style="width:100%;margin-top:5px;"  size="mini"  placeholder="输入关键字搜索"/> -->
                 </el-col>
                 <el-col :span="4">
-                    <el-select v-model="value4" size="small" placeholder="分店类型" style="margin-top:30px;width:100%;">
+                    <el-input  prefix-icon="el-icon-search" style="width:100%;margin-top:30px;" v-model="search"  size="mini"  placeholder="输入单号"/>
+                </el-col>
+                <el-col :span="4">
+                    <el-select @change="chose" style="margin-top:30px;" v-model="value1" size="small" placeholder="分店">
+                        <el-option
+                        v-for="item in options1"
+                        :key="item.value1"
+                        :label="item.label"
+                        :value="item.value1">
+                        </el-option>
+                    </el-select>    
+                </el-col>
+                <el-col :span="4">
+                    <el-select @change="chose" v-model="value4" size="small" placeholder="分店类型" style="margin-top:30px;width:100%;">
                         <el-option
                         v-for="item in options4"
                         :key="item.value4"
                         :label="item.label"
-                        :value="item.value">
+                        :value="item.value4">
                         </el-option>
                     </el-select> 
                 </el-col>
-                <el-col :span="3">
-                    <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
-                    <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                <el-col :span="4">
+                    <!-- <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                    <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button> -->
                 </el-col>
             </el-row>            
         </fieldset>
@@ -184,7 +194,7 @@
             :row-style="{height:0}"  
             :cell-style="{padding:0}"
             :header-row-style="{height:0}"  
-            :header-cell-style="{padding:0}"
+            :header-cell-style="tableRowStyle"
             style="width: 100%">
                 <!-- <el-table-column
                 prop="id"
@@ -244,15 +254,15 @@
                 prop="remark"
                 label="备注">
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                 fixed="right"
                 align="center"
                 label="相关操作">
                     <template slot-scope="scope">
-                        <!-- <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button> -->
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <!-- 分页器 -->
             <el-pagination
@@ -278,12 +288,12 @@ export default {
             search:'',
             search1:'',
             search2:'',
-            search3:'',
+            search3:['2017-7-7','2018-8-8'],
             value: '' ,
             value1: '' ,
             value3: '' ,
             value4: '' ,
-            radio:3,
+            radio:"9",
             formServeAdd:{
                 status:0,
                 add_time:new Date().getTime()/1000,
@@ -304,33 +314,19 @@ export default {
                 show6:true,
                 show7:true,
                 show8:true,
-            },
-            options: [{
-            value: '选项1',
-            label: '审核'
-            }, {
-            value: '选项2',
-            label: '未审核'
-            },],  
+            }, 
             options1: [{
-            value1: '选项1',
+            value1: '0',
             label: '0号店'
             }, {
-            value1: '选项2',
+            value1: '1',
             label: '1号店'
-            },],  
-            options3: [{
-            value3: '选项1',
-            label: '分公司1'
-            }, {
-            value3: '选项2',
-            label: '分公司2'
-            },],  
+            },],
             options4: [{
-            value4: '选项1',
+            value4: '0',
             label: '类型1'
             }, {
-            value4: '选项2',
+            value4: '1',
             label: '类型2'
             },],  
         }
@@ -341,11 +337,26 @@ export default {
                 page:page,
                 page_size:10,
             }); 
+            this.data(data);
+        },
+        data(data){
             replyAnalysis(data).then(res=>{
                 this.record_count=Number(res.data.filter.record_count);
                 console.log(res.data);
                 this.replyAnData=res.data.orders;
-            }) 
+            })  
+        },
+        chose(){//-------------------选择查询
+            let data=this.$qs.stringify({
+                page:1,
+                page_size:10,
+                time_by:this.radio,
+                add_time1:this.search3[0],
+                add_time2:this.search3[1],
+                subshop_id:this.value1,
+                subshop_type:this.value4,
+            }); 
+            this.data(data);
         },
         handleClose(done){
             done();
@@ -358,13 +369,13 @@ export default {
             var startDate = Date.parse(new Date(arr[0], arr[1]-1, arr[2]))/1000;
             return startDate;
         },           
-        reset() {
+        reset() {//-------刷新
             this.reload();
         },
         handleCurrentChange(val) {//-----翻页
             this.init(val); 
         },
-        showDetails(row){//-------详情
+        showDetails(row){//--------------详情
             console.log(row.id);
             let data=this.$qs.stringify({
                 id:row.id,
@@ -377,9 +388,8 @@ export default {
                 this.formDetail=res.data;
                 console.log(this.formDetail);
             });
-
         },
-        edit(row){//-------修改
+        edit(row){//-------------------修改
             row.add_time=this.dateConverter(row.add_time);
             row.check_time=this.dateConverter(row.check_time);
             row.require_time=this.dateConverter(row.require_time);
@@ -401,7 +411,7 @@ export default {
                 }
             })
         },
-        add(){//添加
+        add(){//--------------添加
             /* this.formServeAdd.add_time=this.dateConverter(this.formServeAdd.add_time);
             this.formServeAdd.check_time=this.dateConverter(this.formServeAdd.check_time);
             this.formServeAdd.require_time=this.dateConverter(this.formServeAdd.require_time); */
@@ -436,7 +446,10 @@ export default {
             }else{
                 alert("用户取消操作");
             }
-        }
+        },
+        tableRowStyle({ row, rowIndex }) {
+            return 'background-color:#949494;color:#fff;'
+        },
     },
     created: function () {  
         if(localStorage.erpTableSetting!==undefined){
@@ -455,7 +468,7 @@ export default {
 </script>
 <style scoped>
 .replyAnalysis{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -473,7 +486,6 @@ export default {
 .el-form .el-form-item {
   margin-bottom: 10px;
 }
-
 .el-form .el-form-item .el-input {
   width: 80%;
 }
@@ -489,7 +501,6 @@ export default {
   padding: 20px 0;
   text-align: right;
 }
-
 /* 新增弹出框 & 详情弹出框*/
 .main-table>>>.el-dialog__body {
   padding: 0 20px;
@@ -500,5 +511,49 @@ export default {
 .el-row{
     background:#F3F3F3;
     width:100%;
+}
+.card-title {
+  text-align: center;
+}
+.card-title:focus {
+  outline: none;
+}
+.card {
+  transition: all 0.3s;
+  padding: 5px 0;
+}
+.card:hover {
+  border-radius:7px;
+  transform: translateY(-2px);
+  box-shadow: 0px 2px 5px 4px rgba(0, 0, 0,0.1)
+}
+.card:hover i,
+.card:hover div,
+.card:hover b {
+  color: #409EFF;
+}
+.operate-in {
+  display: flex;
+  margin-top: 12px;
+}
+.operate-in > div {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+.operate-in > div div {
+  font-size: 16px;
+}
+.operate-in i {
+  font-size: 30px;
+}
+.operate-in b {
+  font-size: 16px;
+  position: absolute;
+  top: 20%;
+  right: 5%;
 }
 </style>

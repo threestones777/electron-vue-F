@@ -31,7 +31,7 @@
                         </el-radio-group>    
                     </el-col>
                     <el-col :span="4">
-                        <el-select style="margin-bottom:5px" v-model="value4" size="small" placeholder="调出分店">
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value4" size="small" placeholder="调出分店">
                             <el-option
                             v-for="item in options4"
                             :key="item.value4"
@@ -39,7 +39,7 @@
                             :value="item.value4">
                             </el-option>
                         </el-select> 
-                        <el-select style="margin-bottom:5px" v-model="value5" size="small" placeholder="调入分店">
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value5" size="small" placeholder="调入分店">
                             <el-option
                             v-for="item in options5"
                             :key="item.value3"
@@ -50,12 +50,12 @@
                         <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search"  size="mini"  placeholder="单号"/>
                     </el-col>
                     <el-col :span="4">
-                    <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search5"  size="mini"  placeholder="条形码"/>
-                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search2"  size="mini"  placeholder="货号"/>
-                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search4"  size="mini"  placeholder="商品名称"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search5"  size="mini"  placeholder="条形码"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search2"  size="mini"  placeholder="货号"/>
+                        <el-input @input="chose"  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search4"  size="mini"  placeholder="商品名称"/>
                     </el-col>
                     <el-col :span="4">
-                        <el-select style="margin-bottom:5px" v-model="value8" size="small" placeholder="分类汇总">
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value8" size="small" placeholder="分类汇总">
                             <el-option
                             v-for="item in options8"
                             :key="item.value8"
@@ -63,7 +63,7 @@
                             :value="item.value8">
                             </el-option>
                         </el-select> 
-                        <el-select style="margin-bottom:5px" v-model="value2" size="small" placeholder="品牌汇总">
+                        <el-select @change="chose" style="margin-bottom:5px" v-model="value2" size="small" placeholder="品牌汇总">
                             <el-option
                             v-for="item in options2"
                             :key="item.value2"
@@ -73,9 +73,9 @@
                         </el-select>
                     </el-col>
                     <el-col :span="4">
-                    <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search1"  size="mini"  placeholder="分类"/>
-                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search7"  size="mini"  placeholder="品牌"/>
-                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search8"  size="mini"  placeholder="供应商编码"/>
+                    <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search1"  size="mini"  placeholder="分类"/>
+                        <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search7"  size="mini"  placeholder="品牌"/>
+                        <el-input @input="chose" prefix-icon="el-icon-search" style="width:100%;margin-bottom:5px;" v-model="search8"  size="mini"  placeholder="供应商编码"/>
                     </el-col>
                     <el-col :span="4"></el-col>
                     <el-col :span="3">
@@ -321,11 +321,13 @@
             </el-dialog>
             <!-- 表格 -->
             <el-table
-            :data="MaoriData"
-            border
+            :data="MaoriData.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
+            border stripe
             show-summary
             :row-style="{height:0}"  
-            :cell-style="{padding:0}"
+            :cell-style="{padding:3}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             style="width: 100%">
@@ -347,10 +349,11 @@
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="130"
                 v-if="maorishow.show3"
                 label="调出店名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.from_subshop_name"/>
+                        <el-input v-model="scope.row.from_subshop_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -358,31 +361,34 @@
                 v-if="maorishow.show4"
                 label="收货店号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.to_subshop_id"/>
+                        <span>{{scope.row.to_subshop_id}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="130"
                 v-if="maorishow.show5"
                 label="收货店名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.to_subshop_name"/>
+                        <el-input v-model="scope.row.to_subshop_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="150"
                 v-if="maorishow.show6"
                 label="条码">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.serial_cod"/>
+                        <span>{{scope.row.serial_code}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="150"
                 v-if="maorishow.show7"
                 label="货号">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.product_sn"/>
+                        <span>{{scope.row.product_sn}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -391,7 +397,7 @@
                 v-if="maorishow.show8"
                 label="商品名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.goods_name"/>
+                        <el-input v-model="scope.row.goods_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -399,23 +405,25 @@
                 v-if="maorishow.show9"
                 label="品牌编码">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.brand_id"/>
+                        <el-input v-model="scope.row.brand_id"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="120"
                 v-if="maorishow.show10"
                 label="品牌名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.brand_name"/>
+                        <el-input v-model="scope.row.brand_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="90"
                 v-if="maorishow.show11"
                 label="分类编码">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.cat_id"/>
+                        <el-input v-model="scope.row.cat_id"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -423,7 +431,7 @@
                v-if="maorishow.show12" 
                 label="分类名称">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.cat_name"/>
+                        <el-input v-model="scope.row.cat_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -431,7 +439,7 @@
                 v-if="maorishow.show13"
                 label="规格">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.attr_value"/>
+                        <el-input v-model="scope.row.attr_value"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -440,51 +448,56 @@
                 v-if="maorishow.show14"
                 label="发货数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fahuo_num"/>
+                        <el-input v-model="scope.row.fahuo_num"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="jinhuo_money"
                 align="center"
+                width="110"
                 v-if="maorishow.show15"
                 label="进货金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.jinhuo_money"/>
+                        <el-input v-model="scope.row.jinhuo_money"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="fh_shop_price"
                 align="center"
+                width="110"
                 v-if="maorishow.show16"
                 label="发货售价金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fh_shop_price"/>
+                        <el-input v-model="scope.row.fh_shop_price"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="fh_chengben_price"
                 align="center"
+                width="110"
                 v-if="maorishow.show17"
                 label="发货成本金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fh_chengben_price"/>
+                        <el-input v-model="scope.row.fh_chengben_price"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="fh_gross_profit"
                 align="center"
+                width="110"
                 v-if="maorishow.show18"
                 label="发货毛利额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fh_gross_profit"/>
+                        <el-input v-model="scope.row.fh_gross_profit"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="110"
                 v-if="maorishow.show19"
                 label="发货毛利率">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.fh_gross_interest_rate"/>
+                        <el-input v-model="scope.row.fh_gross_interest_rate"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -493,47 +506,52 @@
                 v-if="maorishow.show20"
                 label="收货数量">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_num"/>
+                        <el-input v-model="scope.row.sh_num"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="sh_shop_price"
                 align="center"
+                width="110"
                 v-if="maorishow.show21"
                 label="收货售价金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_shop_price"/>
+                        <el-input v-model="scope.row.sh_shop_price"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="sh_chengben_price"
                 align="center"
+                width="110"
                 v-if="maorishow.show22"
                 label="收货成本金额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_chengben_price"/>
+                        <el-input v-model="scope.row.sh_chengben_price"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="sh_gross_profit"
                 align="center"
+                width="110"
                 v-if="maorishow.show23"
                 label="收货毛利额">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_gross_profit"/>
+                        <el-input v-model="scope.row.sh_gross_profit"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 align="center"
+                width="110"
                 v-if="maorishow.show24"
                 label="收货毛利率">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.sh_gross_interest_rate"/>
+                        <el-input v-model="scope.row.sh_gross_interest_rate"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
+                width="120"
                 label="相关操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
@@ -567,7 +585,7 @@ export default {
                 show3:true,
                 show4:true,
                 show5:true,
-                show6:true,
+                show6:false,
                 show7:true,
                 show8:true,
                 show9:true,
@@ -622,76 +640,79 @@ export default {
             value10: '' ,
             value11: '' ,
             options: [{
-            value: '选项1',
+            value: '0',
             label: '现金券'
             }, {
-            value: '选项2',
+            value: '1',
             label: '满减券'
             },{
-            value: '选项3',
+            value: '2',
             label: '折扣券' 
             }],  
             options1: [{
-            value1: '选项1',
+            value1: '0',
             label: '商品'
             }, {
-            value1: '选项2',
+            value1: '1',
             label: '服务'
             },],  
             options2: [{
-            value2: '选项1',
+            value2: '0',
+            label: '全部品牌'    
+            },{
+            value2: '7',
             label: '一级品牌'
             }, {
-            value2: '选项2',
+            value2: '1',
             label: '二级品牌'
             },],  
             options3: [{
-            value3: '选项1',
+            value3: '0',
             label: '未审核'
             }, {
-            value3: '选项2',
+            value3: '1',
             label: '已审核'
             },],  
             options4: [{
-            value4: '选项1',
+            value4: '0',
             label: '分店1'
             }, {
-            value4: '选项2',
+            value4: '1',
             label: '分店2'
             },],  
             options5: [{
-            value5: '选项1',
+            value5: '0',
             label: '分店1'
             }, {
-            value5: '选项2',
+            value5: '1',
             label: '分店2'
             },],
             options8: [{
-            value8: '选项1',
+            value8: '0',
             label: '分类1'
             }, {
-            value8: '选项2',
+            value8: '1',
             label: '分类2'
             },],
             options9: [{
-            value9: '选项1',
+            value9: '1',
             label: '未审核'
             }, {
-            value9: '选项2',
+            value9: '1',
             label: '已审核'
             },],
             options10: [{
-            value10: '选项1',
+            value10: '0',
             label: '类型1'
             }, {
-            value10: '选项2',
+            value10: '1',
             label: '类型2'
             },],
             options11: [{
-            value11: '选项1',
+            value11: '0',
             label: '未收货'
             }, {
-            value11: '选项2',
+            value11: '1',
             label:'已收货'
             },],
         }
@@ -702,6 +723,9 @@ export default {
                 page:page,
                 page_size:10,
             });
+            this.data(data);
+        },
+        data(data){
             Maori(data).then(res=>{
                 console.log(res.data.orders);
                 this.record_count=Number(res.data.filter.record_count);
@@ -717,7 +741,24 @@ export default {
                 }
                 this.MaoriData=res.data.orders;
             });
-        },  
+        }, 
+        chose(){
+            let data=this.$qs.stringify({
+                page:1,
+                page_size:10,
+                from_subshop_id:this.value4,
+                to_subshop_id:this.value5,
+                serial_code:this.search5,
+                product_sn:this.search2,
+                goods_name:this.search4,
+                cat_id:this.value8,
+                brand_id:this.value2,
+                cat_name:this.search1,
+                brand_name:this.search7,
+                supplier_id:this.search8,
+            });
+            this.data(data);
+        }, 
         handleClose(done){
             done();
             let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
@@ -807,7 +848,7 @@ export default {
 </script>
 <style scoped>
 .allocatingMaori{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -829,12 +870,9 @@ export default {
 .el-form .el-form-item .el-input {
   width: 80%;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
 }
 /* 分页器 */
 .el-pagination {

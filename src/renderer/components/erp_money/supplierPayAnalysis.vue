@@ -11,7 +11,7 @@
         </div>
 
         <!-- 搜索条件区域 -->
-        <div class="search-area">
+        <!-- <div class="search-area">
         <fieldset>
             <legend>查询条件</legend>
             <div class="out-box">
@@ -66,9 +66,85 @@
             </div>
             </div>
         </fieldset>
-        </div>
+        </div> -->
 
         <div class="main-table">
+            <fieldset style="margin:10px 0;border-color: #fff;">
+                <legend>查询条件</legend>
+                <el-row type="flex" justify="space-around" :gutter="10">
+                    <el-col style="text-align:left" :span="3">
+                        <el-radio-group v-model="radio" style="margin-top:5px;">
+                            <el-radio :label="1">单据审核日期</el-radio><br>
+                            <el-radio :label="2">应结日期</el-radio><br>
+                            <el-radio :label="4">不按日期</el-radio>
+                        </el-radio-group>    
+                    </el-col>
+                    <el-col :span="5">
+                        <el-date-picker
+                        v-model="search3" size="small"
+                        style="width:100%;margin-top:0px"
+                        type="daterange"
+                        align="right"
+                        unlink-panels
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-input  prefix-icon="el-icon-search" style="width:100%;margin-bottom:10px;" v-model="search"  size="mini"  placeholder="供应商"/>
+                        <el-select v-model="value1" size="small" placeholder="类型">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value1"
+                            :label="item.label"
+                            :value="item.value1">
+                            </el-option>
+                        </el-select> 
+                    </el-col>
+                    <el-col :span="4">
+                        <el-select v-model="value3" size="small" placeholder="分公司">
+                            <el-option
+                            v-for="item in options3"
+                            :key="item.value3"
+                            :label="item.label"
+                            :value="item.value3">
+                            </el-option>
+                        </el-select> 
+                        <el-select v-model="value2" size="small" placeholder="分店" style="margin-top:5px">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value2"
+                            :label="item.label"
+                            :value="item.value2">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button type="primary" size="small" @click="reset">刷新</el-button><br>
+                        <el-button icon="el-icon-tickets"  style="margin-top:5px" type="primary" size="small" @click="dialogShow=true">显示列</el-button>
+                    </el-col>
+                </el-row>
+            </fieldset>
+            <!-- 按需选择列弹窗 -->
+            <el-dialog
+            title="按需选择列" class="chose" style="text-align:left"
+            :visible.sync="dialogShow"
+            :before-close="handleClose"
+            width="200px">
+                <el-checkbox v-model="supplierPayshow.show1">单号</el-checkbox><br>
+                <el-checkbox v-model="supplierPayshow.show2">供应商</el-checkbox><br>
+                <el-checkbox v-model="supplierPayshow.show3">店名</el-checkbox><br>
+                <el-checkbox v-model="supplierPayshow.show4">应付金额</el-checkbox><br>
+                <el-checkbox v-model="supplierPayshow.show5">已付金额</el-checkbox><br>
+                <el-checkbox v-model="supplierPayshow.show6">已优惠金额</el-checkbox><br>
+                <el-checkbox v-model="supplierPayshow.show7">未付金额</el-checkbox><br>
+                <el-checkbox v-model="supplierPayshow.show8">应结日期</el-checkbox><br>
+                <el-checkbox v-model="supplierPayshow.show9">最近收款日期</el-checkbox><br>
+                <el-checkbox v-model="supplierPayshow.show10">供应商id</el-checkbox><br>
+                <el-checkbox v-model="supplierPayshow.show11">备注</el-checkbox><br><br>
+            </el-dialog>
             <!-- 搜索 -->
             <!-- <el-form :inline="true" :model="formServe" class="demo-form-inline">
                 <el-form-item>
@@ -95,7 +171,7 @@
                 </div>
             </el-dialog>
             <!-- 详情弹出框 -->
-            <!-- <el-dialog width="900px" title="客户信息" :visible.sync="dialogServeDetail">
+            <el-dialog width="900px" title="客户信息" :visible.sync="dialogServeDetail">
                 <el-form label-position="left" ref="form" :model="formServeDetail" :inline="true" class="demo-form-inline">
                     <el-row>
                         <el-col :span="8">
@@ -165,7 +241,7 @@
                     <el-button	size="small" @click="dialogServeDetail = false">取 消</el-button>
                     <el-button	size="small" type="primary" @click="editDone('form')">保存</el-button>
                 </div>
-            </el-dialog> -->
+            </el-dialog>
 
 
             <!-- 显示列和排序模块 -->
@@ -234,78 +310,126 @@
             <!-- 表格 -->
             <el-table
             :data="Data"
-            border
+            border stripe
+            show-summary
             :row-style="{height:0}"  
-            :cell-style="{padding:0}"
+            :cell-style="{padding:3}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             v-loading="loading"
             style="width: 100%">
                 <el-table-column
-                prop="bill_sn"
                 align="center"
+                width="190"
+                v-if="supplierPayshow.show1"
                 label="单号">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.bill_sn"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="supplier_name"
                 align="center"
+                width="130"
+                v-if="supplierPayshow.show2"                
                 label="供应商">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.supplier_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="subshop_name"
                 align="center"
+                v-if="supplierPayshow.show3"
                 label="店名">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.subshop_name"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="yingfu_price"
                 align="center"
+                v-if="supplierPayshow.show4"
                 label="应付金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.yingfu_price"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="yifu_price"
                 align="center"
+                v-if="supplierPayshow.show5"
                 label="已付金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.yifu_price"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="discount_price"
                 align="center"
+                v-if="supplierPayshow.show6"
                 label="已优惠金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.discount_price"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="weifu_price"
                 align="center"
+                v-if="supplierPayshow.show7"
                 label="未付金额">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.weifu_price"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="yingjie_time"
                 align="center"
+                width="130"
+                v-if="supplierPayshow.show8"
                 label="应结日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.yingjie_time"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="near_shoukuan_time"
                 align="center"
+                width="130"
+                v-if="supplierPayshow.show9"
                 label="最近收款日期">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.near_shoukuan_time"/>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="supplier_id"
                 align="center"
+                v-if="supplierPayshow.show10"
                 label="供应商id">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.supplier_id"/>
+                    </template>
                 </el-table-column>
-                <!-- <el-table-column
+                <el-table-column
+                align="center"
+                width="130"
+                v-if="supplierPayshow.show11"
+                label="备注">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.remark"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
                 fixed="right"
                 align="center"
                 label="相关操作"
-                width="90">
+                width="120">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
                     </template>
-                </el-table-column> -->
+                </el-table-column>
             </el-table>
             <!-- 分页器 -->
             <el-pagination
                 @current-change="handleCurrentChange"
-                layout="total,prev, pager, next,jumper"
+                layout="total,prev,pager,next,jumper"
                 :page_size="page_size"
                 :total="total">
             </el-pagination>
@@ -357,6 +481,20 @@ export default {
             ],
             dialogServeAdd:false,
             dialogServeDetail:false,
+            dialogShow:false,
+            supplierPayshow:{
+                show1:true,
+                show2:true,
+                show3:true,
+                show4:true,
+                show5:true,
+                show6:true,
+                show7:true,
+                show8:true,
+                show9:true,
+                show10:false,
+                show11:true,
+            },
             keywords:'',
             formServe:{
                 name:"",
@@ -370,9 +508,44 @@ export default {
             },
             Data:[],
             rule: [{ required: true, message: "不能为空" }],
+            search:'',
+            search3:['2017-7-7','2019-9-9'],
+            radio:4,
+            value: '' ,
+            value1: '' ,
+            value2: '' ,
+            value3: '' ,
+            value4: '' ,
+            options1: [{
+            value1: '选项1',
+            label: '未审核'
+            }, {
+            value1: '选项2',
+            label: '已审核'
+            },],
+            options2: [{
+            value2: '选项1',
+            label: '0分店'
+            }, {
+            value2: '选项2',
+            label: '1分店'
+            },],
+            options3: [{
+            value3: '选项1',
+            label: '分公司1'
+            }, {
+            value3: '选项2',
+            label: '分公司2'
+            },],
         }
     },
     methods:{
+        handleClose(done){
+            done();
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+            erpTableSetting.supplierPay=this.supplierPayshow;
+            localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
+        },
         changeColumn() {
             this.columnData = this.columnData;
             console.log(this.columnData);
@@ -381,7 +554,7 @@ export default {
             console.log(e);
             this.sortSelected = e;
         },
-        initData() { // 获取列表
+        initData() { //------------------------获取列表
             let data = this.$qs.stringify({
                 subsite_id:3,
                 user_id:sessionStorage.user_id,
@@ -391,6 +564,12 @@ export default {
             getSupplierpayanalysisList(data).then(res=>{
                 console.log(res.data)
                 if(res.errno == 0) {
+                   for(let i=0;i<res.data.orders.length;i++){
+                       res.data.orders[i].yingfu_price=res.data.orders[i].yingfu_price.replace(/^￥/,"");
+                       res.data.orders[i].yifu_price=res.data.orders[i].yifu_price.replace(/^￥/,"");
+                       res.data.orders[i].discount_price=res.data.orders[i].discount_price.replace(/^￥/,"");
+                       res.data.orders[i].weifu_price=res.data.orders[i].weifu_price.replace(/^￥/,"");
+                   }; 
                     this.Data = res.data.orders
                     this.total = Number(res.data.record_count)
                     this.loading = false
@@ -404,6 +583,41 @@ export default {
                 this.$refs.form.resetFields();
             }
             this.dialogServeDetail = true;
+            },
+            dateConverter(str) { //-----------------------日期转秒数
+                var arr = str.split(/[- : \/]/);
+                var startDate = Date.parse(new Date(arr[0], arr[1]-1, arr[2]))/1000;
+                return startDate;
+            },
+            edit(row){//-------------------------------修改
+                if(row.yingjie_time!==""){
+                    row.yingjie_time=this.dateConverter(row.yingjie_time);
+                }else{
+                    row.yingjie_time=new Date().getTime()/1000-86400;
+                }
+                if(row.near_shoukuan_time!==""){
+                    row.near_shoukuan_time=this.dateConverter(row.near_shoukuan_time);
+                }else{
+                    row.near_shoukuan_time=new Date().getTime()/1000-86400;
+                }
+                let data=this.$qs.stringify(row);
+                editSupplierpayanalysis(data).then(res=>{
+                    if (res.errno == 0) {
+                        this.$message({
+                            type: "success",
+                            message: "修改成功!",
+                            duration: 1000
+                        });
+                        this.initData();
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: res.errmsg,
+                            duration: 1000
+                        });
+                        this.initData();
+                    }
+                });
             },
             editDone(formName) {
             this.$refs[formName].validate(valid => {
@@ -455,22 +669,7 @@ export default {
                 }
                 }
             });
-        },
-        search() {
-            let data=this.$qs.stringify({
-                page:1,
-                page_size:10,
-                supplier_id:this.keywords
-            });
-            getSupplierpayanalysisList(data).then(res=>{
-                console.log(res.data)
-                if(res.errno == 0) {
-                    this.Data = res.data.orders
-                    this.total = Number(res.data.record_count)
-                    this.loading = false
-                }
-            })
-        },        
+        },   
         reset() {
             this.initData()
         },
@@ -515,6 +714,15 @@ export default {
         }
     },
     created() {
+        if(localStorage.erpTableSetting!==undefined){
+            console.log("yes");
+            let erpTableSetting=JSON.parse(localStorage.erpTableSetting); 
+            if(erpTableSetting.supplierPay!==undefined){
+                this.supplierPayshow=erpTableSetting.supplierPay;
+            }
+        }else{
+            console.log("no");
+        };
         this.initData()
     }
 }
@@ -559,10 +767,10 @@ fieldset {
   width: 220px;
 }
 .content-r,
-.el-form {
+/* .el-form {
   display: flex;
   align-items: center;
-}
+} */
 .content-r .el-form {
   flex-wrap: wrap;
   flex: 1;
@@ -638,7 +846,10 @@ fieldset {
 .agencyTransaction >>> .columnDialog .el-dialog__body {
   padding: 0;
 }
-
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
+}
 /* 分页器 */
 .el-pagination {
   padding: 20px 0;
@@ -670,8 +881,9 @@ fieldset {
 .main-table >>> .el-dialog__body .el-input-number {
   width: 100%;
 }
-.el-row {
-  border-top: 1px dashed #ccc;
+.el-row{
+    background:#F3F3F3;
+    width:100%;
 }
 
 </style>

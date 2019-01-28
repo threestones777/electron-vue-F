@@ -2,7 +2,6 @@
     <div class="memberAccount">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
             <el-breadcrumb separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>编辑会员资料</el-breadcrumb-item>

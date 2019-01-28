@@ -1,7 +1,7 @@
 <template>
     <el-container style="min-width:1200px;">
     <!-- 左侧导航 -->
-        <el-aside :width="newWidth">
+        <el-aside :width="newWidth" v-show="$route.path!='/erp_test_lists'">
             <!-- 头像 -->
             <div class="avatar">
                 <div class="avatar-in">
@@ -11,7 +11,7 @@
                             美联管理员<i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="a">个人资料</el-dropdown-item>
+                            <el-dropdown-item command="a">商户资料</el-dropdown-item>
                             <el-dropdown-item command="b" >安全退出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
@@ -237,7 +237,7 @@
         </el-aside>
         <el-container>
             <!-- 头部 -->
-            <el-header>
+            <el-header v-show="$route.path!='/erp_test_lists'">
             <!-- 折叠按钮 -->
             <el-button size="small" type="primary" @click="isCollapse=!isCollapse">
                 <i class="el-icon-d-arrow-right" v-if="isCollapse"></i>
@@ -261,17 +261,17 @@
             </el-badge>
             <router-link 
             to="/erp_cashier_goodslists" 
-            style="position:relative;left:40px;color:#333333">
+            style="font-size:16px;position:relative;left:40px;color:#333333">
             收银台
             </router-link>
             <router-link 
             to="/erp_room_lists" 
-            style="position:relative;left:40px;color:#333333;margin-left:30px;">
+            style="font-size:16px;position:relative;left:40px;color:#333333;margin-left:30px;">
             库存查询
             </router-link>
             <router-link 
             to="/erp_test_lists" 
-            style="position:relative;left:40px;color:#333333;margin-left:30px;">
+            style="font-size:16px;position:relative;left:40px;color:#333333;margin-left:30px;">
             线上管理中心
             </router-link>
             </el-header>
@@ -285,10 +285,9 @@
 <script>
 import { getAsideMenu,getSysMsgList } from "../api/api";
 export default {
-    provide() {
-    // 注册一个局部组件刷新方法
+    provide() {//------------------ 注册一个局部组件刷新方法
         return {
-        reload: this.reload
+            reload: this.reload
         };
     },
   data() {
@@ -299,7 +298,7 @@ export default {
       count:0,
       asideMenuList:[],
       erpTableSetting:{},
-      icon:{erp_purchase:'goods',erp_retail:'bell',erp_allocation:'document',erp_member:'star-on',erp_clerks:'service',erp_write_off:'menu',erp_store:'location',erp_money:'star-off',erp_report:'tickets',erp_config:'setting'}
+      icon:{erp_purchase:'goods',erp_retail:'bell',erp_allocation:'document',erp_member:'star-on',erp_clerks:'service',erp_write_off:'menu',erp_store:'location',erp_money:'star-off',erp_report:'tickets',erp_config:'setting',erp_goods:'goods'}
     };
   },
   watch: {
@@ -317,7 +316,7 @@ export default {
     handleCommand(v) {
       switch (v) {
         case "a":
-          this.$router.push("/memberAccount");
+          this.$router.push("/traderInfo");
           break;
         case "b":
           // 1. 清除登录状态，即删除保存在localStorage中的user_id

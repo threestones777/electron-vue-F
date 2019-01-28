@@ -5,5 +5,7 @@ npm-debug.log
 npm-debug.log.*
 thumbs.db
 !.gitkeep
-.git/
-.svn/
+.git/*
+.svn/*
+node_modules/*
+node_modules

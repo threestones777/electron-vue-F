@@ -2,12 +2,87 @@
     <div class="serveManage">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>设置</el-breadcrumb-item>
                 <el-breadcrumb-item>服务管理</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <!-- <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div> -->
+                <div @click="dialogServeAdd = true" class="card">
+                    <i class="el-icon-plus"></i>
+                    <div>新增</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <!-- 账户搜索 -->
@@ -19,11 +94,11 @@
                     <el-input	size="small" type="tel" v-model="formServe.marks" placeholder="备注信息"></el-input>
                 </el-form-item> -->
                 <el-form-item>
-                    <!-- <el-input placeholder="请输入服务名称" @input="search" v-model="keywords" style="width:50%;margin-right:10px" size="small">
+                    <el-input placeholder="请输入服务名称" v-model="search" style="width:70%;margin-right:10px" size="small">
                         <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
-                    </el-input> -->
-                    <el-button type="primary" size="small" @click="dialogServeAdd = true">新增</el-button>
-                    <el-button type="primary" size="small" @click="reset">刷新</el-button>
+                    </el-input>
+                    <!-- <el-button type="primary" size="small" @click="dialogServeAdd = true">新增</el-button>
+                    <el-button type="primary" size="small" @click="reset">刷新</el-button> -->
                 </el-form-item>
             </el-form>
             <!-- 新增服务弹出框 -->
@@ -65,37 +140,49 @@
             </el-dialog>
             <!-- 服务管理表格 -->
             <el-table
-            :data="serveMData"
-            border
+            :data="serveMData.filter(data =>  {
+            return Object.keys(data).some(key => {
+            return String(data[key]).toLowerCase().indexOf(search) > -1})})"
+            show-summary
+            border stripe
             :row-style="{height:0}"  
-            :cell-style="{padding:0}"
+            :cell-style="{padding:7}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             v-loading="loading"
             style="width: 100%">
                 <el-table-column
+                show-overflow-tooltip
                 prop="goods_name"
                 align="center"
                 label="服务名称">
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.goods_name"/>
+                  </template>
                 </el-table-column>
                 <el-table-column
                 prop="shop_price"
                 align="center"
-                label="服务价格"
-                width="180">
+                label="服务价格">
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.shop_price"/>
+                  </template>
                 </el-table-column>
                 <el-table-column
+                show-overflow-tooltip
                 prop="goods_brief"
                 align="center"
                 label="简介">
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.goods_brief"/>
+                  </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
-                label="相关操作"
-                width="240">
+                label="相关操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="showDetails(scope.row),dialogServeDetail = true">详情</el-button>
+                        <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
                         <el-button type="text" size="small"  @click='deleteRow(scope.$index, scope.row)'>删除</el-button>
                     </template>
                 </el-table-column>
@@ -122,7 +209,7 @@ export default {
       isEdit:false,
       dialogServeAdd: false,
       dialogServeDetail: false,
-      keywords:'',
+      search:'',
       formServe: {
         name: "",
         marks: ""
@@ -149,9 +236,32 @@ export default {
       getItemList({ params: data }).then(res => {
         console.log(res);
         if (res.errno == 0) {
+          for(let i=0;i<res.data.orders.length;i++){
+            res.data.orders[i].shop_price=res.data.orders[i].shop_price.replace(/^￥/,"");
+          };
           this.serveMData = res.data.orders;
           this.total = Number(res.data.record_count);
           this.loading = false;
+        }
+      });
+    },
+    edit(row){//---------------------修改
+      let data=this.$qs.stringify(row);
+      editItem(data).then(res=>{
+        if (res.data.orders == "修改成功") {
+          this.$message({
+            type: "success",
+            message: res.data.orders,
+            duration: 1500
+          });
+          this.initData();
+        } else {
+          this.$message({
+            type: "error",
+            message:res.data.orders,
+            duration: 1500
+          });
+          this.initData();
         }
       });
     },
@@ -182,20 +292,6 @@ export default {
         }
       });
     },
-    search() {
-      getItemList({ params:{
-        page:1,
-        page_size:10,
-        goods_name:this.keywords
-      }}).then(res => {
-        console.log(res);
-        if (res.errno == 0) {
-          this.serveMData = res.data.orders;
-          this.total = Number(res.data.record_count);
-          this.loading = false;
-        }
-      });
-  }, 
     reset() {
       this.initData();
     },
@@ -253,7 +349,7 @@ export default {
 </script>
 <style scoped>
 .serveManage {
-  margin: 20px;
+  margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -271,13 +367,18 @@ export default {
 .el-form .el-form-item {
   margin-bottom: 10px;
 }
-
+.el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
+}
 /* 分页器 */
 .el-pagination {
   padding: 20px 0;
   text-align: right;
 }
-
+.el-input >>> .el-input__inner{
+    padding:0;
+}
 /* 新增账户弹出框 & 账户详情弹出框*/
 .main-table >>> .el-dialog__body {
   padding: 0 20px;

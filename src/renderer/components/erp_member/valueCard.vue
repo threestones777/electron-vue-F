@@ -2,23 +2,98 @@
     <div class="valueCard">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>会员</el-breadcrumb-item>
                 <el-breadcrumb-item>储值卡</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <!-- <div>
+                <i class="el-icon-circle-plus"></i>
+                <div>增加</div>
+                </div>
+                <div>
+                <i class="el-icon-edit"></i>
+                <div>编辑</div>
+                </div>
+                <div>
+                <i class="el-icon-remove"></i>
+                <div>删除</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-check"></i>
+                <div>保存</div>
+                </div>
+                <div>
+                <i class="el-icon-circle-close"></i>
+                <div>取消</div>
+                </div>
+                <div>
+                <i class="el-icon-view"></i>
+                <div>审核</div>
+                </div> 
+                <div class="card">
+                <i class="el-icon-search"></i>
+                <div>查询</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-setting"></i>
+                <div>功能</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-printer"></i>
+                <div>打印</div>
+                <b class="el-icon-caret-bottom"></b>
+                </div>
+                <div class="card">
+                <i class="el-icon-menu"></i>
+                <div>设置</div>
+                </div>
+                <div class="card">
+                <i class="el-icon-zoom-in"></i>
+                <div>高级查询</div>
+                </div>
+                <div class="card">
+                <el-dropdown trigger="click" placement="bottom" @command="handleExport">
+                    <div class="card-title">
+                    <i class="el-icon-download"></i>
+                    <div>导入/导出</div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="in">导入</el-dropdown-item>
+                    <el-dropdown-item command="xlsx-out">导出为excel</el-dropdown-item>
+                    <el-dropdown-item command="csv-out">导出为csv</el-dropdown-item>
+                    <el-dropdown-item command="txt-out">导出为txt</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <b class="el-icon-caret-bottom"></b>
+                </div>-->
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <div @click="dialogShow=true" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>显示列</div>
+                </div>
+                <div @click="dialogServeAdd=true" class="card">
+                    <i class="el-icon-plus"></i>
+                    <div>新增</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <!-- 搜索 -->            
             <el-form :inline="true" :model="formServe" class="demo-form-inline">                
                 <el-form-item>
-                    <el-input placeholder="请输入类型名称" @input="search" v-model="keywords" style="width:50%;margin-right:10px" size="small">
+                    <el-input placeholder="请输入类型名称" @input="search" v-model="keywords" style="width:70%;margin-right:10px" size="small">
                         <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
                     </el-input>
-                    <el-button type="primary" size="small" @click="dialogServeAdd = true">新增</el-button>
+                    <!-- <el-button type="primary" size="small" @click="dialogServeAdd = true">新增</el-button>
                     <el-button type="primary" size="small" @click="reset">刷新</el-button>
-                    <el-button icon="el-icon-tickets" type=primary size="small" @click="dialogShow=true">显示列</el-button>
+                    <el-button icon="el-icon-tickets" type=primary size="small" @click="dialogShow=true">显示列</el-button> -->
                 </el-form-item>
             </el-form>
             <!-- 按需选择列弹窗 -->
@@ -187,10 +262,10 @@
             <!-- 表格 -->
             <el-table
             :data="valueCardTypeData"
-            border
+            border stripe
             show-summary
             :row-style="{height:0}"  
-            :cell-style="{padding:7}"
+            :cell-style="{padding:3}"
             :header-row-style="{height:0}"  
             :header-cell-style="{padding:0}"
             style="width: 100%">
@@ -206,7 +281,7 @@
                 v-if="valueCardshow.show2"
                 label="类型名称">
                   <template slot-scope="scope">
-                        <input v-model="scope.row.type_name"/>
+                        <el-input v-model="scope.row.type_name"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -215,7 +290,7 @@
                 v-if="valueCardshow.show3"
                 label="卡积分">
                   <template slot-scope="scope">
-                        <input v-model="scope.row.type_integral"/>
+                        <el-input v-model="scope.row.type_integral"/>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -225,26 +300,25 @@
                 label="发放数量">
                 </el-table-column>
                 <el-table-column
-                prop="use_start_date"
                 align="center"
                 v-if="valueCardshow.show5"
                 label="开始日期">
                   <template slot-scope="scope">
-                        <input v-model="scope.row.use_start_date"/>
+                        <el-input v-model="scope.row.use_start_date"/>
                     </template>
                 </el-table-column>
                 <el-table-column
-                prop="use_end_date"
                 align="center"
                 v-if="valueCardshow.show6"
                 label="结束日期">
                     <template slot-scope="scope">
-                        <input v-model="scope.row.use_end_date"/>
+                        <el-input v-model="scope.row.use_end_date"/>
                     </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
                 align="center"
+                width="150"
                 label="相关操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="edit(scope.row)">保存修改</el-button>
@@ -338,9 +412,9 @@ export default {
     },
     handleClose(done){
         done();
-        /* let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
+        let erpTableSetting=JSON.parse(localStorage.erpTableSetting);
         erpTableSetting.valueCard=this.valueCardshow;
-        localStorage.erpTableSetting=JSON.stringify(erpTableSetting); */
+        localStorage.erpTableSetting=JSON.stringify(erpTableSetting);
     },
     search() {
       let data=this.$qs.stringify({
@@ -351,13 +425,13 @@ export default {
         this.valueCardTypeData = res.data.orders;
       });
   }, 
-    reset() {
+    reset() {//------------------刷新
       this.reload();
     },
-    handleCurrentChange(val) {
+    handleCurrentChange(val) {//--------------点击查看分页
       this.init(val);
     },
-    handleChecktChange(val) {//--------------查看的 分页查询
+    handleChecktChange(val) {//--------------查看的分页查询
       console.log(val);
       let dataC = this.$qs.stringify({
         type_id: this.type_id,
@@ -384,7 +458,9 @@ export default {
       });
     },
     edit(row) {//--------------修改
-      console.log("修改");
+      if(row.use_start_date==""){
+        row.use_start_date=new Date().toLocaleDateString();
+      }
       let dataE = this.$qs.stringify(row);
       valueCardTypeEd(dataE).then(res => {
         console.log(res.errno);
@@ -409,7 +485,7 @@ export default {
       this.type_id = row.type_id;
       console.log(this.type_id);
     },
-    issue(row) {//--------------发放2
+    issue(row) {//--------------发放
       let dataI = this.$qs.stringify({
         type_id: this.type_id,
         send_sum: this.send_sum
@@ -446,7 +522,7 @@ export default {
         this.record_count = Number(res.data.filter.record_count);
       });
     },
-    checkDetail(row) {//--------------查看 详情
+    checkDetail(row) {//--------------查看中的详情
       console.log(this.type_id);
       console.log(this.id);
       this.id=row.id;
@@ -459,7 +535,7 @@ export default {
         this.checkDetails = res.data[0];
       });
     },
-    checkEdit() {//--------------查看 修改
+    checkEdit() {//--------------查看中的修改
       console.log("查看修改");
       this.checkDetails.status = this.checkDetails.status == "未使用" ? 0 : 1;
       this.checkDetails.sex = this.checkDetails.sex == "保密" ? 0 : 1;
@@ -474,9 +550,8 @@ export default {
         }
       });
     },
-    checkDele(row){//--------------查看 删除
+    checkDele(row){//--------------查看中的删除
       this.id=row.id;
-      console.log(this.id+"*"+this.type_id);
       let dataCD = this.$qs.stringify({
         type_id: this.type_id,
         id: this.id,
@@ -612,7 +687,7 @@ export default {
 </script>
 <style scoped>
 .valueCard {
-  margin: 20px;
+  margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -639,12 +714,9 @@ export default {
   padding: 20px 0;
   text-align: right;
 }
-.el-table input{
-    width:100%;
-    height:34px;
-    border:1px solid #DCDFE6;
-    border-radius:4px;
-    padding:2px;
+.el-table .el-input >>> .el-input__inner{
+    border:none;
+    text-align:center;
 }
 /* 新增弹出框 & 详情弹出框*/
 .main-table >>> .el-dialog__body {

@@ -1,8 +1,8 @@
 <template>
     <div id='dataInit'>
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item :to="{ path: '/' }">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>报表</el-breadcrumb-item>
                 <el-breadcrumb-item>数据初始化</el-breadcrumb-item>
@@ -22,7 +22,7 @@
 </template>
 <style>
     #dataInit{
-        margin: 20px;
+        margin: 10px;
     }
     #dataInit .main-header{
         text-align:left;

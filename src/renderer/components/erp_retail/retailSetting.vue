@@ -2,12 +2,22 @@
     <div class="retailSetting">
         <!-- 头部面包屑 -->
         <div class="main-header">
-            <h3>温州美联 管理中心</h3>
-            <el-breadcrumb separator-class="el-icon-arrow-right">
+            <!-- <h3>温州美联 管理中心</h3> -->
+            <el-breadcrumb style="font-size:18px;" separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item to="/">主页</el-breadcrumb-item>
                 <el-breadcrumb-item>零售</el-breadcrumb-item>
                 <el-breadcrumb-item>零售设置</el-breadcrumb-item>
             </el-breadcrumb>
+            <div class="operate-in">
+                <div @click="reset" class="card">
+                    <i class="el-icon-loading"></i>
+                    <div>刷新</div>
+                </div>
+                <div @click="savEdit" class="card">
+                    <i class="el-icon-tickets"></i>
+                    <div>保存修改</div>
+                </div>
+            </div>
         </div>
         <div class="main-table">
             <el-form ref="form" :model="retailsetData">
@@ -162,17 +172,7 @@
                         <el-col :span="3"></el-col>
                         <el-col :span="3"></el-col>
                     </el-row>
-                    <el-row type="flex" justify="center" :gutter="10">
-                       <el-col :span="3"></el-col>
-                        <el-col :span="6"></el-col>
-                        <el-col :span="6"></el-col>
-                        <el-col :span="3"></el-col>
-                        <el-col :span="3">
-                            <el-button type="primary" style="float:right;" @click="savEdit">保存修改</el-button>
-                        </el-col>
-                        <el-col :span="3"></el-col>
-                    </el-row>
-                </el-form-item> 
+                </el-form-item>
             </el-form>
         </div>
     </div>
@@ -239,21 +239,21 @@ export default {
             this.reload();
         },
         handleCurrentChange(val) {
-            this.init(val);         
+            this.init(val);      
         },
         showDetails(row){//-------详情
             console.log(row.id);
             let dataD=this.$qs.stringify({
                 subsite_id:3,
                 subshop_id:0,
-                id:row.id
+                id:row.id,
             });
             retailSettingDe(dataD).then(res=>{
                 console.log(res.data);
                 this.formDetail=res.data;
             })
         },
-        savEdit(){//-------修改
+        savEdit(){//-----------------修改
             let data =this.$qs.stringify(this.retailsetData)
             retailSettingEd(data).then(res=>{
                 console.log(res.errno);
@@ -312,7 +312,7 @@ export default {
 </script>
 <style scoped>
 .retailSetting{
-    margin: 20px;
+    margin: 10px;
 }
 /* 头部面包屑 */
 .main-header {
@@ -351,5 +351,52 @@ export default {
 }
 .el-dialog__body .el-form {
   text-align: right;
+}
+.card-title {
+  text-align: center;
+}
+.card-title:focus {
+  outline: none;
+}
+.card {
+  transition: all 0.3s;
+  padding: 5px 0;
+}
+.card:hover {
+  border-radius:7px;
+  transform: translateY(-2px);
+  box-shadow: 0px 2px 5px 4px rgba(0, 0, 0,0.1)
+}
+.card:hover i,
+.card:hover div,
+.card:hover b {
+  color: #6cf;
+}
+.operate-in {
+  display: flex;
+  margin-top: 12px;
+}
+.operate-in > div {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+.operate-in > div div {
+  font-size: 16px;
+}
+.operate-in i {
+  font-size: 30px;
+}
+.operate-in b {
+  font-size: 16px;
+  position: absolute;
+  top: 20%;
+  right: 5%;
+}
+.el-row{
+    padding:5px;
 }
 </style>
